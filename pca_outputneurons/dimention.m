@@ -18,11 +18,14 @@ for i=1:1000
     
 end
 
-Firings=Firings.';
+outFirings=Firings(200:300,:);  %
+outFirings=outFirings.'; %invert to caliculate pca
+
+%Firings=Firings.';
 
 %Firings=zscore(Firings);
 
-[COEFF,SCORE,latent] = pca(Firings);
+[COEFF,SCORE,latent] = pca(outFirings);
 
 latentsize=size(latent);
 latent(950:latentsize(1,1),:)=[];

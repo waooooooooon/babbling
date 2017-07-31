@@ -214,7 +214,7 @@ for sec=1:2 % T is the duration of the simulation in seconds.
     decaysmoothpos=zeros(1,1000);
 datatime=1;
 
-    for t=1:1000                         % Millisecond timesteps
+    for t=1:5000                         % Millisecond timesteps
 
         %Random Thalamic Input.
         I=13*(rand(N,1)-0.5);
