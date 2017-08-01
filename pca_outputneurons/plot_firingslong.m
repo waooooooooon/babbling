@@ -1,4 +1,4 @@
-function y = plot_firings(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,p,speinplate,STDP,debug)
+function y = plot_firingslong(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,p,speinplate,STDP,debug)
 % BABBLE_DASPNET_RESERVOIR Neural network model of the development of reduplicated canonical babbling in human infancy.
 %
 %   Modification of Izhikevich's (2007 Cerebral Cortex) daspnet.m and of a previous model described in Warlaumont (2012, 2013 ICDL-EpiRob).
@@ -74,10 +74,10 @@ end
 
 
   mkdir([outdir,'/p=',num2str(p),'_',yoke,'_',STDP]);
-  
-  
-  
-  
+
+
+
+
 % Creating import names.
 i=5;
     importFilename=[setdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/babble_daspnet_reservoir_',id,'.mat'];
@@ -143,7 +143,7 @@ load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
   %  for i=1:Ninp
   %      delays_inp{i,1}=1:Nspe;
   % end
-    STDP_mot = zeros(Nout,1001+D); % out motor STDP matrix
+    STDP_mot = zeros(Nout,5001+D); % out motor STDP matrix
  %  STDP_spe = zeros(Nspe,1001+D); % spe inp STDP matrix
 
 
@@ -208,7 +208,7 @@ for sec=1:2 % T is the duration of the simulation in seconds.
     display(['Second ',num2str(sec),' of ',num2str(T)]);
 
 
-    
+
     %Initialize decaysmooth
     decaysmoothneg=zeros(1,1000);
     decaysmoothpos=zeros(1,1000);
@@ -220,7 +220,7 @@ datatime=1;
         I=13*(rand(N,1)-0.5);
         I_mot=13*(rand(Nmot,1)-0.5);
  %      I_spe=13*(rand(Nspe,1)-0.5);
- 
+
 
         fired = find(v>=30);                % Indices of fired neurons
         fired_out = find(v(Ninp+outInd)>=30);    %100~200
@@ -298,7 +298,7 @@ datatime=1;
    %        ind_inp = post_spe(speFirings(k,2),del_inp);%del_inp=1:Ninp ind_inp=
    %        I(ind_inp)=I(ind_inp)+2*sinp(speFirings(k,2), del_inp)';%'
    %        k=k-1;
-   
+
   %     end;
 
 
@@ -331,9 +331,9 @@ datatime=1;
 
     end
 
-    
 
-    
+
+
 
     % Make axis labels and titles for plots that are being kept.
     % ---- plot -------
@@ -344,7 +344,7 @@ datatime=1;
         plot(firings(:,1),firings(:,2),'.'); % Plot all the neurons'' spikes
         title('Reservoir Firings', 'fontweight','bold');
         axis([0 1000 0 N]);
- 
+
         set(hNeural, 'name', ['Synaptic Strengths for Second: ', num2str(sec)], 'numbertitle','off');
         subplot(2,1,2);
         imagesc(s)
@@ -355,7 +355,7 @@ datatime=1;
         ylabel('Neurons index', 'fontweight','bold');
         drawnow;
     end
-    
+
     if sec==2
         % Writing reservoir neuron firings for this second to a text file.     %recoring firings matrix
 
@@ -371,16 +371,16 @@ datatime=1;
     end
 
     % Preparing STDP and firings for the following 1000 ms.
-    STDP_mot(:,1:D+1)=STDP_mot(:,1001:1001+D);
+    STDP_mot(:,1:D+1)=STDP_mot(:,5001:5001+D);
 %    STDP_spe(:,1:D+1)=STDP_spe(:,1001:1001+D);
-    ind = find(firings(:,1) > 1001-D);
-    firings=[-D 0;firings(ind,1)-1000,firings(ind,2)];
-    ind_out = find(outFirings(:,1) > 1001-D);
-    outFirings=[-D 0;outFirings(ind_out,1)-1000,outFirings(ind_out,2)];
-    ind_mot = find(motFirings(:,1) > 1001-D);
-    motFirings=[-D 0;motFirings(ind_mot,1)-1000,motFirings(ind_mot,2)];%
-    ind_inp = find(inpFirings(:,1) > 1001-D);
-    inpFirings=[-D 0;inpFirings(ind_inp,1)-1000,inpFirings(ind_inp,2)];
+    ind = find(firings(:,1) > 5001-D);
+    firings=[-D 0;firings(ind,1)-5000,firings(ind,2)];
+    ind_out = find(outFirings(:,1) > 5001-D);
+    outFirings=[-D 0;outFirings(ind_out,1)-5000,outFirings(ind_out,2)];
+    ind_mot = find(motFirings(:,1) > 5001-D);
+    motFirings=[-D 0;motFirings(ind_mot,1)-5000,motFirings(ind_mot,2)];%
+    ind_inp = find(inpFirings(:,1) > 5001-D);
+    inpFirings=[-D 0;inpFirings(ind_inp,1)-5000,inpFirings(ind_inp,2)];
     feedbackhist=zeros(100,1);
  %   ind_spe = find(speFirings(:,1) > 1001-D);
  %   speFirings=[-D 0;speFirings(ind_spe,1)-1000,speFirings(ind_spe,2)];%
@@ -394,7 +394,5 @@ end
 
 
     y=firings;
-end 
+end
 %csvwrite([outdir,'/p=',num2str(p),'_',yoked,'_',stdp,'/',num2str(i),'_p=',num2str(p),'_',yoked,'_',stdp,'.csv'],y);
-
- 
