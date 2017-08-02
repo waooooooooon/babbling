@@ -18,8 +18,8 @@ for i=1:1000
     
 end
 
-outFirings=Firings(200:300,:);  %
-outFirings=outFirings.'; %invert to caliculate pca
+outFirings=Firings(201:300,:);  %
+FoutFirings=outFirings.'; %invert to caliculate pca
 
 %Firings=Firings.';
 
@@ -45,7 +45,7 @@ end
 y=min(find(ruiseki>0.8));
 %PCA3d = figure(103);
 fig103=plot3(SCORE(:,1),SCORE(:,2),SCORE(:,3));
-saveas(fig103,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/d=',num2str(k),'p=',num2str(p),'_',yoke,'_',STDP,'.png']);
+saveas(fig103,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/OutN_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'.png']);
 
 
 %size(kiyo)

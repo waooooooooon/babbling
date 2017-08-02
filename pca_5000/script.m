@@ -1,10 +1,10 @@
 %initialization
-d=1;    %Iterate number of simulation
-yoked=['NY'];   %Yoked or NY
+d=5;    %Iterate number of simulation
+yoked=['Yoked'];   %Yoked or NY
 stdp=['STDP'];
 id=['170222'];
 feedbacktime=1;
-iterate=2;
+iterate=2000;
 speinplate=0.5;
 debug=1;
 
