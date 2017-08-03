@@ -6,9 +6,9 @@ y=0;
 
 firings=importdata(id);
 
-Firings=zeros(1000,1000);
+Firings=zeros(1000,5000);
 
-for i=1:1000
+for i=1:5000
   
     I=firings(find(firings(:,2)==i),3); %t=iに発火したニューロンidをIに
     C=size(I);  %Iのサイズ

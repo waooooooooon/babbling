@@ -6,9 +6,9 @@ y=0;
 
 firings=importdata(id);
 
-Firings=zeros(100,1000);
+Firings=zeros(1000,5000);
 
-for i=1:1000
+for i=1:5000
   
     I=firings(find(firings(:,2)==i),3); %t=iに発火したニューロンidをIに
     C=size(I);  %Iのサイズ
@@ -19,7 +19,7 @@ for i=1:1000
 end
 
 outFirings=Firings(201:300,:);  %
-FoutFirings=outFirings.'; %invert to caliculate pca
+outFirings=outFirings.'; %invert to caliculate pca
 
 %Firings=Firings.';
 
