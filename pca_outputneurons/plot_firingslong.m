@@ -59,7 +59,7 @@ SAVINTV=100;
 LST_hist=[1:1000];
 muscle_number=0;
 
-setdir = ['setting'];
+setdir = ['../setting'];
 
 if ~exist(setdir, 'dir')
     mkdir(setdir);
