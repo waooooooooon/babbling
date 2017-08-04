@@ -30,8 +30,8 @@ firings=importdata(id);
 Firings=zeros(1000,5000);
 for i=1:5000
   
-    I=firings(find(firings(:,2)==i),3); %t=iに発火したニューロンidをIに
-    C=size(I);  %Iのサイズ
+    I=firings(find(firings(:,2)==i),3); %t=i???????????j???[????id??I??
+    C=size(I);  %I???T?C?Y
     for j=1:C(1,1)
     Firings(I(j,1),i)=1;
     end
@@ -73,6 +73,7 @@ y = sfa_execute(hdl, Firings);
 subplot(1,3,2); 
 fig101=plot(y(:,1));
 xlim([0 5000])
+ylim([-15 15])
 %set(gca, 'Xlim', [0,2*pi], 'PlotBoxAspectRatio', [1,1,1])
 title('output of the slowest varying function');
 xlabel('t'); ylabel('y_1(t)');

@@ -59,15 +59,15 @@ SAVINTV=100;
 LST_hist=[1:1000];
 muscle_number=0;
 
-setdir = ['../setting'];
+setdir = ['setting'];
 
 if ~exist(setdir, 'dir')
-    mkdir(setdir);
+    %mkdir(setdir);
 else
     addpath(setdir);
 end
 
-outdir=['firing_data'];
+outdir=['../firing_data'];
 if ~exist(outdir,'dir')
  mkdir(outdir);
 end
@@ -343,7 +343,7 @@ datatime=1;
         subplot(2,1,1)
         plot(firings(:,1),firings(:,2),'.'); % Plot all the neurons'' spikes
         title('Reservoir Firings', 'fontweight','bold');
-        axis([0 1000 0 N]);
+        axis([0 5000 0 N]);
 
         set(hNeural, 'name', ['Synaptic Strengths for Second: ', num2str(sec)], 'numbertitle','off');
         subplot(2,1,2);
