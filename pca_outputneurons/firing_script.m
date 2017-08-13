@@ -216,6 +216,9 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+!mkdir output/png
+!find ./output/ -maxdepth 4 -name '*.png' | xargs -J % cp % ./output/png/
+
 
 
 
