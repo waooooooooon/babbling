@@ -1,5 +1,5 @@
-function [y,ruiseki,kiyo]= dimention(id)
-global k yoke STDP outdir p dim 
+function [y,ruiseki,kiyo,transfer_score]= dimention(id)
+global k yoke STDP outdir p dim simutime
 mkdir([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d']);
 y=0;
 
@@ -9,7 +9,7 @@ Firings=zeros(1000,5000);
 
 
 
-for i=1:5000
+for i=1:simutime
   
     I=firings(find(firings(:,2)==i),3); %t=i???????????j???[????id??I??
     C=size(I);  %I???T?C?Y
@@ -68,7 +68,7 @@ end
 y=min(find(ruiseki>0.8));
 %PCA3d = figure(103);
 fig103=plot3(SCORE(:,1),SCORE(:,2),SCORE(:,3));
-saveas(fig103,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/Ne_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'transferscore=',num2str(transfer_score),'.png']);
+saveas(fig103,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/Ne_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'transferscore=',num2str(transfer_score),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -76,17 +76,17 @@ saveas(fig103,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/Ne_p=',num2str(
 %%%%%%%%%%%%%%%%%%%%%%%%% plot transfer_history
 fig204=plot(transfer_history(1:size_score-1,1),transfer_history(1:size_score-1,2));
 ylim([0,2]);
-saveas(fig204,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/transferhis_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'transferscore=',num2str(transfer_score),'.png']);
+saveas(fig204,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/transferhis_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'transferscore=',num2str(transfer_score),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%% fft of transfer_history
-[f0,power0]= fft_script(transfer_history(1:size_score-1,2),0);
+[f,p1]= fft_script(transfer_history(1:size_score-1,2),0);
 
-fig203=plot(f0,power0);
+fig203=plot(f,p1);
 xlabel('Frequency');
 ylabel('Power');
-xlim([-1,1]);
-saveas(fig203,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/fft_of_transfer_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'transferscore=',num2str(transfer_score),'.png']);
+xlim([0,10]);
+saveas(fig203,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/fft_of_transfer_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'transferscore=',num2str(transfer_score),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%
 %size(kiyo)
 %sum(kiyo)
