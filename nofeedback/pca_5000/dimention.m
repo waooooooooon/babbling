@@ -19,12 +19,15 @@ for i=1:5000
 end
 
 NeFirings=Firings(1:800,:);  %NeFirings=NeFirings.'; %invert to caliculate pca
-
+NeFirings_conv=NeFirings.';  %invert NeFirings
 %Firings=Firings.';
 
 %Firings=zscore(Firings);
 
-[COEFF,SCORE,latent] = pca(NeFirings);   %conduct pca
+[COEFF,SCORE,latent] = pca(NeFirings_conv);   %conduct pca
+
+%NeFirings 800,5000  need to convert
+%pca(obserbed_data,variable)
 
 sizescore=size(SCORE);
 size_score=sizescore(1,1);    %initialization ofsize of SCORE
