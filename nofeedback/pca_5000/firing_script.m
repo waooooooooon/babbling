@@ -1,7 +1,7 @@
 %initialization
 global d k yoke STDP outdir p dim 
 
-
+!rm -r output
 
 d=5;    %Iterate number
 yoke=['NY'];   %Yoked or NY
