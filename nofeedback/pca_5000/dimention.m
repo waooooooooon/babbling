@@ -5,8 +5,9 @@ y=0;
 
 
 firings=importdata(id);
-
 Firings=zeros(1000,5000);
+
+
 
 for i=1:5000
   
@@ -33,6 +34,10 @@ sizescore=size(SCORE);
 size_score=sizescore(1,1);    %initialization ofsize of SCORE
 %transfer_score=zeros(size_score);
 transfer_score=0;   %initialization of transfer_score
+transfer_history=zeros(size_score,2);
+
+
+
 
 latentsize=size(latent);
 latent(950:latentsize(1,1),:)=[];
@@ -49,17 +54,30 @@ for i=1:size(kiyo)
     
 end
 
-y=min(find(ruiseki>0.8));
-%PCA3d = figure(103);
-fig103=plot3(SCORE(:,1),SCORE(:,2),SCORE(:,3));
 
 
 for i=1:(size_score-1)     %caliculate transfer_score
+    temp_score=((SCORE(i,1)-SCORE(i+1,1))^2+(SCORE(i,2)-SCORE(i+1,2))^2+(SCORE(i,3)-SCORE(i+1,3))^2)^0.5;
+    transfer_score = transfer_score + temp_score;
+    transfer_history(i,1)=i; transfer_history(i,2)=temp_score;
     
-    transfer_score = transfer_score + ((SCORE(i,1)-SCORE(i+1,1))^2+(SCORE(i,2)-SCORE(i+1,2))^2+(SCORE(i,3)-SCORE(i+1,3))^2)^0.5;
 end
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%     plot pca
+y=min(find(ruiseki>0.8));
+%PCA3d = figure(103);
+fig103=plot3(SCORE(:,1),SCORE(:,2),SCORE(:,3));
 saveas(fig103,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/Ne_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'transferscore=',num2str(transfer_score),'.png']);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%% plot transfer_history
+fig204=plot(transfer_history(1:size_score-1,1),transfer_history(1:size_score-1,2));
+ylim([0,2]);
+saveas(fig204,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/transferhis_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'transferscore=',num2str(transfer_score),'.png']);
+%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %size(kiyo)
