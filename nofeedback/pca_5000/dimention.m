@@ -5,7 +5,7 @@ y=0;
 
 
 firings=importdata(id);
-Firings=zeros(1000,5000);
+Firings=zeros(1000,simutime);
 
 
 
