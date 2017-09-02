@@ -58,6 +58,7 @@ tau=20;                   %decay parameter
 SAVINTV=100;
 LST_hist=[1:1000];
 muscle_number=0;
+simutime=10000;           %simulation?time
 
 setdir = ['../../setting'];
 
@@ -205,7 +206,7 @@ datahistsize=((1000-muscsmooth)/feedbacktime);
 for sec=1:2 % T is the duration of the simulation in seconds.
 
     display('********************************************');
-    display(['Second ',num2str(sec),' of ',num2str(T)]);
+    display(['Second ',num2str(sec),' of ',num2str(simutime)]);
 
 
 
@@ -214,7 +215,7 @@ for sec=1:2 % T is the duration of the simulation in seconds.
     decaysmoothpos=zeros(1,1000);
 datatime=1;
 
-    for t=1:5000                         % Millisecond timesteps
+    for t=1:simutime                         % Millisecond timesteps
 
         %Random Thalamic Input.
         I=13*(rand(N,1)-0.5);
@@ -343,7 +344,7 @@ datatime=1;
         subplot(2,1,1)
         plot(firings(:,1),firings(:,2),'.'); % Plot all the neurons'' spikes
         title('Reservoir Firings', 'fontweight','bold');
-        axis([0 5000 0 N]);
+        axis([0 simutime 0 N]);
 
         set(hNeural, 'name', ['Synaptic Strengths for Second: ', num2str(sec)], 'numbertitle','off');
         subplot(2,1,2);
@@ -359,7 +360,7 @@ datatime=1;
     if sec==2
         % Writing reservoir neuron firings for this second to a text file.     %recoring firings matrix
 
-            firings_fid = fopen([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',id,'_.txt'],'w');
+            firings_fid = fopen([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',id,'_',num2str(simutime),'.txt'],'w');
 
         for firingsrow = 1:size(firings,1)
             fprintf(firings_fid,'%i\t',sec);
@@ -371,16 +372,16 @@ datatime=1;
     end
 
     % Preparing STDP and firings for the following 1000 ms.
-    STDP_mot(:,1:D+1)=STDP_mot(:,5001:5001+D);
+    STDP_mot(:,1:D+1)=STDP_mot(:,simutime+1:simutime+1+D);
 %    STDP_spe(:,1:D+1)=STDP_spe(:,1001:1001+D);
-    ind = find(firings(:,1) > 5001-D);
-    firings=[-D 0;firings(ind,1)-5000,firings(ind,2)];
-    ind_out = find(outFirings(:,1) > 5001-D);
-    outFirings=[-D 0;outFirings(ind_out,1)-5000,outFirings(ind_out,2)];
-    ind_mot = find(motFirings(:,1) > 5001-D);
-    motFirings=[-D 0;motFirings(ind_mot,1)-5000,motFirings(ind_mot,2)];%
-    ind_inp = find(inpFirings(:,1) > 5001-D);
-    inpFirings=[-D 0;inpFirings(ind_inp,1)-5000,inpFirings(ind_inp,2)];
+    ind = find(firings(:,1) > simutime+1-D);
+    firings=[-D 0;firings(ind,1)-simutime,firings(ind,2)];
+    ind_out = find(outFirings(:,1) > simutime+1-D);
+    outFirings=[-D 0;outFirings(ind_out,1)-simutime,outFirings(ind_out,2)];
+    ind_mot = find(motFirings(:,1) > simutime+1-D);
+    motFirings=[-D 0;motFirings(ind_mot,1)-simutime,motFirings(ind_mot,2)];%
+    ind_inp = find(inpFirings(:,1) > simutime+1-D);
+    inpFirings=[-D 0;inpFirings(ind_inp,1)-simutime,inpFirings(ind_inp,2)];
     feedbackhist=zeros(100,1);
  %   ind_spe = find(speFirings(:,1) > 1001-D);
  %   speFirings=[-D 0;speFirings(ind_spe,1)-1000,speFirings(ind_spe,2)];%
