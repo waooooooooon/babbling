@@ -79,7 +79,15 @@ ylim([0,2]);
 saveas(fig204,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/transferhis_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'transferscore=',num2str(transfer_score),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%% fft of transfer_history
+[f0,power0]= fft_script(transfer_history(1:size_score-1,2),0);
 
+fig203=plot(f0,power0);
+xlabel('Frequency');
+ylabel('Power');
+xlim([-1,1]);
+saveas(fig203,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/fft_of_transfer_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'transferscore=',num2str(transfer_score),'.png']);
+%%%%%%%%%%%%%%%%%%%%%%%%
 %size(kiyo)
 %sum(kiyo)
 
