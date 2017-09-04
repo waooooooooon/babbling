@@ -281,7 +281,7 @@ end
 
 %%%%%%%%%%%%%%%% write transfer.csv
 transfer=[transfer1,transfer2,transfer3,transfer4];
-csvwrite([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/transfer_onfeedback_p=',num2str(p),'.csv'],transfer);
+csvwrite([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/transfer_onfeedback_Out_p=',num2str(p),'.csv'],transfer);
 %%%%%%%%%%%%%%%%
 
 !mkdir output/png
