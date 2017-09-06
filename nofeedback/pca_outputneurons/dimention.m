@@ -1,4 +1,4 @@
-function [y,ruiseki,kiyo]= dimention(id)
+function [trans,y,ruiseki,kiyo]= dimention(id)
 global k yoke STDP outdir p dim 
 mkdir([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d']);
 y=0;
@@ -58,7 +58,9 @@ for i=1:(size_score-1)     %caliculate transfer_score
     transfer_score = transfer_score + ((SCORE(i,1)-SCORE(i+1,1))^2+(SCORE(i,2)-SCORE(i+1,2))^2+(SCORE(i,3)-SCORE(i+1,3))^2)^0.5;
 end
 
-saveas(fig103,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/Ne_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'transferscore=',num2str(transfer_score),'.png']);
+trans=transfer_score;
+
+saveas(fig103,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/Out_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'transferscore=',num2str(transfer_score),'.png']);
 
 %size(kiyo)
 %sum(kiyo)
