@@ -42,10 +42,10 @@ Firings=Firings.'; %invert to caliculate
 
 % plot the input signal
 
-subplot(1,3,1)
-plot(firings(:,2),firings(:,3),'.'); % Plot all the neurons'' spikes
-title('Reservoir Firings', 'fontweight','bold');
-axis([0 5000 0 1000]);
+%subplot(1,3,1)
+%plot(firings(:,2),firings(:,3),'.'); % Plot all the neurons'' spikes
+%title('Reservoir Firings', 'fontweight','bold');
+%axis([0 5000 0 1000]);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -70,9 +70,9 @@ y = sfa_execute(hdl, Firings);
 % [y, hdl] = sfa2(x);
 
 % plot the output of the slowest varying function
-subplot(1,3,2); 
+%subplot(1,3,2); 
 fig101=plot(y(:,1));
-xlim([0 5000])
+xlim([0 1000])
 ylim([-15 15])
 %set(gca, 'Xlim', [0,2*pi], 'PlotBoxAspectRatio', [1,1,1])
 title('output of the slowest varying function');

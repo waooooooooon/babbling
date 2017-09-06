@@ -1,4 +1,6 @@
 %initialization
+!rm -r ../firing_data
+
 d=5;    %Iterate number of simulation
 yoked=['NY'];   %Yoked or NY
 stdp=['STDP'];
