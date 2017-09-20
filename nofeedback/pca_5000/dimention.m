@@ -1,4 +1,4 @@
-function [y,ruiseki,kiyo,transfer_score]= dimention(id)
+function [y,ruiseki,kiyo,transfer_score]= dimention(id,object)
 global k yoke STDP outdir p dim simutime
 mkdir([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d']);
 y=0;
@@ -34,8 +34,9 @@ sizescore=size(SCORE);
 size_score=sizescore(1,1);    %initialization ofsize of SCORE
 %transfer_score=zeros(size_score);
 transfer_score=0;   %initialization of transfer_score
+transfer_score_A=0;   %initialization of transfer_score_A
 transfer_history=zeros(size_score,2);
-
+transfer_history_A=zeros(size_score,2);
 
 
 
@@ -55,13 +56,25 @@ for i=1:size(kiyo)
 end
 
 
-
-for i=1:(size_score-1)     %caliculate transfer_score
+%%%%%%%%%%%%%%%%%   %caliculate transfer_score in the principal component space
+for i=1:(size_score-1)  
     temp_score=((SCORE(i,1)-SCORE(i+1,1))^2+(SCORE(i,2)-SCORE(i+1,2))^2+(SCORE(i,3)-SCORE(i+1,3))^2)^0.5;
     transfer_score = transfer_score + temp_score;
     transfer_history(i,1)=i; transfer_history(i,2)=temp_score;
     
 end
+%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%   %caliculate transfer_score of firings  
+for i=1:simutime-1 
+    temp_score_A=((NeFirings(:,i)-NeFirings(:,i+1))'*(NeFirings(:,i)-NeFirings(:,i+1)))^0.5;
+    transfer_score_A = transfer_score_A + temp_score_A;
+    transfer_history_A(i,1)=i; transfer_history_A(i,2)=temp_score_A;
+    
+end
+%%%%%%%%%%%%%%%%%
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%     plot pca
@@ -79,6 +92,13 @@ ylim([0,2]);
 saveas(fig204,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/transferhis_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'transferscore=',num2str(transfer_score),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%% plot transfer_history_A
+fig205=plot(transfer_history_A(1:simutime-1,1),transfer_history_A(1:simutime-1,2));
+ylim([0,5]);
+saveas(fig205,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/Eucliddistancd_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'transferscore=',num2str(transfer_score),'.png']);
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%% fft of transfer_history
 [f,p1]= fft_script(transfer_history(1:size_score-1,2),0);
 
@@ -87,6 +107,17 @@ xlabel('Frequency');
 ylabel('Power');
 xlim([0,10]);
 saveas(fig203,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/fft_of_transfer_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'transferscore=',num2str(transfer_score),'.png']);
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%% fft of transfer_history_A
+[f,p1]= fft_script(transfer_history_A(1:simutime-1,2),0);
+
+fig201=plot(f,p1);
+xlabel('Frequency');
+ylabel('Power');
+xlim([0,10]);
+saveas(fig201,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/fft_of_transfer_p_A=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'transferscore=',num2str(transfer_score),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%
 %size(kiyo)
 %sum(kiyo)
