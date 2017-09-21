@@ -50,7 +50,7 @@ salthresh = 4.5;            % Initial salience value for reward (used in 'relhis
 DAinc = 1;                  % Amount of dopamine given during reward.
 sm = 4;                     % Maximum synaptic weight.
 smr=4;                     % Maximum synaptic weight for reservoir
-testint = 1;                % Number of seconds between vocalizations.
+testint = 2;                % Number of seconds between vocalizations.
 fftsize=2048;             %fft????????????????????????????????????
 lpcsize=8;                %LPC size
 inpInd=outInd;
@@ -211,8 +211,8 @@ for sec=1:2 % T is the duration of the simulation in seconds.
 
 
     %Initialize decaysmooth
-    decaysmoothneg=zeros(1,1000);
-    decaysmoothpos=zeros(1,1000);
+    decaysmoothneg=zeros(1,simutime);
+    decaysmoothpos=zeros(1,simutime);
 datatime=1;
 
     for t=1:simutime                         % Millisecond timesteps
@@ -330,7 +330,43 @@ datatime=1;
                 % Exponential decay of the dopamine concentration over time.
         DA=DA*0.995;
 
+ 
+            if (mod(sec,testint)==0)
+
+            firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
+            firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
+            summusc1posspikes(t)=size(firedmusc1pos,1); % Sum the spikes at each timestep across the set of motor neurons.
+            summusc1negspikes(t)=size(firedmusc1neg,1);
+
+            %create decaysmoothmusc
+            %muscsmooth is 100
+            if(t>muscsmooth)
+                for i=1:muscsmooth
+                    decaysmoothneg(t)=decaysmoothneg(t)+summusc1negspikes(t-muscsmooth+i)*(1-exp(-i/tau));
+                    decaysmoothpos(t)=decaysmoothpos(t)+summusc1posspikes(t-muscsmooth+i)*(1-exp(-i/tau));
+                end
+                decaysmoothneg(t)=decaysmoothneg(t)/(muscsmooth*(1-tau/100));
+                decaysmoothpos(t)=decaysmoothpos(t)/(muscsmooth*(1-tau/100));
+
+              smoothmusc(t)=muscscale*(decaysmoothpos(t)-decaysmoothneg(t));  %positive-negative
+              if smoothmusc(t)>1
+                  smoothmusc(t)=1;
+              elseif smoothmusc(t)<-0.9999
+                  smoothmusc(t)=-0.9999;
+              end
+
+
+              muscle_number=round((smoothmusc(t)+1)*10000);
+
+
+
+            end
+            
+            end
+            
+
     end
+    
 
 
 
@@ -368,6 +404,19 @@ datatime=1;
             fprintf(firings_fid,'\n');
         end
         fclose(firings_fid);
+        
+        
+             motorcommand = fopen([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/motorcommand_p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',id,'_',num2str(simutime),'.txt'],'w');
+
+        size_musc = size(smoothmusc);
+        for i = 1:size_musc(1,2)
+            fprintf(firings_fid,'%i\t',i);
+            fprintf(firings_fid,'%i\t%i',smoothmusc(i));
+            fprintf(firings_fid,'\n');
+        end
+        fclose(firings_fid);       
+        
+        
 
     end
 
