@@ -463,6 +463,18 @@ if plotOn
             fprintf(firings_fid,'\n');
         end
         fclose(firings_fid);
+        
+        
+        motorcommand = fopen([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/motorcommand_p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',id,'_',num2str(simutime),'.txt'],'w');
+
+        size_musc = size(smoothmusc);
+        for i = 1:size_musc(1,2)
+            fprintf(firings_fid,'%i\t',i);
+            fprintf(firings_fid,'%i\t%i',smoothmusc(i));
+            fprintf(firings_fid,'\n');
+        end
+        fclose(motorcommand);       
+        
 
     end
 

@@ -414,7 +414,7 @@ datatime=1;
             fprintf(firings_fid,'%i\t%i',smoothmusc(i));
             fprintf(firings_fid,'\n');
         end
-        fclose(firings_fid);       
+        fclose(motorcommand);       
         
         
 

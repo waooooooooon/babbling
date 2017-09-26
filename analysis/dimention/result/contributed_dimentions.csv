@@ -1,5 +1,5 @@
 Name,Nomal_NSTDP,Scramble_NSTDP,Nomal_STDP,Scramble_STDP
-All.Ex.Nofeedback,538,539,540.2,539.8
-All.Ex.Onfeedback,463,445.4,483,474
-Out.Ex.Nofeedback,72.4,72.8,72.8,72.8
-Out.Ex.Onfeedback,73,72.6,73,72.8
+All.Ex.Nofeedback,538.4,538,541.2,540.2
+All.Ex.Onfeedback,461.8,446.4,481.8,475.4
+Out.Ex.Nofeedback,72.2,72.2,73,72.8
+Out.Ex.Onfeedback,72.4,72.4,72,73

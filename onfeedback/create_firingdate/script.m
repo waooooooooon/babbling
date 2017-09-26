@@ -11,6 +11,7 @@ feedbacktime=1;
 iterate=2000;     %network iterate number (usually 2000)
 speinplate=0.5;
 debug=1;
+plot = 0;    %whether or not plot
 simutime=10000;  %simutime of plotfiringslong
 
 
@@ -30,9 +31,9 @@ for p=[0.05]
 
    for i=1:d
         %conduct babbling
-           display(['firing_data/','p=',num2str(p),'_',yoked,'_',stdp,'/babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',num2str(simutime),'.txt']);
+           display(['firing_data/','p=',num2str(p),'_',yoked,'_',stdp,'/babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_',num2str(plot),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',num2str(simutime),'.txt']);
 
-           y=plot_firingslong_feedback([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug);
+           y=plot_firingslong_feedback([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp],iterate,'reinforce',1:100,4,yoked,plot,feedbacktime,p,speinplate,stdp,debug);
 
            %csvwrite([outdir,'/p=',num2str(p),'_',yoked,'_',stdp,'/',num2str(i),'_p=',num2str(p),'_',yoked,'_',stdp,'.csv'],y);
    end
@@ -53,9 +54,9 @@ for p=[0.05]
 
    for i=1:d
         %conduct babbling
-           display(['firing_data/','p=',num2str(p),'_',yoked,'_',stdp,'/babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',num2str(simutime),'.txt']);
+           display(['firing_data/','p=',num2str(p),'_',yoked,'_',stdp,'/babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_',num2str(plot),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',num2str(simutime),'.txt']);
 
-           y=plot_firingslong_feedback([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug);
+           y=plot_firingslong_feedback([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp],iterate,'reinforce',1:100,4,yoked,plot,feedbacktime,p,speinplate,stdp,debug);
 
            %csvwrite([outdir,'/p=',num2str(p),'_',yoked,'_',stdp,'/',num2str(i),'_p=',num2str(p),'_',yoked,'_',stdp,'.csv'],y);
    end
@@ -76,9 +77,9 @@ for p=[0.05]
 
    for i=1:d
         %conduct babbling
-           display(['firing_data/','p=',num2str(p),'_',yoked,'_',stdp,'/babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',num2str(simutime),'.txt']);
+           display(['firing_data/','p=',num2str(p),'_',yoked,'_',stdp,'/babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_',num2str(plot),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',num2str(simutime),'.txt']);
 
-           y=plot_firingslong_feedback([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug);
+           y=plot_firingslong_feedback([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp],iterate,'reinforce',1:100,4,yoked,plot,feedbacktime,p,speinplate,stdp,debug);
 
            %csvwrite([outdir,'/p=',num2str(p),'_',yoked,'_',stdp,'/',num2str(i),'_p=',num2str(p),'_',yoked,'_',stdp,'.csv'],y);
    end
@@ -99,9 +100,9 @@ for p=[0.05]
 
    for i=1:d
         %conduct babbling
-           display(['firing_data/','p=',num2str(p),'_',yoked,'_',stdp,'/babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',num2str(simutime),'.txt']);
+           display(['firing_data/','p=',num2str(p),'_',yoked,'_',stdp,'/babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_',num2str(plot),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',num2str(simutime),'.txt']);
 
-           y=plot_firingslong_feedback([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug);
+           y=plot_firingslong_feedback([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp],iterate,'reinforce',1:100,4,yoked,plot,feedbacktime,p,speinplate,stdp,debug);
 
            %csvwrite([outdir,'/p=',num2str(p),'_',yoked,'_',stdp,'/',num2str(i),'_p=',num2str(p),'_',yoked,'_',stdp,'.csv'],y);
    end
