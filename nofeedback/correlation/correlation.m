@@ -1,4 +1,4 @@
-function correlation(commandid,firingid)
+function [highcor] = correlation(commandid,firingid)
 global k yoke STDP outdir p dim simutime
 mkdir([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/correlation']);
 
@@ -73,8 +73,6 @@ avemot(1:(simutime-windowSize/2+1))=average_motor(windowSize/2:simutime);
 %%%%%%%%%%%%%
 
 
-plot(1:10000,[motorcommand(:,2) avemot]);
-xlim([0 1000]);
 
 %%%%%%%%%%%%% arrange data
 sabun = diff(avemot);
@@ -99,9 +97,7 @@ for i=1:lengthdata(1,1)
 end
 
 
-
-
-histogram(history)  
+highcor = find(history(:,1)>0.0016);
 
 %%%%%%%%%%%%%%%%%%%%%%%%% plot histogram
 fig555=histogram(history);
@@ -109,7 +105,7 @@ fig555.NumBins = 30;
 fig555.BinEdges = [0:0.0002:0.003];
 fig555.FaceColor = 'k';
 fig555.EdgeColor = 'k';
-axis([0 0.003 0 200]);
+axis([0 0.003 0 400]);
 set(gca,'FontSize',16);
 ytickformat('%.2f');
 saveas(fig555,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/correlation/correlation_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'.png']);
