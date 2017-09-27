@@ -1,19 +1,14 @@
-function [y,ruiseki,kiyo,transfer_score,Firings]= dimention(id)
+function [y,ruiseki,kiyo,transfer_score]= dimention(id)
 global k yoke STDP outdir p dim simutime
 mkdir([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d']);
 y=0;
 
 
-
-
-%%%%%%%%%%%%%% import firings
 firings=importdata(id);
 Firings=zeros(1000,simutime);
 
 
 
-
-%%%%%%%%%%%%%%caliculate the Firings
 for i=1:simutime
   
     I=firings(find(firings(:,2)==i),3); %t=i???????????j???[????id??I??
@@ -30,20 +25,11 @@ NeFirings_conv=NeFirings.';  %invert NeFirings
 
 %Firings=zscore(Firings);
 
-
-
-
-
-
-%%%%%%%%%%%%%caliculate the PCA
 [COEFF,SCORE,latent] = pca(NeFirings_conv);   %conduct pca
 
 %NeFirings 800,5000  need to convert
 %pca(obserbed_data,variable)
 
-
-
-% initialization of transfer score
 sizescore=size(SCORE);
 size_score=sizescore(1,1);    %initialization ofsize of SCORE
 %transfer_score=zeros(size_score);
@@ -53,7 +39,7 @@ transfer_history=zeros(size_score,2);
 transfer_history_A=zeros(size_score,2);
 
 
-%%%%%%%%%%%%%%%%% initialization and caliculate the contribution rate of pca
+
 latentsize=size(latent);
 latent(950:latentsize(1,1),:)=[];
 kiyo=latent/sum(latent);
@@ -71,19 +57,12 @@ end
 
 
 
-
-
-
-
-%%%%%%%%%%%%%%%%%   %caliculate transfer_score in the principal component space
-for i=1:(size_score-1)  
+for i=1:(size_score-1)     %caliculate transfer_score
     temp_score=((SCORE(i,1)-SCORE(i+1,1))^2+(SCORE(i,2)-SCORE(i+1,2))^2+(SCORE(i,3)-SCORE(i+1,3))^2)^0.5;
     transfer_score = transfer_score + temp_score;
     transfer_history(i,1)=i; transfer_history(i,2)=temp_score;
     
 end
-%%%%%%%%%%%%%%%%%
-
 
 %%%%%%%%%%%%%%%%%   %caliculate transfer_score of firings  
 for i=1:simutime-1 
@@ -93,7 +72,6 @@ for i=1:simutime-1
     
 end
 %%%%%%%%%%%%%%%%%
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%     plot pca
@@ -138,6 +116,9 @@ ylabel('Power');
 xlim([0,10]);
 saveas(fig201,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/fft_of_transfer_p_A=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'transferscore=',num2str(transfer_score),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 %size(kiyo)
 %sum(kiyo)
 
