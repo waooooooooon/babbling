@@ -1,4 +1,4 @@
-function y = plot_firingslong_feedback(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,p,speinplate,STDP,debug)
+function y = plot_firingslong_feedback(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,p,speinplate,STDP,debug,simutime)
 % BABBLE_DASPNET_RESERVOIR Neural network model of the development of reduplicated canonical babbling in human infancy.
 %
 %   Modification of Izhikevich's (2007 Cerebral Cortex) daspnet.m and of a previous model described in Warlaumont (2012, 2013 ICDL-EpiRob).
@@ -95,8 +95,15 @@ addpath('auditorysaliencymodel');
 
 %Import initial value
 table=importdata([setdir,'/table.csv']);
-load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
+load(importFilename,'s','sout','post','post_mot','pre','aux');
 
+if strcmp(STDP,'NSTDP')
+    sout = importdata([setdir,'/sout.txt']);
+end
+
+%import random inputs
+I_input=importdata([setdir,'/I.txt']);
+Imot_input=importdata([setdir,'/Imot_randominput.txt']);
 
 
 
@@ -222,8 +229,8 @@ datatime=1;
     for t=1:simutime                         % Millisecond timesteps
 
         %Random Thalamic Input.
-        I=13*(rand(N,1)-0.5);
-        I_mot=13*(rand(Nmot,1)-0.5);
+        I=I_input(:,t);
+        I_mot=Imot_input(:,t);
  %      I_spe=13*(rand(Nspe,1)-0.5);
  
         %%%%%%%%%%%%%%%%%%%%%   feedback every time

@@ -1,4 +1,4 @@
-function correlation(commandid,firingid)
+function [highave] = correlation(commandid,firingid)
 global k yoke STDP outdir p dim simutime
 mkdir([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/correlation']);
 
@@ -41,7 +41,7 @@ lengthdata = size(Firings);   %length of data
 %%%%
 avemot=zeros(simutime,1);
 history=zeros(lengthdata(1,1),1);
-
+historycor=zeros(lengthdata(1,1),1);
 
 %%%consonant vector initializaton
 historyvec=zeros(1000,201);
@@ -73,50 +73,66 @@ avemot(1:(simutime-windowSize/2+1))=average_motor(windowSize/2:simutime);
 %%%%%%%%%%%%%
 
 
-plot(1:10000,[motorcommand(:,2) avemot]);
-xlim([0 1000]);
 
 %%%%%%%%%%%%% arrange data
 sabun = diff(avemot);
 sabun(find(sabun<0))=0;
 sabun(find(sabun>0))=1;
-%%%%%%%%%%%%%
-
 
 sabun1 = find(sabun==1);
 size1=size(sabun1);
 sabun0 = find(sabun==0);
 size0=size(sabun0);
+%%%%%%%%%%%%%
 
 
-
-
+%%%%%%%%%%%%% caliculate average firing rate
 for i=1:lengthdata(1,1)
     for a=1:size1(1,1)
     history(i,1)=history(i,1) + Firings(i,sabun1(a));    
     end
     history(i,1) = history(i,1)/size1(1,1);
 end
+highave = find(history(:,1)>0.0016);
+%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%% caliculate correration
+for i=1:lengthdata(1,1)
+    historycor(i,1) = corr2(Firings(i,:),motorcommand(:,2)');
+end
+highcor = find(historycor(:,1)>0.01);
+%%%%%%%%%%%%%
 
 
 
 
-histogram(history)  
-
-%%%%%%%%%%%%%%%%%%%%%%%%% plot histogram
+%%%%%%%%%%%%%%%%%%%%%%%%% plot histogram of firing rate
 fig555=histogram(history);
 fig555.NumBins = 30;
 fig555.BinEdges = [0:0.0002:0.003];
 fig555.FaceColor = 'k';
 fig555.EdgeColor = 'k';
-axis([0 0.003 0 200]);
+axis([0 0.003 0 400]);
 set(gca,'FontSize',16);
 ytickformat('%.2f');
-saveas(fig555,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/correlation/correlation_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'.png']);
+saveas(fig555,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/correlation/averagefiringrate_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'.png']);
+%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%% plot histogram of firing rate
+fig455=histogram(historycor);
+fig455.NumBins = 30;
+fig455.BinEdges = [-0.06:0.001:0.06];
+fig455.FaceColor = 'r';
+fig455.EdgeColor = 'r';
+axis([-0.06 0.06 0 150]);
+set(gca,'FontSize',16);
+ytickformat('%.2f');
+saveas(fig455,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/correlation/correlation_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'.png']);
 close all;
 %%%%%%%%%%%%%%%%%%%%%%%%%  
-    
-    
 
 
 

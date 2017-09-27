@@ -73,18 +73,21 @@ STDP=['NSTDP'];
 for p=[0.05]
 
   mkdir([outdir,'/p=',num2str(p),'_',yoke,'_',STDP]);
-   for k=1:d
+   %for k=1:d
         
         firingid = ['../firing_data/','p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',num2str(k),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoke,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',STDP,'_',num2str(simutime),'.txt'];
         motorid  = ['../firing_data/p=',num2str(p),'_',yoke,'_',STDP,'/motorcommand_p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',num2str(k),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoke,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',STDP,'_',num2str(simutime),'.txt'];
         display(['correlation_firing_data/','p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',num2str(k),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoke,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',STDP,'_',num2str(simutime),'.txt']);
         [highcor]=correlation(motorid,firingid); 
         highcor
-   end
+   %end
    
  close all
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%{   
+%because NSTDP create same result
 
 yoke=['Yoked'];   %Yoked or NY
 STDP=['NSTDP'];
@@ -107,6 +110,6 @@ for p=[0.05]
  close all
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%}
 !mkdir output/png
 !find ./output/ -maxdepth 4 -name '*.png' | xargs -J % cp % ./output/png/
