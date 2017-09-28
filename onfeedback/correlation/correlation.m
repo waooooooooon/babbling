@@ -1,4 +1,4 @@
-function [highave] = correlation(commandid,firingid)
+function [historycor] = correlation(commandid,firingid)
 global k yoke STDP outdir p dim simutime
 mkdir([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/correlation']);
 

@@ -102,7 +102,8 @@ saveas(fig205,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/Eucliddistancd_
 fig203=plot(f,p1);
 xlabel('Frequency');
 ylabel('Power');
-xlim([0,10]);
+xlim([0,200]);
+ylim([0 0.05]);
 saveas(fig203,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/fft_of_transfer_p=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'transferscore=',num2str(transfer_score),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -113,7 +114,8 @@ saveas(fig203,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/fft_of_transfer
 fig201=plot(f,p1);
 xlabel('Frequency');
 ylabel('Power');
-xlim([0,10]);
+xlim([0,200]);
+ylim([0 0.05]);
 saveas(fig201,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/PCA3d/fft_of_transfer_p_A=',num2str(p),'_',yoke,'_',STDP,'d=',num2str(k),'simutime=',num2str(simutime),'transferscore=',num2str(transfer_score),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%
 

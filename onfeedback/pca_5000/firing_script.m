@@ -3,7 +3,7 @@ global d k yoke STDP outdir p dim simutime
 
 !rm -r output
 
-d=5;    %Iterate number
+d=2;    %Iterate number
 yoke=['NY'];   %Yoked or NY
 STDP=['STDP'];
 id=['170222'];
@@ -11,7 +11,7 @@ feedbacktime=1;
 iterate=2000;     %iterate of created network
 speinplate=0.5;
 debug=1;
-simutime=10000;   %iterate of simulation when create plot
+simutime=100000;   %iterate of simulation when create plot
 
 %Create mean file
 outdir=['output'];
@@ -69,13 +69,12 @@ transfer1=[m2;s2;0;transfer1];
 
 
 
-ylim([0 1]);
-whitebg('white')
-fig1=plot(rui,'b');
-hold on
+%%whitebg('white')
+%fig1=plot(rui,'b');
+%hold on
 %fig1=bar(ki);
 
-saveas(fig1,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'.png']);
+%saveas(fig1,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'.png']);
 
 %clf('reset');
  clearvars y dim m s rui ki ruiseki kiyo;
@@ -135,13 +134,12 @@ transfer2=[m2;s2;0;transfer2];
 
 
 
-ylim([0 1]);
-whitebg('white')
-fig1=plot(rui,'b');
-hold on
+%%whitebg('white')
+%fig1=plot(rui,'b');
+%hold on
 %fig1=bar(ki);
 
-saveas(fig1,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'.png']);
+%saveas(fig1,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'.png']);
 
 %clf('reset');
  clearvars y dim m s rui ki ruiseki kiyo;
@@ -200,13 +198,13 @@ transfer3=[m2;s2;0;transfer3];
 
 
 
-ylim([0 1]);
-whitebg('white')
-fig1=plot(rui,'b');
-hold on
+%ylim([0 1]);
+%whitebg('white')
+%fig1=plot(rui,'b');
+%hold on
 %fig1=bar(ki);
 
-saveas(fig1,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'.png']);
+%saveas(fig1,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'.png']);
 
 %clf('reset');
  clearvars y dim m s rui ki ruiseki kiyo;
@@ -227,6 +225,7 @@ for p=[0.05]
   mean_ruiseki=[];
   mean_kiyo=[];
    for k=1:d
+
         %conduct babbling
            display(['firing_data/','p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',num2str(k),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoke,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',STDP,'_',num2str(simutime),'.txt']);
 
@@ -264,10 +263,10 @@ transfer4=[m2;s2;0;transfer4];
 
 
 
-ylim([0 1]);
-whitebg('white')
-fig1=plot(rui,'b');
-hold on
+%ylim([0 1]);
+%whitebg('white')
+%fig1=plot(rui,'b');
+%hold on
 %fig1=bar(ki);
 
 %saveas(fig1,[outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'.png']);
@@ -290,87 +289,6 @@ csvwrite([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/transfer_onfeedback_p=',nu
 !find ./output/ -maxdepth 4 -name '*.csv' | xargs -J % cp % ./output/csv/
 
 
-%{
-yoke=['Yoked'];   %Yoked or NY
-STDP=['STDP'];
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for p=[0.05]
 
-  mkdir([outdir,'/p=',num2str(p),'_',yoke,'_',STDP]);
-  dim=[];
-   for i=1:d
-        %conduct babbling
-           display(['firing_data/','p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoke,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',STDP,'_.txt']);
-
-           y=dimention(['firing_data/','p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoke,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',STDP,'_.txt']);
-
-           y
-           dim=[dim;y];
-   end
-
-
-m=mean(dim)
-s=std(dim)
-dim=[m;s;0;dim];
-csvwrite([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'.csv'],dim);
-
- clearvars y dim m s;
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-yoke=['NY'];   %Yoked or NY
-STDP=['NSTDP'];
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for p=[0.05]
-
-  mkdir([outdir,'/p=',num2str(p),'_',yoke,'_',STDP]);
-  dim=[];
-   for i=1:5
-        %conduct babbling
-            display(['firing_data/','p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoke,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',STDP,'_.txt']);
-
-           y=dimention(['firing_data/','p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoke,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',STDP,'_.txt']);
-
-           y
-           dim=[dim;y];
-   end
-
-
-m=mean(dim)
-s=std(dim)
-dim=[m;s;0;dim];
-csvwrite([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'.csv'],dim);
-
- clearvars y dim m s;
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-yoke=['Yoked'];   %Yoked or NY
-STDP=['NSTDP'];
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for p=[0.05]
-
-  mkdir([outdir,'/p=',num2str(p),'_',yoke,'_',STDP]);
-  dim=[];
-   for i=1:5
-        %conduct babbling
-           display(['firing_data/','p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoke,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',STDP,'_.txt']);
-
-           y=dimention(['firing_data/','p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'babble_daspnet_firings_',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoke,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',STDP,'_.txt']);
-
-           y
-           dim=[dim;y];
-   end
-
-
-m=mean(dim)
-s=std(dim)
-dim=[m;s;0;dim];
-csvwrite([outdir,'/p=',num2str(p),'_',yoke,'_',STDP,'/p=',num2str(p),'_',yoke,'_',STDP,'.csv'],dim);
-
- clearvars y dim m s;
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%}
 display('END');
 %plot FIg with R

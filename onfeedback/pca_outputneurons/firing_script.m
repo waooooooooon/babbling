@@ -3,7 +3,7 @@ global d k yoke STDP outdir p dim simutime
 
 !rm -r output
 
-d=5;    %Iterate number
+d=2;    %Iterate number
 yoke=['NY'];   %Yoked or NY
 STDP=['STDP'];
 id=['170222'];
@@ -11,7 +11,7 @@ feedbacktime=1;
 iterate=2000;     %iterate of created network
 speinplate=0.5;
 debug=1;
-simutime=10000;   %iterate of simulation when create plot
+simutime=100000;   %iterate of simulation when create plot
 
 %Create mean file
 outdir=['output'];
