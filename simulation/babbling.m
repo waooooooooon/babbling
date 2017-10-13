@@ -1,4 +1,4 @@
-function [] = babbling(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug)
+function [] = babbling(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP)
 % BABBLE_DASPNET_RESERVOIR Neural network model of the development of reduplicated canonical babbling in human infancy.
 %
 %   Modification of Izhikevich's (2007 Cerebral Cortex) daspnet.m and of a previous model described in Warlaumont (2012, 2013 ICDL-EpiRob).
@@ -31,7 +31,7 @@ function [] = babbling(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbackti
 %       feedbacktime % Determine frequency of feedback.
 %
 %   Example of Use:
-%       babbling('170123_1000_reinforce_100_4_NY_1_5_0.001_2_STDP',1000,'reinforce',1:100,4,'NY',1,5,0.001,2,'STDP',1);
+%       babbling('170123_1000_reinforce_100_4_NY_1_5_0.001_2_STDP',1000,'reinforce',1:100,4,'NY',1,5,0.001,2,'STDP',1,'IP_or_Tonic');
 %
 % Authors: Anne S. Warlaumont and Megan K. Finnegan
 % Cognitive and Information Sciences
@@ -58,6 +58,12 @@ tau=20;                   %decay parameter
 SAVINTV=100;
 LST_hist=[1:1000];
 muscle_number=0;
+TE.max = -2;             %for IP
+TI.max = 0;             %for IP
+etaIP = 0.001;          %for IP
+threshold = -70;          %for IP
+
+
 
 
 % Directory names for data.
@@ -108,9 +114,6 @@ end
 % Directory for Coath et. al. Saliency Detector.
 addpath('auditorysaliencymodel');
 
-if exist(workspaceFilename) > 0
-    load(workspaceFilename);
-else
 
 %Import initial value
 table=importdata([setdir,'/table.csv']);
@@ -181,6 +184,20 @@ load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
     end
 
 
+    if strcmp(IP,'IP')
+        HIP = 1/100  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
+        
+        TE.r = TE.max*(rand(Ne,1));
+        TI = TI.max*(rand(Ni,1));
+        TEI=[TE.r;TI]; 
+        
+        TE.m = TE.max*(rand(Nout,1));
+        
+        %%%%%%% SN
+        s(1:Ne,:) = s(1:Ne,:)/sum(sum(s(1:Ne,:)));
+        sout = sout/sum(sum(sout));
+    end
+    
     v = -65*ones(N,1);          % Membrane potentials.
     v_mot = -65*ones(Nmot,1);   %
  %  v_spe = -65*ones(Nspe,1);   %
@@ -213,7 +230,7 @@ load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
         temprewhist=zeros(1,10); % Keeps track of rewards given at a threshold value for up to 10 previous sounds.
 
 
-end
+
 
 T=newT;
 clearvars newT;
@@ -238,14 +255,19 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
     %Initialize decaysmooth
     decaysmoothneg=zeros(1,1000);
     decaysmoothpos=zeros(1,1000);
-datatime=1;
+    datatime=1;
 
     for t=1:1000                         % Millisecond timesteps
 
-        %Random Thalamic Input.
+        %Random Thalamic Input or No random input (IP)
+        if strcmp(IP,'Tonic')
         I=13*(rand(N,1)-0.5);
         I_mot=13*(rand(Nmot,1)-0.5);
- %      I_spe=13*(rand(Nspe,1)-0.5);
+        elseif strcmp(IP,'IP')
+        I=zeros(N,1);
+        I_mot=zeros(Nmot,1);
+        end
+        
         %%%%%%%%%%%%%%%%%%%%%   feedback every time
        if t-1>muscsmooth&mod(t-1,feedbacktime)==0
 
@@ -265,12 +287,29 @@ datatime=1;
         %%%%%%%%%%%%%%%%%%%%%
 
 
+        if strcmp(IP,'Tonic')
+            
+            fired = find(v>=30);                % Indices of fired neurons
+            fired_out = find(v(Ninp+outInd)>=30);    %100~200
+            fired_mot = find(v_mot>=30);        %motorneurons
+   %        fired_spe = find(v_spe>=30);
+            fired_inp = find(v(inpInd)>=30);
+        elseif strcmp(IP,'IP')
 
-        fired = find(v>=30);                % Indices of fired neurons
-        fired_out = find(v(Ninp+outInd)>=30);    %100~200
-        fired_mot = find(v_mot>=30);        %motorneurons
-   %    fired_spe = find(v_spe>=30);
-        fired_inp = find(v(inpInd)>=30);        %
+            fired = find((v-TEI)>=threshold);
+            fired_out = find((v(Ninp + outInd)-TEI(Ninp + outInd))>=threshold);
+            fired_inp = find((v(inpInd) - TEI(inpInd))>=threshold);
+            
+            fired_mot = find((v_mot-TE.m)>=threshold);
+            
+            
+            %%%%%%%%% SN
+            s(1:Ne,:) = s(1:Ne,:)/sum(sum(s(1:Ne,:)));
+            sout = sout/sum(sum(sout));
+            
+        end
+        
+        
 
 
         v(fired)=-65;                       % Reset the voltages for those neurons that fired
@@ -400,6 +439,16 @@ datatime=1;
     %       sd_spe=0.09*sd_spe;
 
         end;   %
+        
+        
+        % IP lerning
+        if strcmp(IP,'Tonic')
+            
+           TEI(1:Ne,1) = TEI(1:Ne,1) + etaIP*(fired(1:Ne,1) - HIP);  
+           TE.m = TE.m + etaIP*(fired_mot - HIP);
+         
+        end
+        
 
 
 

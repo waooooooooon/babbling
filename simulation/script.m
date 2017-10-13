@@ -3,6 +3,7 @@ d=5;    %Iterate number
 yoked=['NY'];   %Yoked or NY
 stdp=['STDP'];
 id=['170222'];
+IP =['IP'];
 feedbacktime=1;
 iterate=1000;
 speinplate=0.5;
@@ -23,9 +24,9 @@ for p=[0.07]
 
    for i=1:d
         %conduct babbling
-           display([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp]);
+           display([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,IP]);
 
-           babbling_170221([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug);
+           babbling([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug,IP);
 
            copyfile([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_Workspace/',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'.csv'],[meandir,'/p=',num2str(p),'/']);
    end
