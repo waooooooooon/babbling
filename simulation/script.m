@@ -18,7 +18,7 @@ mkdir([meandir,'/',meandir],'dir');
 
 %Babbling&mean caliculation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for p=[0.07]
+for p=[0.05]
 
   mkdir([meandir,'/p=',num2str(p)]);
 

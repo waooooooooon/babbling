@@ -1,0 +1,25 @@
+about IP lerning
+ TE.max = 10;             %for IP
+ TI.max = 10;             %for IP
+ etaIP = 0.001;           %for IP
+ TE.r = TE.max*rand(Ne,1);
+ TI = TI.max*rand(Ni,1);
+ TEI=[TE.r;TI];
+ TE.m = TE.max*rand(Nout,1);
+ HIP = 2*100/Ne;  %target firing rate (100 = numer of input neuron)
+
+ %find fired
+ fired = find((v-TEI)>=30);
+ fired_out = find((v(Ninp + outInd)-TEI(Ninp + outInd))>=30);
+ fired_inp = find((v(inpInd) - TEI(inpInd))>=30);
+ fired_mot = find((v_mot-TE.m)>=30);
+ 
+ %IP
+ TEI(1:Ne,1) = TEI(1:Ne,1) + etaIP*(fired(1:Ne,1) - HIP);
+ TE.m = TE.m + etaIP*(fired_mot - HIP);
+
+
+about SN
+
+
+

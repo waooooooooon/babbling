@@ -55,13 +55,17 @@ fftsize=2048;             %fft????????????????????????????????????
 lpcsize=8;                %LPC size
 inpInd=outInd;
 tau=20;                   %decay parameter
-SAVINTV=100;
+SAVINTV=1000;
 LST_hist=[1:1000];
 muscle_number=0;
-TE.max = -2;             %for IP
-TI.max = 0;             %for IP
-etaIP = 0.001;          %for IP
-threshold = -70;          %for IP
+
+if strcmp(IP,'IP')
+ TE.max = -10;             %for IP
+ TI.max = 0;             %for IP
+ etaIP = 0.001;          %for IP
+ threshold = -62;          %for IP
+ sumweight = 100;          %for IP
+end
 
 
 
@@ -194,8 +198,10 @@ load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
         TE.m = TE.max*(rand(Nout,1));
         
         %%%%%%% SN
-        s(1:Ne,:) = s(1:Ne,:)/sum(sum(s(1:Ne,:)));
-        sout = sout/sum(sum(sout));
+        sesum = sum(sum(s(1:Ne,:)));
+        smsum = sum(sum(sout));
+%        s = s/sum(sum(s));
+%        sout = sumweight*sout/sum(sum(sout));
     end
     
     v = -65*ones(N,1);          % Membrane potentials.
@@ -304,8 +310,10 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             
             
             %%%%%%%%% SN
-            s(1:Ne,:) = s(1:Ne,:)/sum(sum(s(1:Ne,:)));
-            sout = sout/sum(sum(sout));
+            s_i = s(801:1000,:);
+            s_e = sesum*s(1:Ne,:)/sum(sum(s(1:Ne,:)));
+            s = [s_e ; s_i];
+            sout = smsum*sout/sum(sum(sout));
             
         end
         
@@ -442,10 +450,17 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         
         
         % IP lerning
-        if strcmp(IP,'Tonic')
+        if strcmp(IP,'IP')
             
-           TEI(1:Ne,1) = TEI(1:Ne,1) + etaIP*(fired(1:Ne,1) - HIP);  
-           TE.m = TE.m + etaIP*(fired_mot - HIP);
+            fire_e = zeros(Ne,1);
+            fire_m = zeros(Nmot,1);
+            fire_e(fired) = 1;     %fired neuron of RSN
+            fire_m(fired_mot) = 1;
+            
+            TEI(1:Ne,1) = TEI(1:Ne,1) + etaIP*(fire_e(1:Ne,1) - HIP);   %IP
+            TE.m = TE.m + etaIP*(fire_m - HIP);  %IP
+            
+            sum(TEI)
          
         end
         
