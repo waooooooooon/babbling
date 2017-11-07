@@ -1,4 +1,4 @@
-function [] = babbling(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP)
+function [] = babbling(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP,separatephase)
 % BABBLE_DASPNET_RESERVOIR Neural network model of the development of reduplicated canonical babbling in human infancy.
 %
 %   Modification of Izhikevich's (2007 Cerebral Cortex) daspnet.m and of a previous model described in Warlaumont (2012, 2013 ICDL-EpiRob).
@@ -60,11 +60,12 @@ LST_hist=[1:1000];
 muscle_number=0;
 
 if strcmp(IP,'IP')
- TE.max = -10;             %for IP
- TI.max = 0;             %for IP
- etaIP = 0.001;          %for IP
- threshold = -62;          %for IP
- sumweight = 100;          %for IP
+ TE.max = -15;             %for IP
+ TI.max = -15;             %for IP
+ etaIP = 0.0001;          %for IP 0.01
+ threshold = -55.5;          %for IP  -55.1
+ sumweight =100;          %for IP
+ HIP = 1/200  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
 end
 
 
@@ -189,7 +190,6 @@ load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
 
 
     if strcmp(IP,'IP')
-        HIP = 1/100  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
         
         TE.r = TE.max*(rand(Ne,1));
         TI = TI.max*(rand(Ni,1));
@@ -247,6 +247,19 @@ praatPathmac = '/Applications/Praat.app/Contents/MacOS/Praat';
 
 datahistsize=((1000-muscsmooth)/feedbacktime);
 
+%if sparatephase, separate IP and STDP
+if strcmp(separatephase,'separatephase')
+for STDP = {'NSTDP','STDP'} 
+    if strcmp(STDP,'NSTDP')
+        IP = ['IP'];
+        yoke = ['Yoked'];
+    else
+        IP = ['NIP'];
+        yoke = ['NY'];
+    end
+%if sparatephase = 1, separate IP and STDP    
+
+
 %RUNNING THE SIMULATION%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -274,6 +287,11 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         I_mot=zeros(Nmot,1);
         end
         
+        %for ip test
+        I(1:Ninp)=13*(rand(Nmot,1)-0.5);
+        
+        %{
+        
         %%%%%%%%%%%%%%%%%%%%%   feedback every time
        if t-1>muscsmooth&mod(t-1,feedbacktime)==0
 
@@ -291,7 +309,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         end
 
         %%%%%%%%%%%%%%%%%%%%%
-
+%}
 
         if strcmp(IP,'Tonic')
             
@@ -307,6 +325,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             fired_inp = find((v(inpInd) - TEI(inpInd))>=threshold);
             
             fired_mot = find((v_mot-TE.m)>=threshold);
+            
             
             
             %%%%%%%%% SN
@@ -452,15 +471,19 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         % IP lerning
         if strcmp(IP,'IP')
             
-            fire_e = zeros(Ne,1);
+            fire_all = zeros(N,1);
             fire_m = zeros(Nmot,1);
-            fire_e(fired) = 1;     %fired neuron of RSN
+            fire_all(fired) = 1;     %fired neuron of RSN
             fire_m(fired_mot) = 1;
             
-            TEI(1:Ne,1) = TEI(1:Ne,1) + etaIP*(fire_e(1:Ne,1) - HIP);   %IP
+            %IP only excitatory neurons
+            TEI(1:Ne,1) = TEI(1:Ne,1) + etaIP*(fire_all(1:Ne,1) - HIP);
+            %IP all neurons
+            %TEI(:,1) = TEI(:,1) + etaIP*(fire_all(:,1) - HIP);
+            
             TE.m = TE.m + etaIP*(fire_m - HIP);  %IP
             
-            sum(TEI)
+            sum(TEI);
          
         end
         
@@ -689,6 +712,14 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
     end
     % ---- end plot ------
+    
+    %for IP, caliculate average firing rate
+    f_rate = size(find(firings(:,2)==500));
+    firing_rate_500 = f_rate(1,1);
+    %f_rate = size(firings);
+    %firing_rate = (f_rate(1,1)-1)/1000;
+    display(['firing rate of 500= ',num2str(firing_rate_500)]);
+    display(['neuron500 threshold = ',num2str(TEI(500,1))]);
 
     sout_hist{sec}=sout;
 
@@ -739,6 +770,11 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
     toc;
 
 end
+
+%if sparatephase = 1, separate IP and STDP
+end
+end
+%if sparatephase = 1, separate IP and STDP
 
 %create datefiles
 
