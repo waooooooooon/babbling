@@ -1,14 +1,15 @@
 %initialization
-d=5;    %Iterate number
+d=1;    %Iterate number
 yoked=['NY'];   %Yoked or NY
 stdp=['STDP'];
 id=['170222'];
 IP =['IP'];
 separatephase = ['separatephase'];
 feedbacktime=1;
-iterate=1000;
+iterate=3000;
 speinplate=0.5;
 debug=1;
+
 
 %Create mean file
 meandir=['mean'];
@@ -20,26 +21,26 @@ mkdir([meandir,'/',meandir],'dir');
 %Babbling&mean caliculation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for p=[0.05]
-
+ID = ['_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase];
   mkdir([meandir,'/p=',num2str(p)]);
 
    for i=1:d
         %conduct babbling
-           display([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase]);
+           display([num2str(i),ID]);
 
-           babbling([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,IP,separatephase],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug,IP,separatephase);
+           babbling([num2str(i),ID],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug,IP,separatephase);
 
-           copyfile([num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_Workspace/',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'.csv'],[meandir,'/p=',num2str(p),'/']);
+           copyfile([num2str(i),ID,'_Workspace/',num2str(i),ID,'.csv'],[meandir,'/p=',num2str(p),'/']);
    end
 
  %caliculate mean
  %cd [meandir,'/p=',num2str(p),'/'];
 display(['Calculating mean of p=',num2str(p)]);
-lenght=size(importdata([meandir,'/p=',num2str(p),'/',num2str(1),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'.csv']));
+lenght=size(importdata([meandir,'/p=',num2str(p),'/',num2str(1),ID,'.csv']));
 datahist=zeros(lenght);
 
   for i=1:d
-          data(:,:,i)=importdata([meandir,'/p=',num2str(p),'/',num2str(i),'_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'.csv']);
+          data(:,:,i)=importdata([meandir,'/p=',num2str(p),'/',num2str(i),ID,'.csv']);
           datahist(:,:)=datahist(:,:)+data(:,:,i);
   end
 

@@ -61,10 +61,10 @@ muscle_number=0;
 
 if strcmp(IP,'IP')
  TE.max = -15;             %for IP
- TI.max = -15;             %for IP
- etaIP = 0.0001;          %for IP 0.01
- threshold = -55.5;          %for IP  -55.1
- sumweight =100;          %for IP
+ TI.max = -16;             %for IP
+ etaIP = 0.001;          %for IP 0.01
+ threshold = -55.1;          %for IP  -55.1
+ sumweight =50;          %for IP
  HIP = 1/200  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
 end
 
@@ -249,7 +249,9 @@ datahistsize=((1000-muscsmooth)/feedbacktime);
 
 %if sparatephase, separate IP and STDP
 if strcmp(separatephase,'separatephase')
-for STDP = {'NSTDP','STDP'} 
+%for STDP = {'NSTDP','STDP'} 
+for STDP = {'NSTDP'} 
+    sec = 0;
     if strcmp(STDP,'NSTDP')
         IP = ['IP'];
         yoke = ['Yoked'];
@@ -266,7 +268,7 @@ for STDP = {'NSTDP','STDP'}
 for sec=(sec+1):T % T is the duration of the simulation in seconds.
           tic;
     display('********************************************');
-    display(['Second ',num2str(sec),' of ',num2str(T)]);
+    display(['phase=',STDP,'_',IP,'Second ',num2str(sec),' of ',num2str(T)]);
 
     v_mot_hist{sec}=[]; % Record of all the membrane voltages of the motor neurons.
 
@@ -768,6 +770,12 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
 
     toc;
+  
+    if sec==T
+        number=[1:T].'; %'
+        salhistdate=[salhist,number];
+        csvwrite([workspacedir,'/',id,'.csv'],salhistdate);
+    end
 
 end
 
@@ -778,8 +786,4 @@ end
 
 %create datefiles
 
-if sec==T
-  number=[1:T].'; %'
-  salhistdate=[salhist,number];
-  csvwrite([workspacedir,'/',id,'.csv'],salhistdate);
-end
+
