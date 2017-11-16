@@ -5,6 +5,7 @@ stdp=['STDP'];
 id=['170222'];
 IP =['IP'];
 separatephase = ['separatephase'];
+Network = ['lattice'];
 feedbacktime=1;
 iterate=3000;
 speinplate=0.5;
@@ -21,14 +22,14 @@ mkdir([meandir,'/',meandir],'dir');
 %Babbling&mean caliculation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for p=[0.05]
-ID = ['_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase];
+ID = ['_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network];
   mkdir([meandir,'/p=',num2str(p)]);
 
    for i=1:d
         %conduct babbling
            display([num2str(i),ID]);
 
-           babbling([num2str(i),ID],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug,IP,separatephase);
+           babbling([num2str(i),ID],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network);
 
            copyfile([num2str(i),ID,'_Workspace/',num2str(i),ID,'.csv'],[meandir,'/p=',num2str(p),'/']);
    end

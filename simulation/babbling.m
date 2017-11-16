@@ -1,4 +1,4 @@
-function [] = babbling(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP,separatephase)
+function [] = babbling(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP,separatephase,Network)
 % BABBLE_DASPNET_RESERVOIR Neural network model of the development of reduplicated canonical babbling in human infancy.
 %
 %   Modification of Izhikevich's (2007 Cerebral Cortex) daspnet.m and of a previous model described in Warlaumont (2012, 2013 ICDL-EpiRob).
@@ -61,7 +61,7 @@ muscle_number=0;
 
 if strcmp(IP,'IP')
  TE.max = -15;             %for IP
- TI.max = -16;             %for IP
+ TI.max = -15;             %for IP
  etaIP = 0.001;          %for IP 0.01
  threshold = -55.1;          %for IP  -55.1
  sumweight =50;          %for IP
@@ -203,6 +203,55 @@ load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
 %        s = s/sum(sum(s));
 %        sout = sumweight*sout/sum(sum(sout));
     end
+    
+    
+    
+    %%%%%%%%%%%%%%%%%%%%%% create lattice network
+    if strcmp(Network,'lattice')
+        %initialization
+        Position_xy = zeros(1000,2);        %xy date of neuron position
+        Post_position = zeros(1000,100);        %matrix of post neuron (data is position not neuron ID)
+        Post.lattice = zeros(1000,100);      %matrix of post neuron(vertical= neuron ID , horizontal = post neuron ID)
+
+        nrows = 100;
+        ncols = 10;
+        NeuronID_Position = reshape(randperm(ncols*nrows), [nrows ncols]); % matrix of random neuron Position 100*10
+
+        r = 1;      % range of connection (for example r = 1, connect next to a neuron ) 
+
+
+        %create Position information
+        k = 1;
+        for i = 1:10
+            for j = 1:100
+
+                Position_xy(k,:) = [i,j];
+                k = k + 1;
+            end
+        end
+
+        %caliculate the distance and nearly neuron ID
+        [idx, dist] = rangesearch(Position_xy,Position_xy,r*sqrt(2));
+
+        %caliculate Post neuron (position data)
+        for i = 1: 1000
+            size_idx = size(idx{i});
+            Post_position(i,1:size_idx(1,2)) = idx{i};
+        end
+        %delete number of themselve
+        Post_position(:,1) = 0;
+
+        %caliculate Post neuron (neuron ID data)
+        for i = 1:1000
+        size_neuron{i} = 2:max(find(Post_position(find(NeuronID_Position==i),:)~=0));
+        Post.lattice(i,size_neuron{i}) = NeuronID_Position(Post_position(find(NeuronID_Position==i),size_neuron{i})); %this sentense create new post matrix
+        end
+    end
+
+    %%%%%%%%%%%%%%%%%%%%%%%% end of create lattice network
+    
+    
+    
     
     v = -65*ones(N,1);          % Membrane potentials.
     v_mot = -65*ones(Nmot,1);   %
@@ -381,19 +430,43 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
         % For any presynaptic neuron that just fired, calculate the current to add
         % as proportional to the synaptic strengths from its postsynaptic neurons.
-        k=size(firings,1);
-        while firings(k,1)>t-D
-        del=delays{firings(k,2),t-firings(k,1)+1}; %1:M
-        ind = post(firings(k,2),del);          % post neurons of fired neron id [23,45,13,14,53,??????]
-            I(ind)=I(ind)+s(firings(k,2), del)';%'
-         if strcmp(STDP,'STDP')
+        if strcmp(Network,'random')
+            k=size(firings,1);
+            while firings(k,1)>t-D
+            del=delays{firings(k,2),t-firings(k,1)+1}; %1:M synaptic data
+            ind = post(firings(k,2),del);          % post neurons of fired neron id [23,45,13,14,53,??????]
+                I(ind)=I(ind)+s(firings(k,2), del)';%'
+             if strcmp(STDP,'STDP')
 
-          sd_reservor(firings(k,2),del)=sd_reservor(firings(k,2),del)-1.5*STDP_reservor(ind,t+D)';%'LTD A-1.5
-         end
+              sd_reservor(firings(k,2),del)=sd_reservor(firings(k,2),del)-1.5*STDP_reservor(ind,t+D)';%'LTD A-1.5
+             end
 
-            k=k-1;
-        end;
+                k=k-1;
+            end;
+        end
+        
+        if strcmp(Network,'lattice')
+            k=size(firings,1);
+            while firings(k,1)>t-D
+            %del=delays{firings(k,2),t-firings(k,1)+1}; %1:M  synaptic data
+            %ind = post(firings(k,2),del);          % post neurons of fired neron id [23,45,13,14,53,??????]
+            
+            del = size_neuron{firings(k,2)};
+            ind = Post.lattice(firings(k,2),del);
+        
+                I(ind)=I(ind)+s(firings(k,2), del)';%'
+             if strcmp(STDP,'STDP')
 
+              sd_reservor(firings(k,2),del)=sd_reservor(firings(k,2),del)-1.5*STDP_reservor(ind,t+D)';%'LTD A-1.5
+             end
+
+                k=k-1;
+            end
+        end
+        
+        
+        
+        
         % Calculating currents to add for motor neurons.
         k=size(outFirings,1);
         while outFirings(k,1)>t-D

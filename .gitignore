@@ -1,0 +1,42 @@
+# コメントは `#'
+# 下層フォルダを全て無視する場合
+#*/
+
+## htdocs フォルダまるごと無視したい
+#htdocs/
+
+# 下階層全てのフォルダ内で ".DS_Store" というファイルを無視する場合
+#*/.DS_Store
+ 
+
+
+# 下階層全てのフォルダ内で”.png” という拡張子がついたファイルを無視する場合
+*/*.png
+
+# 下階層全てのフォルダ内で”.wav” という拡張子がついたファイルを無視する場合
+*/*.wav 
+
+
+# トップの階層の .exe ファイルのみを無視したいが、下階層内の .exe ファイルは無視しないという場合
+#/*.exe
+ 
+# images フォルダをまるごと無視したい
+#images/
+
+# images フォルダをまるごと無視するけど .png だけは無視したくない
+#images/*.*
+#!.png
+
+#settingのtxtファイルを無視
+/network_analysis/setting/*.txt
+
+#settingのmatファイルを無視
+/network_analysis/setting/*/*.mat
+
+#simulationの出力ファイルを無視
+/simulation/*/*.wav
+/simulation/*/*.png
+/simulation/data_backup*/
+
+
+
