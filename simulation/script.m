@@ -1,6 +1,6 @@
 %initialization
 d=1;    %Iterate number
-yoked=['NY'];   %Yoked or NY
+yoked=['Yoked'];   %Yoked or NY
 stdp=['STDP'];
 id=['170222'];
 IP =['IP'];
@@ -8,7 +8,7 @@ separatephase = ['separatephase'];
 Network = ['lattice'];
 feedbacktime=1;
 iterate=3000;
-speinplate=0.5;
+speinplate=0.1;
 debug=1;
 
 

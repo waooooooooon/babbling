@@ -62,7 +62,7 @@ muscle_number=0;
 if strcmp(IP,'IP')
  TE.max = -15;             %for IP
  TI.max = -15;             %for IP
- etaIP = 0.001;          %for IP 0.01
+ etaIP = 0.005;          %for IP 0.01
  threshold = -55.1;          %for IP  -55.1
  sumweight =50;          %for IP
  HIP = 1/200  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
@@ -217,7 +217,7 @@ load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
         ncols = 10;
         NeuronID_Position = reshape(randperm(ncols*nrows), [nrows ncols]); % matrix of random neuron Position 100*10
 
-        r = 1;      % range of connection (for example r = 1, connect next to a neuron ) 
+        r = 1*sqrt(2);      % range of connection (for example r = 1, connect next to a neuron ) 
 
 
         %create Position information
@@ -231,7 +231,7 @@ load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
         end
 
         %caliculate the distance and nearly neuron ID
-        [idx, dist] = rangesearch(Position_xy,Position_xy,r*sqrt(2));
+        [idx, dist] = rangesearch(Position_xy,Position_xy,r);
 
         %caliculate Post neuron (position data)
         for i = 1: 1000
@@ -339,9 +339,9 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         end
         
         %for ip test
-        I(1:Ninp)=13*(rand(Nmot,1)-0.5);
+        %I(1:Ninp)=13*(rand(Nmot,1)-0.5);
         
-        %{
+        
         
         %%%%%%%%%%%%%%%%%%%%%   feedback every time
        if t-1>muscsmooth&mod(t-1,feedbacktime)==0
@@ -360,7 +360,6 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         end
 
         %%%%%%%%%%%%%%%%%%%%%
-%}
 
         if strcmp(IP,'Tonic')
             
@@ -382,9 +381,10 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             %%%%%%%%% SN
             s_i = s(801:1000,:);
             s_e = sesum*s(1:Ne,:)/sum(sum(s(1:Ne,:)));
+            %s_e = s(1:Ne,:)/sum(sum(s(1:Ne,:)));%ŽÀŒ±
             s = [s_e ; s_i];
-            sout = smsum*sout/sum(sum(sout));
-            
+            %sout = smsum*sout/sum(sum(sout));
+            sout = 10*sout/sum(sum(sout));%ŽÀŒ±
         end
         
         
@@ -523,7 +523,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         if (mod(t,10)==0)
             if strcmp(reinforce,'reinforce')
                 sout=max(0,min(sm,sout+DA*sd_mot));
-                sout=sout./(mean(mean(sout)));              % Normalizing the synaptic weights. out-mot
+                %sout=sout./(mean(mean(sout)));              % Normalizing the synaptic weights. out-mot
             end
 
             %sinp=max(0,min(sm,sinp+sd_spe));%
@@ -565,12 +565,20 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
 
 
-
+fired_mot = find((v_mot-TE.m)>=threshold);
         % Every testint seconds, use the motor neuron spikes to generate a sound.
         if (mod(sec,testint)==0)
 
-            firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
-            firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
+            if strcmp(IP,'NIP')
+                firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
+                firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
+            end
+            
+            if strcmp(IP,'IP')
+                firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
+                firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
+            end
+            
             summusc1posspikes(t)=size(firedmusc1pos,1); % Sum the spikes at each timestep across the set of motor neurons.
             summusc1negspikes(t)=size(firedmusc1neg,1);
 
