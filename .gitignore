@@ -37,6 +37,8 @@
 /simulation/*/*.wav
 /simulation/*/*.png
 /simulation/data_backup*/
-
+/simulation/*_Workspace/
+/simulation/*_Wave/
+/simulation/*_Firings/
 
 

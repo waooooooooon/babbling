@@ -1,4 +1,4 @@
-function [] = babbling(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP,separatephase,Network)
+function [] = babbling(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP,separatephase,Network,reward)
 % BABBLE_DASPNET_RESERVOIR Neural network model of the development of reduplicated canonical babbling in human infancy.
 %
 %   Modification of Izhikevich's (2007 Cerebral Cortex) daspnet.m and of a previous model described in Warlaumont (2012, 2013 ICDL-EpiRob).
@@ -44,6 +44,7 @@ function [] = babbling(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbackti
 %INITIALIZATIONS AND LOADING%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
 rng shuffle;
+warning('off','all');
 
 % Initialization.
 salthresh = 4.5;            % Initial salience value for reward (used in 'relhisal' reinforcment).
@@ -58,14 +59,22 @@ tau=20;                   %decay parameter
 SAVINTV=1000;
 LST_hist=[1:1000];
 muscle_number=0;
+negativereward = 0;
+nega_rate = 1/50;
+
 
 if strcmp(IP,'IP')
  TE.max = -15;             %for IP
- TI.max = -15;             %for IP
+ TI.max = -15.2;             %for IP
  etaIP = 0.005;          %for IP 0.01
  threshold = -55.1;          %for IP  -55.1
  sumweight =50;          %for IP
  HIP = 1/200  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
+ variance_IP = ones(1000,1)/200;
+ m_IP = ones(100,1)/200;
+ V_HIP = normrnd(variance_IP,0.001);
+ m_HIP = normrnd(m_IP,0.001);
+ 
 end
 
 
@@ -216,7 +225,9 @@ load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
         nrows = 100;
         ncols = 10;
         NeuronID_Position = reshape(randperm(ncols*nrows), [nrows ncols]); % matrix of random neuron Position 100*10
-
+        InputneuronID = NeuronID_Position(:,1);
+        OutputneuronID = NeuronID_Position(:,end);
+        
         r = 1*sqrt(2);      % range of connection (for example r = 1, connect next to a neuron ) 
 
 
@@ -344,20 +355,39 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         
         
         %%%%%%%%%%%%%%%%%%%%%   feedback every time
-       if t-1>muscsmooth&mod(t-1,feedbacktime)==0
+        if strcmp(Network,'random')
+           if t-1>muscsmooth&mod(t-1,feedbacktime)==0
 
-        feedback1=speinplate*table(:,muscle_number);
-        if strcmp(yoke,'NY')
-            I(1:Ninp)=I(1:Ninp)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
-            feedbackhist=[feedbackhist,feedback1];
-        elseif strcmp(yoke,'Yoked')
-            randid=randperm(100);
-            yokedfeedback=feedback1(randid);
-            I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
-            feedbackhist=[feedbackhist,yokedfeedback];
-        end
+            feedback1=speinplate*table(:,muscle_number);
+            if strcmp(yoke,'NY')
+                I(1:Ninp)=I(1:Ninp)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
+                feedbackhist=[feedbackhist,feedback1];
+            elseif strcmp(yoke,'Yoked')
+                randid=randperm(100);
+                yokedfeedback=feedback1(randid);
+                I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
+                feedbackhist=[feedbackhist,yokedfeedback];
+            end
 
+           end
+        elseif strcmp(Network,'lattice')
+            
+           if t-1>muscsmooth&mod(t-1,feedbacktime)==0
+
+            feedback1=speinplate*table(:,muscle_number);
+            if strcmp(yoke,'NY')
+                I(InputneuronID)=I(InputneuronID)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
+                feedbackhist=[feedbackhist,feedback1];
+            elseif strcmp(yoke,'Yoked')
+                randid=randperm(100);
+                yokedfeedback=feedback1(randid);
+                I(InputneuronID)=I(InputneuronID)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
+                feedbackhist=[feedbackhist,yokedfeedback];
+            end
+
+           end
         end
+            
 
         %%%%%%%%%%%%%%%%%%%%%
 
@@ -552,11 +582,14 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             fire_m(fired_mot) = 1;
             
             %IP only excitatory neurons
-            TEI(1:Ne,1) = TEI(1:Ne,1) + etaIP*(fire_all(1:Ne,1) - HIP);
+            TEI(:,1) = TEI(:,1) + etaIP*(fire_all(:,1) - V_HIP(:,1));
+            %TEI(1:Ne,1) = TEI(1:Ne,1) + etaIP*(fire_all(1:Ne,1) - V_HIP(1:Ne,1));
+            %TEI(1:Ne,1) = TEI(1:Ne,1) + etaIP*(fire_all(1:Ne,1) - HIP);
             %IP all neurons
             %TEI(:,1) = TEI(:,1) + etaIP*(fire_all(:,1) - HIP);
             
-            TE.m = TE.m + etaIP*(fire_m - HIP);  %IP
+            TE.m = TE.m + etaIP*(fire_m - m_IP);
+            %TE.m = TE.m + etaIP*(fire_m - HIP);  %IP
             
             sum(TEI);
          
@@ -564,7 +597,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         
 
 
-
+        
 fired_mot = find((v_mot-TE.m)>=threshold);
         % Every testint seconds, use the motor neuron spikes to generate a sound.
         if (mod(sec,testint)==0)
@@ -601,11 +634,18 @@ fired_mot = find((v_mot-TE.m)>=threshold);
 
 
               muscle_number=round((smoothmusc(t)+1)*10000);
-
-
+              
+              
+              if strcmp(reward,'negativereward')&&t>1
+                  negativereward = negativereward + sqrt((smoothmusc(t)-smoothmusc(t-1))^2);
+              end
+              
 
             end
+            
+            
 
+            
 
 
             if t==1000 % Based on the 1 s timeseries of smoothed summed motor neuron spikes, generate a sound.
@@ -706,9 +746,21 @@ fired_mot = find((v_mot-TE.m)>=threshold);
 
         % If the human listener decided to reinforce (or if the yoked control
         % schedule says to reinforce), increase the dopamine concentration.
-        if any(rew==sec*1000+t)   % what mean?
-            DA=DA+DAinc;
+        if strcmp(reward,'normalreward')
+            if any(rew==sec*1000+t)   % what mean?
+                DA=DA+DAinc;
+            end
         end
+        if strcmp(reward,'negativereward')
+            nega = nega_rate*negativereward;
+            
+            if any(rew == sec*1000+t)
+                DA = DA + DAinc - nega;       %negativereward
+            end
+            
+            negativereward = 0;     %initialize negativereward
+        end
+        
     end
 
 
@@ -729,8 +781,37 @@ fired_mot = find((v_mot-TE.m)>=threshold);
             fprintf(firings_fid,'\n');
         end
         fclose(firings_fid);
-    end
 
+        % ---- plot for gif ------
+
+        mkdir([id, '_Firings/gif_sec=',num2str(sec)]);
+        for i = 1:1000
+            colormap(gray);
+            %firing_position = zeros(100,10);
+            A = firings(find(firings(:,1)==i),2);
+            row = zeros(1);
+            col = zeros(1);
+            for j=1:size(A)
+                [row(j), col(j)] = find(NeuronID_Position==A(j));
+            end
+             
+            
+            
+            %firing_position_reverse = imcomplement(firing_position);
+                fig15 = plot(col(1:end),row(1:end),'.'); % Plot the output neurons'' spikes
+                title('Neuron Firings', 'fontweight','bold');
+                axis([0 10 0 100]);
+                saveas(fig15,[id, '_Firings/gif_sec=',num2str(sec),'/time=',num2str(i),'.png']);
+                clearvars row col;
+        i
+        end
+        
+        %HIImageConvert2GIF([id, '_Firings/gif_sec=',num2str(sec),'/*.png'], [id, '_Firings/gif_sec=',num2str(sec),'/',num2str(sec),'.gif'], 0.1) ;
+        % ----- end for gif ------
+    end
+    
+    
+    
     % Make axis labels and titles for plots that are being kept.
     % ---- plot -------
     if plotOn
@@ -796,6 +877,10 @@ fired_mot = find((v_mot-TE.m)>=threshold);
     end
     % ---- end plot ------
     
+
+    
+    
+    
     %for IP, caliculate average firing rate
     f_rate = size(find(firings(:,2)==500));
     firing_rate_500 = f_rate(1,1);
@@ -805,6 +890,9 @@ fired_mot = find((v_mot-TE.m)>=threshold);
     display(['neuron500 threshold = ',num2str(TEI(500,1))]);
 
     sout_hist{sec}=sout;
+    
+    %for negative reward
+    display(['nega= ',num2str(nega)]);
 
     % Preparing STDP and firings for the following 1000 ms.
     STDP_mot(:,1:D+1)=STDP_mot(:,1001:1001+D);

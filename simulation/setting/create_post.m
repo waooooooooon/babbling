@@ -40,5 +40,22 @@ end
 
 % neuron caliculation
 
+c = [1:1000]';
+c1 = ceil(500*rand(1000,1));
+firings = horzcat(c,c1);
+
+
+for i = 1:1000
+    colormap(gray)
+    A = find(firings(:,1)==i);
+    B = (NeuronID_Position==A);
+    B = imcomplement(B);
+        fig15 = imagesc(B); % Plot the output neurons'' spikes
+        title('Neuron Firings', 'fontweight','bold');
+        %axis([0 100 0 10]);
+        saveas(fig15,[workspacedir,'/LAP_spectrum',num2str(sec),'.png']);
+
+end
+
 
 Position;

@@ -2,13 +2,14 @@
 d=1;    %Iterate number
 yoked=['Yoked'];   %Yoked or NY
 stdp=['STDP'];
-id=['170222'];
+id=['171126'];
 IP =['IP'];
-separatephase = ['separatephase'];
+separatephase = ['separatephase'];      %separatephase or notseparate
 Network = ['lattice'];
+reward = ['negativereward'];
 feedbacktime=1;
 iterate=3000;
-speinplate=0.1;
+speinplate=0.3;
 debug=1;
 
 
@@ -21,15 +22,15 @@ mkdir([meandir,'/',meandir],'dir');
 
 %Babbling&mean caliculation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for p=[0.05]
-ID = ['_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network];
+for p=[0.03]
+ID = ['_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network,'_',reward];
   mkdir([meandir,'/p=',num2str(p)]);
 
    for i=1:d
         %conduct babbling
            display([num2str(i),ID]);
 
-           babbling([num2str(i),ID],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network);
+           babbling([num2str(i),ID],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward);
 
            copyfile([num2str(i),ID,'_Workspace/',num2str(i),ID,'.csv'],[meandir,'/p=',num2str(p),'/']);
    end
