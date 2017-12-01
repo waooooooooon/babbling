@@ -60,7 +60,13 @@ SAVINTV=1000;
 LST_hist=[1:1000];
 muscle_number=0;
 negativereward = 0;
-nega_rate = 1/50;
+nega_rate = 1/100;
+
+%for low pass filter
+cutoff_frequency = 10; % Design a 70th order lowpass FIR filter with cutoff frequency of 75 Hz.
+Fs = 1000;                    % sample rate in Hz
+Fnorm = cutoff_frequency/(Fs/2);           % Normalized frequency
+df = designfilt('lowpassfir','FilterOrder',70,'CutoffFrequency',Fnorm);
 
 
 if strcmp(IP,'IP')
@@ -69,12 +75,27 @@ if strcmp(IP,'IP')
  etaIP = 0.005;          %for IP 0.01
  threshold = -55.1;          %for IP  -55.1
  sumweight =50;          %for IP
- HIP = 1/200  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
- variance_IP = ones(1000,1)/200;
- m_IP = ones(100,1)/200;
- V_HIP = normrnd(variance_IP,0.001);
- m_HIP = normrnd(m_IP,0.001);
+ %HIP = 1/200  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
+ %%%%%%%%%%%%%%%%%%%%
+ %normal distribution
+ %variance_IP = ones(1000,1)/200;
+ %m_IP = ones(100,1)/200;
+ %V_HIP = normrnd(variance_IP,0.001);
+ %m_HIP = normrnd(m_IP,0.001);
  
+ %lognormal distribution
+ m = 1/100;
+ v = 0.0001;
+ mu = log((m^2)/sqrt(v+m^2));
+ sigma = sqrt(log(v/(m^2)+1));
+ V_HIP = lognrnd(mu,sigma,1000,1);
+ m_HIP = lognrnd(mu,sigma,100,1);
+ %for debag
+ %debag_HIP = V_HIP*Fs;
+ %edge = logspace(0, 10, 300);
+ %h=histogram(debag_HIP,edge);set(gca,'Xscale','log');xlim([0 100]);
+%%%%%%%%%%%%%%%%%%%%%%
+
 end
 
 
@@ -306,7 +327,7 @@ praatPathpc = 'c:\users\Takimto\Praat\Praat';
 praatPathmac = '/Applications/Praat.app/Contents/MacOS/Praat';
 
 datahistsize=((1000-muscsmooth)/feedbacktime);
-
+%{
 %if sparatephase, separate IP and STDP
 if strcmp(separatephase,'separatephase')
 %for STDP = {'NSTDP','STDP'} 
@@ -320,7 +341,7 @@ for STDP = {'NSTDP'}
         yoke = ['NY'];
     end
 %if sparatephase = 1, separate IP and STDP    
-
+%}
 
 %RUNNING THE SIMULATION%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -328,7 +349,7 @@ for STDP = {'NSTDP'}
 for sec=(sec+1):T % T is the duration of the simulation in seconds.
           tic;
     display('********************************************');
-    display(['phase=',STDP,'_',IP,'Second ',num2str(sec),' of ',num2str(T)]);
+    display(['yoke=',yoke,'_phase=',STDP,'_',IP,'_Second ',num2str(sec),' of ',num2str(T)]);
 
     v_mot_hist{sec}=[]; % Record of all the membrane voltages of the motor neurons.
 
@@ -359,10 +380,10 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
            if t-1>muscsmooth&mod(t-1,feedbacktime)==0
 
             feedback1=speinplate*table(:,muscle_number);
-            if strcmp(yoke,'NY')
+            if strcmp(yoke,'No')
                 I(1:Ninp)=I(1:Ninp)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,feedback1];
-            elseif strcmp(yoke,'Yoked')
+            elseif strcmp(yoke,'Sc')
                 randid=randperm(100);
                 yokedfeedback=feedback1(randid);
                 I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
@@ -375,10 +396,10 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
            if t-1>muscsmooth&mod(t-1,feedbacktime)==0
 
             feedback1=speinplate*table(:,muscle_number);
-            if strcmp(yoke,'NY')
+            if strcmp(yoke,'No')
                 I(InputneuronID)=I(InputneuronID)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,feedback1];
-            elseif strcmp(yoke,'Yoked')
+            elseif strcmp(yoke,'Sc')
                 randid=randperm(100);
                 yokedfeedback=feedback1(randid);
                 I(InputneuronID)=I(InputneuronID)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
@@ -553,6 +574,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         if (mod(t,10)==0)
             if strcmp(reinforce,'reinforce')
                 sout=max(0,min(sm,sout+DA*sd_mot));
+                
                 %sout=sout./(mean(mean(sout)));              % Normalizing the synaptic weights. out-mot
             end
 
@@ -561,6 +583,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
             if strcmp(STDP,'STDP')
              s(1:Ne,:)=max(0,min(smr,s(1:Ne,:)+(learningratio)*sd_reservor(1:Ne,:)));%reservor
+             
              %s(1:Ne,:)=s(1:Ne,:)./(mean(mean(s(1:Ne,:)))); %seikika
              sd_reservor=0.99*sd_reservor;
             end
@@ -588,7 +611,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             %IP all neurons
             %TEI(:,1) = TEI(:,1) + etaIP*(fire_all(:,1) - HIP);
             
-            TE.m = TE.m + etaIP*(fire_m - m_IP);
+            TE.m = TE.m + etaIP*(fire_m - m_HIP);
             %TE.m = TE.m + etaIP*(fire_m - HIP);  %IP
             
             sum(TEI);
@@ -636,10 +659,6 @@ fired_mot = find((v_mot-TE.m)>=threshold);
               muscle_number=round((smoothmusc(t)+1)*10000);
               
               
-              if strcmp(reward,'negativereward')&&t>1
-                  negativereward = negativereward + sqrt((smoothmusc(t)-smoothmusc(t-1))^2);
-              end
-              
 
             end
             
@@ -652,6 +671,23 @@ fired_mot = find((v_mot-TE.m)>=threshold);
 
 
                 if ~strcmp(reinforce,'range')
+                    
+                    %low pass filter for negative reward
+                    if strcmp(reward,'negativereward')
+                        
+                    filter_smoothmusc = filter(df,smoothmusc);      %filter smoothmusc
+                  
+                    for i=2:1000        %caliculate muscle cost
+                        
+                        negativereward = negativereward + sqrt((filter_smoothmusc(i)-filter_smoothmusc(i-1))^2);
+                    end
+                    
+                    end
+                    
+                    
+                    
+                  
+                    
                     % Write the Praat script:
 
                     fid = fopen([wavdir,'/ressynth_',id,num2str(sec,'%d'),'.praat'],'w');
@@ -796,14 +832,14 @@ fired_mot = find((v_mot-TE.m)>=threshold);
             end
              
             
-            
+            %{
             %firing_position_reverse = imcomplement(firing_position);
                 fig15 = plot(col(1:end),row(1:end),'.'); % Plot the output neurons'' spikes
                 title('Neuron Firings', 'fontweight','bold');
                 axis([0 10 0 100]);
                 saveas(fig15,[id, '_Firings/gif_sec=',num2str(sec),'/time=',num2str(i),'.png']);
                 clearvars row col;
-        i
+        %}
         end
         
         %HIImageConvert2GIF([id, '_Firings/gif_sec=',num2str(sec),'/*.png'], [id, '_Firings/gif_sec=',num2str(sec),'/',num2str(sec),'.gif'], 0.1) ;
@@ -833,9 +869,16 @@ fired_mot = find((v_mot-TE.m)>=threshold);
         plot(motFirings(:,1),motFirings(:,2),'.'); % Plot the motor neurons'' spikes
         title('Motor Neuron Firings', 'fontweight','bold');
         axis([0 1000 0 Nmot]);
-        subplot(4,1,4);
-        plot(smoothmusc(muscsmooth:1000)); ylim([-.5,.5]); xlim([-100,900]); % Plot the smoothed sum of motor neuron spikes 1 s timeseries
-        title('Sum of Agonist/Antagonist Motor Neuron Activation', 'fontweight','bold');
+        if strcmp(reward,'negativereward')
+            subplot(4,1,4);
+            plot(filter_smoothmusc(muscsmooth:1000)); ylim([-.5,.5]); xlim([-100,900]); % Plot the smoothed sum of motor neuron spikes 1 s timeseries
+            title('Sum of Agonist/Antagonist Motor Neuron Activation', 'fontweight','bold');
+        else
+            subplot(4,1,4);
+            plot(smoothmusc(muscsmooth:1000)); ylim([-.5,.5]); xlim([-100,900]); % Plot the smoothed sum of motor neuron spikes 1 s timeseries
+            title('Sum of Agonist/Antagonist Motor Neuron Activation', 'fontweight','bold');
+        end
+        
 
         drawnow;
 
@@ -950,7 +993,7 @@ end
 
 %if sparatephase = 1, separate IP and STDP
 end
-end
+
 %if sparatephase = 1, separate IP and STDP
 
 %create datefiles

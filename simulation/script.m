@@ -1,14 +1,14 @@
 %initialization
 d=1;    %Iterate number
-yoked=['Yoked'];   %Yoked or NY
-stdp=['STDP'];
-id=['171126'];
+YOKED=['Sc';'No'];   %Sc or No
+STDP=['STDP';'NSTD'];
+id=['171201'];
 IP =['IP'];
 separatephase = ['separatephase'];      %separatephase or notseparate
 Network = ['lattice'];
 reward = ['negativereward'];
 feedbacktime=1;
-iterate=3000;
+iterate=1;
 speinplate=0.3;
 debug=1;
 
@@ -20,42 +20,51 @@ if ~exist(meandir,'dir')
 end
 mkdir([meandir,'/',meandir],'dir');
 
-%Babbling&mean caliculation
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for p=[0.03]
-ID = ['_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network,'_',reward];
-  mkdir([meandir,'/p=',num2str(p)]);
+for j = 1:2
+    yoked = YOKED(j,:);
+    for i =1:2
+        stdp = STDP(i,:);
+        %Babbling&mean caliculation
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        for p=[0.03]
+        ID = ['_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_1_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network,'_',reward];
+          mkdir([meandir,'/p=',num2str(p)]);
 
-   for i=1:d
-        %conduct babbling
-           display([num2str(i),ID]);
+           for i=1:d
+                %conduct babbling
+                   display([num2str(i),ID]);
 
-           babbling([num2str(i),ID],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward);
+                   babbling([num2str(i),ID],iterate,'reinforce',1:100,4,yoked,1,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward);
 
-           copyfile([num2str(i),ID,'_Workspace/',num2str(i),ID,'.csv'],[meandir,'/p=',num2str(p),'/']);
-   end
+                   copyfile([num2str(i),ID,'_Workspace/',num2str(i),ID,'.csv'],[meandir,'/p=',num2str(p),'/']);
+           end
 
- %caliculate mean
- %cd [meandir,'/p=',num2str(p),'/'];
-display(['Calculating mean of p=',num2str(p)]);
-lenght=size(importdata([meandir,'/p=',num2str(p),'/',num2str(1),ID,'.csv']));
-datahist=zeros(lenght);
+         %caliculate mean
+         %cd [meandir,'/p=',num2str(p),'/'];
+        display(['Calculating mean of p=',num2str(p)]);
+        lenght=size(importdata([meandir,'/p=',num2str(p),'/',num2str(1),ID,'.csv']));
+        datahist=zeros(lenght);
 
-  for i=1:d
-          data(:,:,i)=importdata([meandir,'/p=',num2str(p),'/',num2str(i),ID,'.csv']);
-          datahist(:,:)=datahist(:,:)+data(:,:,i);
-  end
+          for i=1:d
+                  data(:,:,i)=importdata([meandir,'/p=',num2str(p),'/',num2str(i),ID,'.csv']);
+                  datahist(:,:)=datahist(:,:)+data(:,:,i);
+          end
 
- meanout=datahist/d;
- output=[meanout(:,1),data(:,2,1)];
- csvwrite([meandir,'/p=',num2str(p),'/mean_p=',num2str(p),'.csv'],output);
+         meanout=datahist/d;
+         output=[meanout(:,1),data(:,2,1)];
+         csvwrite([meandir,'/p=',num2str(p),'/mean_p=',num2str(p),'.csv'],output);
 
 
- copyfile([meandir,'/p=',num2str(p),'/mean_p=',num2str(p),'.csv'],[meandir,'/',meandir,'/']);
+         copyfile([meandir,'/p=',num2str(p),'/mean_p=',num2str(p),'.csv'],[meandir,'/',meandir,'/']);
 
- clearvars meanout data datahist output;
+         clearvars meanout data datahist output;
+        end
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    end
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 
 display('END');
 %plot FIg with R
