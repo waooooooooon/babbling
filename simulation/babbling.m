@@ -60,7 +60,7 @@ SAVINTV=1000;
 LST_hist=[1:1000];
 muscle_number=0;
 negativereward = 0;
-nega_rate = 1/100;
+nega_rate=1/10;
 
 %for low pass filter
 cutoff_frequency = 10; % Design a 70th order lowpass FIR filter with cutoff frequency of 75 Hz.
@@ -152,7 +152,20 @@ addpath('auditorysaliencymodel');
 
 %Import initial value
 table=importdata([setdir,'/table_notnormalization_from0.5to1.5KHz.csv']);
-load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
+
+if strcmp(separatephase,'notseparate')
+    
+    load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
+    
+elseif strcmp(separatephase,'separatephase')
+    
+    if strcmp(yoke,'No')
+        load([setdir,'/babble_daspnet_reservoir_1_171201_3000_reinforce_100_4_No_1_1_0.03_0.3_NSTD_IP_separatephase_lattice_negativereward.mat'],'s','sout','post','post_spe','post_mot','pre','aux','TE','threshold','TEI','NeuronID_Position','InputneuronID','OutputneuronID','Post_position','Post','size_neuron','sesum');
+    elseif strcmp(yoke,'Sc')
+        load([setdir,'/babble_daspnet_reservoir_1_171201_3000_reinforce_100_4_Sc_1_1_0.03_0.3_NSTD_IP_separatephase_lattice_negativereward.mat'],'s','sout','post','post_spe','post_mot','pre','aux','TE','threshold','TEI','NeuronID_Position','InputneuronID','OutputneuronID','Post_position','Post','size_neuron','sesum');
+    end
+    
+end
 
 
 
@@ -237,7 +250,7 @@ load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
     
     
     %%%%%%%%%%%%%%%%%%%%%% create lattice network
-    if strcmp(Network,'lattice')
+    if strcmp(Network,'lattice') && strcmp(separatephase,'notseparate')
         %initialization
         Position_xy = zeros(1000,2);        %xy date of neuron position
         Post_position = zeros(1000,100);        %matrix of post neuron (data is position not neuron ID)
@@ -363,11 +376,14 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
         %Random Thalamic Input or No random input (IP)
         if strcmp(IP,'Tonic')
-        I=13*(rand(N,1)-0.5);
-        I_mot=13*(rand(Nmot,1)-0.5);
+            I=13*(rand(N,1)-0.5);
+            I_mot=13*(rand(Nmot,1)-0.5);
         elseif strcmp(IP,'IP')
-        I=zeros(N,1);
-        I_mot=zeros(Nmot,1);
+            I=zeros(N,1);
+            I_mot=zeros(Nmot,1);
+        elseif strcmp(IP,'afterIP')
+            I=zeros(N,1);
+            I_mot=zeros(Nmot,1);
         end
         
         %for ip test
@@ -428,6 +444,23 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             fired_mot = find((v_mot-TE.m)>=threshold);
             
             
+            
+            %%%%%%%%% SN
+            s_i = s(801:1000,:);
+            s_e = sesum*s(1:Ne,:)/sum(sum(s(1:Ne,:)));
+            %s_e = s(1:Ne,:)/sum(sum(s(1:Ne,:)));%ŽÀŒ±
+            s = [s_e ; s_i];
+            %sout = smsum*sout/sum(sum(sout));
+            sout = 10*sout/sum(sum(sout));%ŽÀŒ±
+            
+            
+        elseif strcmp(IP,'afterIP')
+            
+            fired = find((v-TEI)>=threshold);
+            fired_out = find((v(Ninp + outInd)-TEI(Ninp + outInd))>=threshold);
+            fired_inp = find((v(inpInd) - TEI(inpInd))>=threshold);
+            
+            fired_mot = find((v_mot-TE.m)>=threshold);
             
             %%%%%%%%% SN
             s_i = s(801:1000,:);
@@ -613,8 +646,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             
             TE.m = TE.m + etaIP*(fire_m - m_HIP);
             %TE.m = TE.m + etaIP*(fire_m - HIP);  %IP
-            
-            sum(TEI);
+           
          
         end
         
@@ -625,12 +657,15 @@ fired_mot = find((v_mot-TE.m)>=threshold);
         % Every testint seconds, use the motor neuron spikes to generate a sound.
         if (mod(sec,testint)==0)
 
-            if strcmp(IP,'NIP')
+            if strcmp(IP,'Tonic')
                 firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
                 firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
-            end
-            
-            if strcmp(IP,'IP')
+                
+            elseif strcmp(IP,'IP')
+                firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
+                firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
+                
+            elseif strcmp(IP,'afterIP')
                 firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
                 firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
             end
@@ -936,6 +971,7 @@ fired_mot = find((v_mot-TE.m)>=threshold);
     
     %for negative reward
     display(['nega= ',num2str(nega)]);
+    display(['DA= ',num2str(DA)]);
 
     % Preparing STDP and firings for the following 1000 ms.
     STDP_mot(:,1:D+1)=STDP_mot(:,1001:1001+D);
