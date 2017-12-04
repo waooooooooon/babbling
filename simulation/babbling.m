@@ -151,7 +151,7 @@ addpath('auditorysaliencymodel');
 
 
 %Import initial value
-table=importdata([setdir,'/table.csv']);
+table=importdata([setdir,'/table_notnormalization_from0.5to1.5KHz.csv']);
 load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
 
 

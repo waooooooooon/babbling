@@ -1,6 +1,6 @@
 %initialization
 d=1;    %Iterate number
-YOKED=['Sc';'No'];   %Sc or No
+YOKED=['No';'Sc'];   %Sc or No
 STDP=['STDP';'NSTD'];
 id=['171201'];
 IP =['IP'];
@@ -8,7 +8,7 @@ separatephase = ['separatephase'];      %separatephase or notseparate
 Network = ['lattice'];
 reward = ['negativereward'];
 feedbacktime=1;
-iterate=1;
+iterate=3000;
 speinplate=0.3;
 debug=1;
 
@@ -44,7 +44,7 @@ for j = 1:2
         display(['Calculating mean of p=',num2str(p)]);
         lenght=size(importdata([meandir,'/p=',num2str(p),'/',num2str(1),ID,'.csv']));
         datahist=zeros(lenght);
-
+%{
           for i=1:d
                   data(:,:,i)=importdata([meandir,'/p=',num2str(p),'/',num2str(i),ID,'.csv']);
                   datahist(:,:)=datahist(:,:)+data(:,:,i);
@@ -56,6 +56,7 @@ for j = 1:2
 
 
          copyfile([meandir,'/p=',num2str(p),'/mean_p=',num2str(p),'.csv'],[meandir,'/',meandir,'/']);
+        %}
 
          clearvars meanout data datahist output;
         end

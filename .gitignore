@@ -41,4 +41,6 @@
 /simulation/*_Wave/
 /simulation/*_Firings/
 
+#salience_ananlysisのdataを無視
+/salience_analysis/saliency_data/*
 
