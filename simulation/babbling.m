@@ -769,8 +769,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                             
                     elseif isunix
                         
-                        system([praatPathlinux, ' --run ', wavdir,'\ressynth_',id,num2str(sec,'%d'),'.praat']);
-                        delete([wavdir,'\ressynth_',id,num2str(sec,'%d'),'.praat']);  %delete praat script
+                        system([praatPathlinux, ' --run ', wavdir,'/ressynth_',id,num2str(sec,'%d'),'.praat']);
+                        delete([wavdir,'/ressynth_',id,num2str(sec,'%d'),'.praat']);  %delete praat script
 
                     end
 
@@ -1015,6 +1015,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         display('Data Saving..... Do not exit program.');
         save(workspaceFilename, '-regexp', '^(?!(v_mot_hist)$).');
 
+        if plotOn==1
         %wright LAP
         figure(6);
         fig1=plot(LAP_hist);ylim([-80,-60]);
@@ -1030,6 +1031,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         csvwrite([workspacedir,'/sout_',num2str(sec),'.csv'],sout);
         csvwrite([workspacedir,'/s',num2str(sec),'.csv'],s);
         %csvwrite([workspacedir,'/sinp',sec,'.csv'],sinp);
+        end
         
 
 
