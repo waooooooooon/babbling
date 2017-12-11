@@ -30,21 +30,28 @@ rbindCOrder <- function(...)  {
 
 
 #title
-title <- "negativefeedback0.01"
+title <- "noip_motorneuron"
 
 
 #load the directory 
 dir <- "~/babbling/salience_analysis/saliency_data/"
-filename <- "20171204/"
+filename <- "20171211/"
 csvfile <- "csv/"
 
-
+#filename
+id <- "171205"
+iterate <- "3000"
+ploton <- "1"
+IP <- "IP"
+phase <-"notseparate"
+network <- "lattice"
+reward <- "negativereward"
 
 # Load the data:
-file_1 <- read.csv(paste(dir, filename,csvfile,"1_171201_3000_reinforce_100_4_No_1_1_0.03_0.3_NSTD_IP_separatephase_lattice_negativereward.csv", sep = ""),header=F,col.names=c("salience","sec"))#red No_NSTD
-file_2 <- read.csv(paste(dir, filename,csvfile,"1_171201_3000_reinforce_100_4_No_1_1_0.03_0.3_STDP_IP_separatephase_lattice_negativereward.csv", sep = ""),header=F,col.names=c("salience","sec"))#blue No_STDP
-file_3 <- read.csv(paste(dir, filename,csvfile,"1_171201_3000_reinforce_100_4_Sc_1_1_0.03_0.3_NSTD_IP_separatephase_lattice_negativereward.csv", sep = ""),header=F,col.names=c("salience","sec"))#green Sc_NSTD
-file_4 <- read.csv(paste(dir, filename,csvfile,"1_171201_3000_reinforce_100_4_Sc_1_1_0.03_0.3_STDP_IP_separatephase_lattice_negativereward.csv", sep = ""),header=F,col.names=c("salience","sec"))#black Sc_STDP
+file_1 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#red No_NSTD
+file_2 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#blue No_STDP
+file_3 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#green Sc_NSTD
+file_4 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#black Sc_STDP
 
 
 gam.model_1<- gam(salience ~ s(sec),sp=1,data=file_1,family=Gamma("log"))

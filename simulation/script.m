@@ -1,11 +1,11 @@
 %initialization
 d=1;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
-ploton = 0; % 1 or 0
+ploton = 1; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['171204'];
-IP =['afterIP'];        %IP or Tonic or afterIP
-separatephase = ['separatephase'];      %separatephase or notseparate
+id=['171211'];
+IP =['IP'];        %IP or Tonic or afterIP
+separatephase = ['notseparate'];      %separatephase or notseparate
 Network = ['lattice'];
 reward = ['negativereward'];
 feedbacktime=1;

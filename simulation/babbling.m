@@ -74,7 +74,7 @@ if strcmp(IP,'IP')
  TI.max = -15.2;             %for IP
  etaIP = 0.005;          %for IP 0.01
  threshold = -55.1;          %for IP  -55.1
- sumweight =50;          %for IP
+ sumweight =1000;          %for SN(amount of wight of output-motor)
  %HIP = 1/200  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
  %%%%%%%%%%%%%%%%%%%%
  %normal distribution
@@ -242,9 +242,9 @@ end
         
         %%%%%%% SN
         sesum = sum(sum(s(1:Ne,:)));
-        smsum = sum(sum(sout));
+        %smsum = sum(sum(sout));
 %        s = s/sum(sum(s));
-%        sout = sumweight*sout/sum(sum(sout));
+         sout = sumweight*sout/sum(sum(sout));
     end
     
     
@@ -338,6 +338,8 @@ clearvars newT;
 % Absolute path where Praat can be found.
 praatPathpc = 'c:\users\Takimto\Praat\Praat';
 praatPathmac = '/Applications/Praat.app/Contents/MacOS/Praat';
+praatPathlinux = '/usr/bin/praat';
+
 
 datahistsize=((1000-muscsmooth)/feedbacktime);
 %{
@@ -441,8 +443,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             fired_out = find((v(Ninp + outInd)-TEI(Ninp + outInd))>=threshold);
             fired_inp = find((v(inpInd) - TEI(inpInd))>=threshold);
             
-            fired_mot = find((v_mot-TE.m)>=threshold);
-            
+            %fired_mot = find((v_mot-TE.m)>=threshold);     %IP for motor
+            fired_mot = find((v_mot)>=30);      %not IP for motor neuron
             
             
             %%%%%%%%% SN
@@ -451,7 +453,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             %s_e = s(1:Ne,:)/sum(sum(s(1:Ne,:)));%ŽÀŒ±
             s = [s_e ; s_i];
             %sout = smsum*sout/sum(sum(sout));
-            sout = 10*sout/sum(sum(sout));%ŽÀŒ±
+            sout = sumweight*sout/sum(sum(sout));%ŽÀŒ±
             
             
         elseif strcmp(IP,'afterIP')
@@ -468,7 +470,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             %s_e = s(1:Ne,:)/sum(sum(s(1:Ne,:)));%ŽÀŒ±
             s = [s_e ; s_i];
             %sout = smsum*sout/sum(sum(sout));
-            sout = 10*sout/sum(sum(sout));%ŽÀŒ±
+            sout = sumweight*sout/sum(sum(sout));%ŽÀŒ±
         end
         
         
@@ -650,10 +652,12 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
          
         end
         
-
-
         
-fired_mot = find((v_mot-TE.m)>=threshold);
+        
+        
+        
+        %fired_mot = find((v_mot-TE.m)>=threshold);     %IP for motor 
+        fired_mot = find((v_mot)>=30);     %not IP for motor
         % Every testint seconds, use the motor neuron spikes to generate a sound.
         if (mod(sec,testint)==0)
 
@@ -662,8 +666,11 @@ fired_mot = find((v_mot-TE.m)>=threshold);
                 firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
                 
             elseif strcmp(IP,'IP')
-                firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
-                firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
+                %firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
+                %firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
+                
+                firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
+                firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
                 
             elseif strcmp(IP,'afterIP')
                 firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
@@ -759,6 +766,11 @@ fired_mot = find((v_mot-TE.m)>=threshold);
                     elseif ispc
                             system([praatPathpc, ' --run ', wavdir,'\ressynth_',id,num2str(sec,'%d'),'.praat']);
                             delete([wavdir,'\ressynth_',id,num2str(sec,'%d'),'.praat']);  %delete praat script
+                            
+                    elseif isunix
+                        
+                        system([praatPathlinux, ' --run ', wavdir,'\ressynth_',id,num2str(sec,'%d'),'.praat']);
+                        delete([wavdir,'\ressynth_',id,num2str(sec,'%d'),'.praat']);  %delete praat script
 
                     end
 
@@ -823,10 +835,10 @@ fired_mot = find((v_mot-TE.m)>=threshold);
             end
         end
         if strcmp(reward,'negativereward')
-            nega = nega_rate*negativereward;
+            nega(sec) = nega_rate*negativereward;
             
             if any(rew == sec*1000+t)
-                DA = DA + DAinc - nega;       %negativereward
+                DA = DA + DAinc - nega(sec);       %negativereward
             end
             
             negativereward = 0;     %initialize negativereward
@@ -854,28 +866,32 @@ fired_mot = find((v_mot-TE.m)>=threshold);
         fclose(firings_fid);
 
         % ---- plot for gif ------
+        
+        if sec == T
+            mkdir([id, '_Firings/gif_sec=',num2str(sec)]);
+            figure(23);
+            for i = 1:1000
+                colormap(gray);
+                %firing_position = zeros(100,10);
+                A = firings(find(firings(:,1)==i),2);
+                row = zeros(1);
+                col = zeros(1);
+                for j=1:size(A)
+                    [row(j), col(j)] = find(NeuronID_Position==A(j));
+                end
 
-        mkdir([id, '_Firings/gif_sec=',num2str(sec)]);
-        for i = 1:1000
-            colormap(gray);
-            %firing_position = zeros(100,10);
-            A = firings(find(firings(:,1)==i),2);
-            row = zeros(1);
-            col = zeros(1);
-            for j=1:size(A)
-                [row(j), col(j)] = find(NeuronID_Position==A(j));
+
+
+                %firing_position_reverse = imcomplement(firing_position);
+                    fig15 = plot(col(1:end),row(1:end),'.'); % Plot the output neurons'' spikes
+                    title(['Neuron Firings',num2str(i)], 'fontweight','bold');
+                    axis([0 10 0 100]);
+                    saveas(fig15,[id, '_Firings/gif_sec=',num2str(sec),'/time=',num2str(i),'.png']);
+                    clearvars row col;
+
             end
-             
-            
-            %{
-            %firing_position_reverse = imcomplement(firing_position);
-                fig15 = plot(col(1:end),row(1:end),'.'); % Plot the output neurons'' spikes
-                title('Neuron Firings', 'fontweight','bold');
-                axis([0 10 0 100]);
-                saveas(fig15,[id, '_Firings/gif_sec=',num2str(sec),'/time=',num2str(i),'.png']);
-                clearvars row col;
-        %}
         end
+        
         
         %HIImageConvert2GIF([id, '_Firings/gif_sec=',num2str(sec),'/*.png'], [id, '_Firings/gif_sec=',num2str(sec),'/',num2str(sec),'.gif'], 0.1) ;
         % ----- end for gif ------
@@ -970,7 +986,7 @@ fired_mot = find((v_mot-TE.m)>=threshold);
     sout_hist{sec}=sout;
     
     %for negative reward
-    display(['nega= ',num2str(nega)]);
+    display(['nega= ',num2str(nega(sec))]);
     display(['DA= ',num2str(DA)]);
 
     % Preparing STDP and firings for the following 1000 ms.
@@ -1011,18 +1027,25 @@ fired_mot = find((v_mot-TE.m)>=threshold);
         saveas(fig2,[workspacedir,'/LAP_spectrum',num2str(sec),'.png']);
 
         % wright weight
-        csvwrite([workspacedir,'/sout_',sec,'.csv'],sout);
-        csvwrite([workspacedir,'/s',sec,'.csv'],s);
- %       csvwrite([workspacedir,'/sinp',sec,'.csv'],sinp);
+        csvwrite([workspacedir,'/sout_',num2str(sec),'.csv'],sout);
+        csvwrite([workspacedir,'/s',num2str(sec),'.csv'],s);
+        %csvwrite([workspacedir,'/sinp',sec,'.csv'],sinp);
+        
+
+
     end
 
 
     toc;
   
     if sec==T
-        number=[1:T].'; %'
-        salhistdate=[salhist,number];
-        csvwrite([workspacedir,'/',id,'.csv'],salhistdate);
+        number=[1:T].'; %' 
+        salhistdate=[salhist,number,nega.'];
+        csvwrite([workspacedir,'/',id,'.csv'],salhistdate);     %write salhist data and negativereward to csv
+        
+
+        
+        
     end
 
 end
