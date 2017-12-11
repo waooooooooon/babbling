@@ -11,7 +11,7 @@ reward = ['negativereward'];
 feedbacktime=1;
 iterate=3000;
 speinplate=0.3;
-debug=0;
+debug=1;
 
 
 %Create mean file

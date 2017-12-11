@@ -89,7 +89,8 @@ if strcmp(IP,'IP')
  mu = log((m^2)/sqrt(v+m^2));
  sigma = sqrt(log(v/(m^2)+1));
  V_HIP = lognrnd(mu,sigma,1000,1);
- m_HIP = lognrnd(mu,sigma,100,1);
+ %m_HIP = lognrnd(mu,sigma,100,1);      %lonnomal of motor neuron
+ m_HIP = normrnd(ones(100,1)/200,0.0000001);        %norml distribution
  %for debag
  %debag_HIP = V_HIP*Fs;
  %edge = logspace(0, 10, 300);
@@ -443,8 +444,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             fired_out = find((v(Ninp + outInd)-TEI(Ninp + outInd))>=threshold);
             fired_inp = find((v(inpInd) - TEI(inpInd))>=threshold);
             
-            %fired_mot = find((v_mot-TE.m)>=threshold);     %IP for motor
-            fired_mot = find((v_mot)>=30);      %not IP for motor neuron
+            fired_mot = find((v_mot-TE.m)>=threshold);     %IP for motor
+            %fired_mot = find((v_mot)>=30);      %not IP for motor neuron
             
             
             %%%%%%%%% SN
@@ -669,8 +670,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 %firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
                 %firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
                 
-                firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
-                firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
+                firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
+                firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
                 
             elseif strcmp(IP,'afterIP')
                 firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
@@ -969,6 +970,50 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
       %  ylabel('presynaptic spectrum neurons index', 'fontweight','bold');
 
     end
+    
+    
+    if debug
+        hNeural = figure(103);
+        set(hNeural, 'name', ['Neural Spiking for Second: ', num2str(sec)], 'numbertitle','off');
+        subplot(4,1,1)
+        plot(firings(:,1),firings(:,2),'.'); % Plot all the neurons'' spikes
+        title('Reservoir Firings', 'fontweight','bold');
+        axis([0 1000 0 N]);
+        subplot(4,1,2)
+        plot(outFirings(:,1),outFirings(:,2),'.'); % Plot the output neurons'' spikes
+        title('Output Neuron Firings', 'fontweight','bold');
+        axis([0 1000 0 Nout]);
+     %   subplot(5,1,3)
+     %   plot(speFirings(:,1),speFirings(:,2),'.'); % Plot the output neurons'' spikes
+     %   title('Input Neuron Firings', 'fontweight','bold');
+     %   axis([0 1000 0 Ninp]);
+        subplot(4,1,3)
+        plot(motFirings(:,1),motFirings(:,2),'.'); % Plot the motor neurons'' spikes
+        title('Motor Neuron Firings', 'fontweight','bold');
+        axis([0 1000 0 Nmot]);
+        if strcmp(reward,'negativereward')
+            subplot(4,1,4);
+            plot(filter_smoothmusc(muscsmooth:1000)); ylim([-.5,.5]); xlim([-100,900]); % Plot the smoothed sum of motor neuron spikes 1 s timeseries
+            title('Sum of Agonist/Antagonist Motor Neuron Activation', 'fontweight','bold');
+        else
+            subplot(4,1,4);
+            plot(smoothmusc(muscsmooth:1000)); ylim([-.5,.5]); xlim([-100,900]); % Plot the smoothed sum of motor neuron spikes 1 s timeseries
+            title('Sum of Agonist/Antagonist Motor Neuron Activation', 'fontweight','bold');
+        end
+        
+
+        saveas(figure(103),[firingsdir,'/Neural_Spiking_',num2str(sec),'.png']);
+
+      %  subplot(3,1,3);
+      %  imagesc(sinp)
+      % set(gca,'YDir','normal')
+      %  colorbar;
+      %  title('Synapse Strength between spectrum and input', 'fontweight','bold');
+      %  xlabel('postSynaptic input neuron index', 'fontweight','bold');
+      %  ylabel('presynaptic spectrum neurons index', 'fontweight','bold');
+
+    end
+    
     % ---- end plot ------
     
 
