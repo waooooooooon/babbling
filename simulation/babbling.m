@@ -74,7 +74,7 @@ if strcmp(IP,'IP')
  TI.max = -15.2;             %for IP
  etaIP = 0.005;          %for IP 0.01
  threshold = -55.1;          %for IP  -55.1
- sumweight =1000;          %for SN(amount of wight of output-motor)
+ sumweight =5000;          %for SN(amount of wight of output-motor)
  %HIP = 1/200  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
  %%%%%%%%%%%%%%%%%%%%
  %normal distribution
@@ -343,21 +343,8 @@ praatPathlinux = '/usr/bin/praat';
 
 
 datahistsize=((1000-muscsmooth)/feedbacktime);
-%{
-%if sparatephase, separate IP and STDP
-if strcmp(separatephase,'separatephase')
-%for STDP = {'NSTDP','STDP'} 
-for STDP = {'NSTDP'} 
-    sec = 0;
-    if strcmp(STDP,'NSTDP')
-        IP = ['IP'];
-        yoke = ['Yoked'];
-    else
-        IP = ['NIP'];
-        yoke = ['NY'];
-    end
-%if sparatephase = 1, separate IP and STDP    
-%}
+
+
 
 %RUNNING THE SIMULATION%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -444,8 +431,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             fired_out = find((v(Ninp + outInd)-TEI(Ninp + outInd))>=threshold);
             fired_inp = find((v(inpInd) - TEI(inpInd))>=threshold);
             
-            fired_mot = find((v_mot-TE.m)>=threshold);     %IP for motor
-            %fired_mot = find((v_mot)>=30);      %not IP for motor neuron
+            %fired_mot = find((v_mot-TE.m)>=threshold);     %IP for motor
+            fired_mot = find((v_mot)>=30);      %not IP for motor neuron
             
             
             %%%%%%%%% SN
@@ -670,8 +657,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 %firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
                 %firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
                 
-                firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
-                firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
+                firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
+                firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
                 
             elseif strcmp(IP,'afterIP')
                 firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
@@ -882,14 +869,14 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 end
 
 
-
+%{
                 %firing_position_reverse = imcomplement(firing_position);
                     fig15 = plot(col(1:end),row(1:end),'.'); % Plot the output neurons'' spikes
                     title(['Neuron Firings',num2str(i)], 'fontweight','bold');
                     axis([0 10 0 100]);
                     saveas(fig15,[id, '_Firings/gif_sec=',num2str(sec),'/time=',num2str(i),'.png']);
                     clearvars row col;
-
+%}
             end
         end
         

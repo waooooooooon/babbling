@@ -3,16 +3,17 @@ d=1;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['171211'];
+id=['1701212_long'];
 IP =['IP'];        %IP or Tonic or afterIP
 separatephase = ['notseparate'];      %separatephase or notseparate
 Network = ['lattice'];
 reward = ['negativereward'];
 feedbacktime=1;
-iterate=3000;
+iterate=6000;
 speinplate=0.3;
-debug=1;
+debug=0;
 
+saliencedata_dir = ['../salience_analysis/saliency_data/'];
 
 %Create mean file
 meandir=['mean'];
@@ -64,6 +65,8 @@ for j = 1:2
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
 end
+
+mkdir([saliencedata_dir,id]);
 
 
 
