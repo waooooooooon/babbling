@@ -95,7 +95,7 @@ if strcmp(IP,'IP')
  %debag_HIP = V_HIP*Fs;
  %edge = logspace(0, 10, 300);
  %h=histogram(debag_HIP,edge);set(gca,'Xscale','log');xlim([0 100]);
-%%%%%%%%%%%%%%%%%%%%%%
+ %%%%%%%%%%%%%%%%%%%%%%
 
 end
 
@@ -547,6 +547,9 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             del_mot=delays_mot{outFirings(k,2),t-outFirings(k,1)+1};
             ind_mot = post_mot(outFirings(k,2),del_mot);   %del_mot=1:Nmot ind_mot=
             I_mot(ind_mot)=I_mot(ind_mot)+2*sout(outFirings(k,2), del_mot)';%'
+            
+            %sd_mot(outFirings(k,1),:)=sd_mot(outFirings(k,1),:)-1.5*STDP_mot(:,t+D)'; % LTD of motor neuron
+            
             k=k-1;
         end;
 

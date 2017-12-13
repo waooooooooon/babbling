@@ -1,5 +1,5 @@
 id = ['1_1701212_long_6000_reinforce_100_4_No_0_1_0.03_0.3_STDP_IP_notseparate_lattice_negativereward_Firings/'];
-dir = ['firingdata/',id];
+dir = ['data/',id];
 filename = ['babble_daspnet_firings_1_1701212_long_6000_reinforce_100_4_No_0_1_0.03_0.3_STDP_IP_notseparate_lattice_negativereward_6000.txt']
 
 

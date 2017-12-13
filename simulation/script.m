@@ -9,7 +9,7 @@ separatephase = ['notseparate'];      %separatephase or notseparate
 Network = ['lattice'];
 reward = ['negativereward'];
 feedbacktime=1;
-iterate=6000;
+iterate=10;
 speinplate=0.3;
 debug=0;
 
