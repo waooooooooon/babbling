@@ -44,3 +44,7 @@
 #salience_ananlysisのdataを無視
 /salience_analysis/saliency_data/*
 
+#grafic内のデータ無視
+/grafic/feedback_gif/data/*
+/grafic/firings/data/*
+
