@@ -334,7 +334,7 @@ else
         %strcmp
         temprewhist=zeros(1,10); % Keeps track of rewards given at a threshold value for up to 10 previous sounds.
 
-
+end
 
 
 T=newT;
