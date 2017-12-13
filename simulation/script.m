@@ -1,15 +1,15 @@
 %initialization
 d=1;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
-ploton = 0; % 1 or 0
+ploton = 1; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['1701212_long'];
+id=['1701213_LTD'];
 IP =['IP'];        %IP or Tonic or afterIP
 separatephase = ['notseparate'];      %separatephase or notseparate
-Network = ['lattice'];
+Network = ['random'];      %lattice or random
 reward = ['negativereward'];
 feedbacktime=1;
-iterate=10;
+iterate=3000;
 speinplate=0.3;
 debug=0;
 

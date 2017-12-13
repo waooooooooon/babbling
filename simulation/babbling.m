@@ -142,7 +142,8 @@ end
 
     workspaceFilename=[workspacedir,'/babble_daspnet_reservoir_',id,'.mat'];
 
-% Creating import names.
+
+    % Creating import names.
 
     importFilename=[setdir,'/initial.mat'];
 
@@ -169,6 +170,9 @@ elseif strcmp(separatephase,'separatephase')
 end
 
 
+if exist(workspaceFilename) > 0
+    load(workspaceFilename);
+else
 
 
 
@@ -219,8 +223,8 @@ end
   %  for i=1:Ninp
   %      delays_inp{i,1}=1:Nspe;
   % end
-    STDP_mot = zeros(Nout,1001+D); % out motor STDP matrix
- %  STDP_spe = zeros(Nspe,1001+D); % spe inp STDP matrix
+    STDP_out = zeros(Nout,1001+D); % out motor STDP matrix
+    STDP_mot = zeros(Nout,1001+D); % spe inp STDP matrix
 
 
     if strcmp(STDP,'STDP')
@@ -245,7 +249,7 @@ end
         sesum = sum(sum(s(1:Ne,:)));
         %smsum = sum(sum(sout));
 %        s = s/sum(sum(s));
-         sout = sumweight*sout/sum(sum(sout));
+         %sout = sumweight*sout/sum(sum(sout));
     end
     
     
@@ -441,7 +445,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             %s_e = s(1:Ne,:)/sum(sum(s(1:Ne,:)));%ŽÀŒ±
             s = [s_e ; s_i];
             %sout = smsum*sout/sum(sum(sout));
-            sout = sumweight*sout/sum(sum(sout));%ŽÀŒ±
+            %sout = sumweight*sout/sum(sum(sout));%ŽÀŒ±
             
             
         elseif strcmp(IP,'afterIP')
@@ -458,7 +462,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             %s_e = s(1:Ne,:)/sum(sum(s(1:Ne,:)));%ŽÀŒ±
             s = [s_e ; s_i];
             %sout = smsum*sout/sum(sum(sout));
-            sout = sumweight*sout/sum(sum(sout));%ŽÀŒ±
+            %sout = sumweight*sout/sum(sum(sout));%ŽÀŒ±
         end
         
         
@@ -472,15 +476,17 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
    %    u_spe(fired_spe)=u_spe(fired_spe)+d_spe(fired_spe);
 
         % Spike-timing dependent plasticity computations:
-        STDP_mot(fired_out,t+D)=0.1; % Keep a record of when the output neurons spiked.
-   %    STDP_spe(fired_spe,t+D)=0.1; % Keep a record of when the spectrum neurons spiked.
+        STDP_out(fired_out,t+D)=0.1; % Keep a record of when the output neurons spiked.
+        STDP_mot(fired_mot,t+D)=0.1; % Keep a record of when the spectrum neurons spiked.
         if strcmp(STDP,'STDP')
         STDP_reservor(fired,t+D)=0.1; %inter reservor STDPmatrix record
 
 
          for k=1:length(fired)
                 sd_reservor(pre{fired(k)})=sd_reservor(pre{fired(k)})+STDP_reservor(N*t+aux{fired(k)}); %LTP A plus 1
-                % pre{fired(1)=54}=52,78,210,277,350,372,734
+                % pre{fired(1)=54}=52,78,210,277,350,372,73
+               
+                
          end;
 
 
@@ -488,12 +494,9 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
 
         for k=1:length(fired_mot)
-                sd_mot(:,fired_mot(k))=sd_mot(:,fired_mot(k))+STDP_mot(:,t); % Adjusting sd for synapses eligible for potentiation.LTP
+                sd_mot(:,fired_mot(k))=sd_mot(:,fired_mot(k))+STDP_out(:,t); % Adjusting sd for synapses eligible for potentiation.LTP
         end
-   %    for k=1:length(fired_inp)
-   %            sd_spe(:,fired_inp(k))=sd_spe(:,fired_inp(k))+STDP_spe(:,t); % Adjusting sd for synapses eligible for potentiation.LTP
-   %    end
-
+   
 
         firings=[firings;t*ones(length(fired),1),fired];                % Update the record of when neuronal firings occurred.
         outFirings=[outFirings;t*ones(length(fired_out),1),fired_out];  %
@@ -531,7 +534,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 I(ind)=I(ind)+s(firings(k,2), del)';%'
              if strcmp(STDP,'STDP')
 
-              sd_reservor(firings(k,2),del)=sd_reservor(firings(k,2),del)-1.5*STDP_reservor(ind,t+D)';%'LTD A-1.5
+              sd_reservor(firings(k,2),del)=sd_reservor(firings(k,2),del)-1.5*STDP_reservor(ind,t+D)';
+              %'LTD A-1.5,firings(k,2) = pre firing,ind = post neuron,STDP_reservor(ind,t+D)=firing history of post neuron(pre at t) at t+Dlater 
              end
 
                 k=k-1;
@@ -543,12 +547,12 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         
         % Calculating currents to add for motor neurons.
         k=size(outFirings,1);
-        while outFirings(k,1)>t-D
+        while outFirings(k,1)>t-D       %D = 1
             del_mot=delays_mot{outFirings(k,2),t-outFirings(k,1)+1};
             ind_mot = post_mot(outFirings(k,2),del_mot);   %del_mot=1:Nmot ind_mot=
             I_mot(ind_mot)=I_mot(ind_mot)+2*sout(outFirings(k,2), del_mot)';%'
             
-            %sd_mot(outFirings(k,1),:)=sd_mot(outFirings(k,1),:)-1.5*STDP_mot(:,t+D)'; % LTD of motor neuron
+            sd_mot(outFirings(k,2),:)=sd_mot(outFirings(k,2),:)-1.5*STDP_mot(:,t+D)'; % LTD of motor neuron 
             
             k=k-1;
         end;
@@ -584,8 +588,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
 
                 % Exponential decay of the traces of presynaptic neuron firing
+        STDP_out(:,t+D+1)=0.95*STDP_out(:,t+D);                             % tau = 20 ms
         STDP_mot(:,t+D+1)=0.95*STDP_mot(:,t+D);                             % tau = 20 ms
-  %     STDP_spe(:,t+D+1)=0.95*STDP_spe(:,t+D);                             % tau = 20 ms
 
         if strcmp(STDP,'STDP')
 
@@ -1025,8 +1029,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
     display(['DA= ',num2str(DA)]);
 
     % Preparing STDP and firings for the following 1000 ms.
+    STDP_out(:,1:D+1)=STDP_out(:,1001:1001+D);
     STDP_mot(:,1:D+1)=STDP_mot(:,1001:1001+D);
-%    STDP_spe(:,1:D+1)=STDP_spe(:,1001:1001+D);
     ind = find(firings(:,1) > 1001-D);
     firings=[-D 0;firings(ind,1)-1000,firings(ind,2)];
     ind_out = find(outFirings(:,1) > 1001-D);
