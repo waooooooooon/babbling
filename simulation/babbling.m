@@ -62,6 +62,12 @@ muscle_number=0;
 negativereward = 0;
 nega_rate=1/10;
 
+
+%
+sparse_mot = 1;   %1 or 0 
+sparse_degree = 80; % number of synapse from out to motor Nout - sparse_degree
+
+
 %for low pass filter
 cutoff_frequency = 10; % Design a 70th order lowpass FIR filter with cutoff frequency of 75 Hz.
 Fs = 1000;                    % sample rate in Hz
@@ -339,6 +345,19 @@ else
     v_spe_hist={};
     sinp_hist={};
     feedbackhist=zeros(100,1);
+    
+    
+    % sparse out-motor synapse
+    if sparse_mot == 1
+        
+        for i = 1:Nout
+            zero_mot{i} = randperm(100,sparse_degree);
+        end
+        
+        
+        
+    end
+    
 
     % Initializing reward policy variables.
         %strcmp
@@ -610,6 +629,18 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 % Exponential decay of the dopamine concentration over time.
         DA=DA*0.995;
 
+        
+      
+        if sparse_mot == 1
+            
+            for i = 1:Nout
+                sd_mot(i,zero_mot{i}) = 0;
+                sout(i,zero_mot{i}) = 0;
+            end
+            
+        end
+  
+        
         % Modify synaptic weights.
         if (mod(t,10)==0)
             if strcmp(reinforce,'reinforce')
@@ -845,7 +876,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             if any(rew == sec*1000+t)
                 DA = DA + DAinc - nega(sec);       %negativereward
             end
-            
+            DA_history(sec) = DA;
             negativereward = 0;     %initialize negativereward
         end
         
@@ -1091,7 +1122,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
   
     if sec==T
         number=[1:T].'; %' 
-        salhistdate=[salhist,number,nega.'];
+        salhistdate=[salhist,number,nega.',DA_history.'];
         csvwrite([workspacedir,'/',id,'.csv'],salhistdate);     %write salhist data and negativereward to csv
         
 

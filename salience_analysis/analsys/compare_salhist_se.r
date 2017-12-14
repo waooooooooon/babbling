@@ -51,10 +51,10 @@ reward <- "negativereward"
 
 #for GAM
 # Load the data:
-file_1 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#red No_NSTD
-file_2 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#blue No_STDP
-file_3 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#green Sc_NSTD
-file_4 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#black Sc_STDP
+file_1 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_history"))#red No_NSTD
+file_2 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_history"))#blue No_STDP
+file_3 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_history"))#green Sc_NSTD
+file_4 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_history"))#black Sc_STDP
 
 
 #for negative reward
