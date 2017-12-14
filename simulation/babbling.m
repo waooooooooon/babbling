@@ -61,6 +61,7 @@ LST_hist=[1:1000];
 muscle_number=0;
 negativereward = 0;
 nega_rate=1/10;
+mot_thre = 10;
 
 
 %
@@ -465,7 +466,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             fired_inp = find((v(inpInd) - TEI(inpInd))>=threshold);
             
             %fired_mot = find((v_mot-TE.m)>=threshold);     %IP for motor
-            fired_mot = find((v_mot)>=30);      %not IP for motor neuron
+            fired_mot = find((v_mot)>=mot_thre);      %not IP for motor neuron
             
             
             %%%%%%%%% SN
@@ -692,8 +693,6 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         
         
         
-        %fired_mot = find((v_mot-TE.m)>=threshold);     %IP for motor 
-        fired_mot = find((v_mot)>=30);     %not IP for motor
         % Every testint seconds, use the motor neuron spikes to generate a sound.
         if (mod(sec,testint)==0)
 
@@ -705,8 +704,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 %firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
                 %firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
                 
-                firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
-                firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
+                firedmusc1pos=find(v_mot(1:Nmot/2)>=mot_thre); % Find out which of the jaw/lip motor neurons fired.
+                firedmusc1neg=find(v_mot(Nmot/2+1:end)>=mot_thre);
                 
             elseif strcmp(IP,'afterIP')
                 firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.

@@ -30,17 +30,16 @@ rbindCOrder <- function(...)  {
 
 
 #title
-title <- "sumweight_5000"
-
+title <- "1701212_longnoipmotor"
 
 #load the directory 
 dir <- "~/babbling/salience_analysis/saliency_data/"
-filename <- "20171212/"
+filename <- "20171212_longnoipmotor/"
 csvfile <- "csv/"
 
 #filename
-id <- "sumweight_5000"
-iterate <- "3000"
+id <- title
+iterate <- "6000"
 ploton <- "0"
 IP <- "IP"
 phase <-"notseparate"
@@ -51,10 +50,10 @@ reward <- "negativereward"
 
 #for GAM
 # Load the data:
-file_1 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_history"))#red No_NSTD
-file_2 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_history"))#blue No_STDP
-file_3 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_history"))#green Sc_NSTD
-file_4 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_history"))#black Sc_STDP
+file_1 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#red No_NSTD
+file_2 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#blue No_STDP
+file_3 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#green Sc_NSTD
+file_4 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#black Sc_STDP
 
 
 #for negative reward
@@ -158,12 +157,12 @@ g <- ggplot(gam_all,aes(x=sec,y=fit,group=group)) +
 #setting of graf
   theme_bw(base_size=30)+
   labs(x = "sec", y = "salience", size=2) +
-  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20))+
+  theme(axis.title.x = element_text(size=5),axis.title.y = element_text(size=5))+
   scale_color_manual(name="",values=c("Auditory feedback with STDP"="blue","Auditory feedback without STDP"="green","Scramble feedback with STDP"="red","Scramble feedback without STDP"="yellow"))+
  # theme(legend.position = "top")
   guides(fill=FALSE)
 
-g=g+xlim(0,3000)+ylim(4,16)  +theme(legend.position = "right")
+g=g+xlim(0,6000)+ylim(4,16)  +theme(legend.position = "right")
 
 #negative reward
 g2 <- ggplot(rewa_all,aes(x = sec,y = reward,group = group,colour = group))+
