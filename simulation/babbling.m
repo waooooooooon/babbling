@@ -294,8 +294,18 @@ else
         %caliculate Post neuron (neuron ID data)
         for i = 1:1000
         size_neuron{i} = 2:max(find(Post_position(find(NeuronID_Position==i),:)~=0));
-        Post.lattice(i,size_neuron{i}) = NeuronID_Position(Post_position(find(NeuronID_Position==i),size_neuron{i})); %this sentense create new post matrix
+        Post.lattice(i,size_neuron{i}) = NeuronID_Position(Post_position(find(NeuronID_Position==i),size_neuron{i})); %this sentense create new post matrix(neuron ID)
         end
+        
+        
+        %create pre and aux for STDP
+        
+        for i=1:N
+            
+            pre{i}=find(Post.lattice==i&s>0);             % pre excitatory neuron
+            aux{i}=N*(D-1-ceil(ceil(pre{i}/N)/(M/D)))+1+mod(pre{i}-1,N);
+        end
+        
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%% end of create lattice network
