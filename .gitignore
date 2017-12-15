@@ -48,3 +48,6 @@
 /grafic/feedback_gif/data/*
 /grafic/firings/data/*
 
+#data 
+/created_data/*
+
