@@ -1,9 +1,9 @@
 %initialization
 d=1;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
-ploton = 1; % 1 or 0
+ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['1701213_LTD'];
+id=['1701215_sparse70'];
 IP =['IP'];        %IP or Tonic or afterIP
 separatephase = ['notseparate'];      %separatephase or notseparate
 Network = ['lattice'];      %lattice or random
@@ -22,7 +22,7 @@ if ~exist(meandir,'dir')
 end
 mkdir([meandir,'/',meandir],'dir');
 
-for j = 1:2
+for j = 2:2
     yoked = YOKED(j,:);
     for i =1:2
         stdp = STDP(i,:);

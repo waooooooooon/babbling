@@ -30,16 +30,16 @@ rbindCOrder <- function(...)  {
 
 
 #title
-title <- "1701212_longnoipmotor"
+title <- "1701215_sparse70"
 
 #load the directory 
 dir <- "~/babbling/salience_analysis/saliency_data/"
-filename <- "20171212_longnoipmotor/"
+filename <- "171215_sparse70ver2/"
 csvfile <- "csv/"
 
 #filename
 id <- title
-iterate <- "6000"
+iterate <- "3000"
 ploton <- "0"
 IP <- "IP"
 phase <-"notseparate"
@@ -50,10 +50,10 @@ reward <- "negativereward"
 
 #for GAM
 # Load the data:
-file_1 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#red No_NSTD
-file_2 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#blue No_STDP
-file_3 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#green Sc_NSTD
-file_4 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward"))#black Sc_STDP
+file_1 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#red No_NSTD
+file_2 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#blue No_STDP
+file_3 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#green Sc_NSTD
+file_4 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#black Sc_STDP
 
 
 #for negative reward
@@ -162,23 +162,13 @@ g <- ggplot(gam_all,aes(x=sec,y=fit,group=group)) +
  # theme(legend.position = "top")
   guides(fill=FALSE)
 
-g=g+xlim(0,6000)+ylim(4,16)  +theme(legend.position = "right")
+g=g+xlim(0,3000)+ylim(4,12)  +theme(legend.position = "right")
 
 #negative reward
 g2 <- ggplot(rewa_all,aes(x = sec,y = reward,group = group,colour = group))+
 
   geom_line(aes(linetype = group), size = 0.2,)
 
-
-
-
-#plot
-plot(g)
-
-#Save as pdf
-quartz.save(paste(dir, filename,title,".pdf", sep = ""),type="pdf")
-
-dev.off()
 
 #plot
 plot(g2)
@@ -187,6 +177,16 @@ plot(g2)
 quartz.save(paste(dir, filename,title,"_nrewa.pdf", sep = ""),type="pdf")
 
 
+
+#dev.off()
+
+
+
+#plot
+plot(g)
+
+#Save as pdf
+quartz.save(paste(dir, filename,title,".pdf", sep = ""),type="pdf")
 
 
 

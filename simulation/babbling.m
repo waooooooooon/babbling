@@ -61,12 +61,12 @@ LST_hist=[1:1000];
 muscle_number=0;
 negativereward = 0;
 nega_rate=1/10;
-mot_thre = 10;
+mot_thre = 0;
 
 
 %
 sparse_mot = 1;   %1 or 0 
-sparse_degree = 80; % number of synapse from out to motor Nout - sparse_degree
+sparse_degree = 70; % number of synapse from out to motor Nout - sparse_degree
 
 
 %for low pass filter
