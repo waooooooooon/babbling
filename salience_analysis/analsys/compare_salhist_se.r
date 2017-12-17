@@ -4,6 +4,7 @@ library(GGally)
 library(MuMIn)
 library(openxlsx)
 
+
 #----------------------------------------------------------#
 #  rbindCOorder(df1,df2,df3…)
 # 列名無視して順序で結合。三つ以上のデータフレームにも対応
@@ -29,12 +30,17 @@ rbindCOrder <- function(...)  {
 #----------------------------------------------------------#
 
 
+moving_average <- function(x, n){
+  filter(x, rep(1,n)) / n
+}
+
+
 #title
 title <- "1701215_sparse70"
 
 #load the directory 
-dir <- "~/babbling/salience_analysis/saliency_data/"
-filename <- "171215_sparse70ver2/"
+dir <- "~/babbling/created_data/"
+filename <- "1701215_sparse70/"
 csvfile <- "csv/"
 
 #filename
@@ -56,11 +62,20 @@ file_3 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_1
 file_4 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#black Sc_STDP
 
 
+
+
+
 #for negative reward
 nrewa1 <-data.frame(sec = file_1$sec,reward = file_1$n_reward,group="Auditory feedback without STDP")
 nrewa2 <-data.frame(sec = file_2$sec,reward = file_2$n_reward,group="Auditory feedback with STDP")
 nrewa3 <-data.frame(sec = file_3$sec,reward = file_3$n_reward,group="Scramble feedback without STDP")
 nrewa4 <-data.frame(sec = file_4$sec,reward = file_4$n_reward,group="Scramble feedback with STDP")
+
+#for DA_hist
+DA1 <-data.frame(sec = file_1$sec,DA_hist = file_1$DA_hist,group="Auditory feedback without STDP")
+DA2 <-data.frame(sec = file_2$sec,DA_hist = file_2$DA_hist,group="Auditory feedback with STDP")
+DA3 <-data.frame(sec = file_3$sec,DA_hist = file_3$DA_hist,group="Scramble feedback without STDP")
+DA4 <-data.frame(sec = file_4$sec,DA_hist = file_4$DA_hist,group="Scramble feedback with STDP")
 
 
 
@@ -134,7 +149,11 @@ gamlast4 <- gam.pred_4[length(gam.pred_4[,1]),]
 #データフレームの結合(GAM)
 gam_all=rbindCOrder(gam1,gam2,gam3,gam4,gamlast1,gamlast2,gamlast3,gamlast4)
 rewa_all <- rbindCOrder(nrewa1,nrewa2,nrewa3,nrewa4)
+DA_all <- rbindCOrder(DA1,DA2,DA3,DA4)
 
+#moving average
+rewa_all$reward <- moving_average(rewa_all$reward,50)
+DA_all$DA_hist <- moving_average(DA_all$DA_hist,50)
 
 
 
@@ -170,11 +189,25 @@ g2 <- ggplot(rewa_all,aes(x = sec,y = reward,group = group,colour = group))+
   geom_line(aes(linetype = group), size = 0.2,)
 
 
+#negative reward
+g3 <- ggplot(DA_all,aes(x = sec,y = DA_hist,group = group,colour = group))+
+
+  geom_line(aes(linetype = group), size = 0.2,)
+
+
+
+
 #plot
 plot(g2)
 
 #Save as pdf
 quartz.save(paste(dir, filename,title,"_nrewa.pdf", sep = ""),type="pdf")
+
+#plot
+plot(g3)
+
+#Save as pdf
+quartz.save(paste(dir, filename,title,"_DA.pdf", sep = ""),type="pdf")
 
 
 
