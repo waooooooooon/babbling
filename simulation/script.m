@@ -3,13 +3,13 @@ d=1;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['1701215_sparse70'];
+id=['1701215_sparse70long'];
 IP =['IP'];        %IP or Tonic or afterIP
 separatephase = ['notseparate'];      %separatephase or notseparate
 Network = ['lattice'];      %lattice or random
 reward = ['negativereward'];
 feedbacktime=1;
-iterate=3000;
+iterate=4000;
 speinplate=0.3;
 debug=0;
 
@@ -22,7 +22,7 @@ if ~exist(meandir,'dir')
 end
 mkdir([meandir,'/',meandir],'dir');
 
-for j = 2:2
+for j = 1:1
     yoked = YOKED(j,:);
     for i =1:2
         stdp = STDP(i,:);
@@ -65,9 +65,6 @@ for j = 2:2
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
 end
-
-mkdir([saliencedata_dir,id]);
-
 
 
 
