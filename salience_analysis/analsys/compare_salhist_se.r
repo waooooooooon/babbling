@@ -72,10 +72,10 @@ nrewa3 <-data.frame(sec = file_3$sec,reward = file_3$n_reward,group="Scramble fe
 nrewa4 <-data.frame(sec = file_4$sec,reward = file_4$n_reward,group="Scramble feedback with STDP")
 
 #for DA_hist
-DA1 <-data.frame(sec = file_1$sec,DA_hist = file_1$DA_hist,group="Auditory feedback without STDP")
-DA2 <-data.frame(sec = file_2$sec,DA_hist = file_2$DA_hist,group="Auditory feedback with STDP")
-DA3 <-data.frame(sec = file_3$sec,DA_hist = file_3$DA_hist,group="Scramble feedback without STDP")
-DA4 <-data.frame(sec = file_4$sec,DA_hist = file_4$DA_hist,group="Scramble feedback with STDP")
+DA1 <-data.frame(sec = file_1$sec,DA_hist = cumsum(file_1$DA_hist),group="Auditory feedback without STDP")
+DA2 <-data.frame(sec = file_2$sec,DA_hist = cumsum(file_2$DA_hist),group="Auditory feedback with STDP")
+DA3 <-data.frame(sec = file_3$sec,DA_hist = cumsum(file_3$DA_hist),group="Scramble feedback without STDP")
+DA4 <-data.frame(sec = file_4$sec,DA_hist = cumsum(file_4$DA_hist),group="Scramble feedback with STDP")
 
 
 
@@ -140,20 +140,33 @@ gam2 <- gam.pred_2[0:(length(gam.pred_2[,1])/step) *step +1, ]
 gam3 <- gam.pred_3[0:(length(gam.pred_3[,1])/step) *step +1, ]
 gam4 <- gam.pred_4[0:(length(gam.pred_4[,1])/step) *step +1, ]
 
-
 gamlast1 <- gam.pred_1[length(gam.pred_1[,1]),]
 gamlast2 <- gam.pred_2[length(gam.pred_2[,1]),]
 gamlast3 <- gam.pred_3[length(gam.pred_3[,1]),]
 gamlast4 <- gam.pred_4[length(gam.pred_4[,1]),]
 
+step <-100
+
+DAt1 <- DA1[0:(length(DA1[,1])/step) *step +1, ]
+DAt2 <- DA2[0:(length(DA2[,1])/step) *step +1, ]
+DAt3 <- DA3[0:(length(DA3[,1])/step) *step +1, ]
+DAt4 <- DA4[0:(length(DA4[,1])/step) *step +1, ]
+
+
+DAlast1 <- DA1[length(DA1[,1]),]
+DAlast2 <- DA2[length(DA2[,1]),]
+DAlast3 <- DA3[length(DA3[,1]),]
+DAlast4 <- DA4[length(DA4[,1]),]
+
+
 #データフレームの結合(GAM)
 gam_all=rbindCOrder(gam1,gam2,gam3,gam4,gamlast1,gamlast2,gamlast3,gamlast4)
 rewa_all <- rbindCOrder(nrewa1,nrewa2,nrewa3,nrewa4)
-DA_all <- rbindCOrder(DA1,DA2,DA3,DA4)
+DA_all <- rbindCOrder(DAt1,DAt2,DAt3,DAt4,DAlast1,DAlast2,DAlast3,DAlast4)
 
 #moving average
 rewa_all$reward <- moving_average(rewa_all$reward,50)
-DA_all$DA_hist <- moving_average(DA_all$DA_hist,50)
+#DA_all$DA_hist <- moving_average(DA_all$DA_hist,50)
 
 
 
@@ -184,15 +197,45 @@ g <- ggplot(gam_all,aes(x=sec,y=fit,group=group)) +
 g=g+xlim(0,3000)+ylim(4,12)  +theme(legend.position = "right")
 
 #negative reward
-g2 <- ggplot(rewa_all,aes(x = sec,y = reward,group = group,colour = group))+
+g2 <- ggplot(rewa_all,aes(x=sec,y=reward,group=group,colour = group)) +
 
-  geom_line(aes(linetype = group), size = 0.2,)
+ # geom_point(aes(shape = group), size=4)+
+  geom_line(aes(linetype = group))+
 
 
-#negative reward
+#setting of graf
+  theme_bw(base_size=30)+
+  labs(x = "sec", y = "negative reward", size=2) +
+  theme(axis.title.x = element_text(size=5),axis.title.y = element_text(size=5))+
+  #scale_color_manual(name="",values=c("Auditory feedback with STDP"="blue","Auditory feedback without STDP"="green","Scramble feedback with STDP"="red","Scramble feedback without STDP"="yellow"))+
+ # theme(legend.position = "top")
+  guides(fill=FALSE)
+
+g2=g2+xlim(0,3000)+ylim(0,0.4)  +theme(legend.position = "right")
+
+
+
+#DA_history
 g3 <- ggplot(DA_all,aes(x = sec,y = DA_hist,group = group,colour = group))+
 
   geom_line(aes(linetype = group), size = 0.2,)
+
+g3 <- ggplot(DA_all,aes(x=sec,y=DA_hist,group=group)) +
+
+  geom_point(aes(shape = group), size=4)+
+  geom_line(aes(linetype = group))+
+
+
+#setting of graf
+  theme_bw(base_size=30)+
+  labs(x = "sec", y = "reward", size=2) +
+  theme(axis.title.x = element_text(size=5),axis.title.y = element_text(size=5))+
+  scale_color_manual(name="",values=c("Auditory feedback with STDP"="blue","Auditory feedback without STDP"="green","Scramble feedback with STDP"="red","Scramble feedback without STDP"="yellow"))+
+ # theme(legend.position = "top")
+  guides(fill=FALSE)
+
+g3=g3+xlim(0,3000)+ylim(0,450)  +theme(legend.position = "right")
+
 
 
 
@@ -249,7 +292,7 @@ writeData(wb, sheet = 'Scramble+NSTDP', x = gam.pred_4, withFilter=F)
 # "MS Pゴシック"や"ＭＳ　Ｐゴシック"を指定すると、xlsx ファイルが壊れました。
 modifyBaseFont(wb, fontSize = 11, fontColour = "#000000", fontName = "MS PGothic")
 # 上書きを許可しない場合、overwrite = F とする。
-saveWorkbook(wb,paste(dir, filename,title,".xlsx", sep = "") ,overwrite = F)
+saveWorkbook(wb,paste(dir, filename,title,".xlsx", sep = "") ,overwrite = T)
 
 #openXL("~/Dropbox/osakauniversity/program/analsys/salhist_GAM/Yoked_vs_NY/2000/analsys/salhist_se.xlsx")
 
