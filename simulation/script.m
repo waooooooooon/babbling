@@ -1,9 +1,9 @@
 %initialization
-d=1;    %Iterate number
+d=2;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['1701215_sparse70long'];
+id=['1701225_nrate02'];
 IP =['IP'];        %IP or Tonic or afterIP
 separatephase = ['notseparate'];      %separatephase or notseparate
 Network = ['lattice'];      %lattice or random

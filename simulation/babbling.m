@@ -60,7 +60,7 @@ SAVINTV=1000;
 LST_hist=[1:1000];
 muscle_number=0;
 negativereward = 0;
-nega_rate=1/10;
+nega_rate=1/5;
 mot_thre = 0;
 
 
@@ -86,9 +86,9 @@ if strcmp(IP,'IP')
  %%%%%%%%%%%%%%%%%%%%
  %normal distribution
  %variance_IP = ones(1000,1)/200;
- %m_IP = ones(100,1)/200;
+  m_IP = ones(100,1)/200;
  %V_HIP = normrnd(variance_IP,0.001);
- %m_HIP = normrnd(m_IP,0.001);
+  m_HIP = normrnd(m_IP,0.001);
  
  %lognormal distribution
  m = 1/100;
@@ -97,7 +97,6 @@ if strcmp(IP,'IP')
  sigma = sqrt(log(v/(m^2)+1));
  V_HIP = lognrnd(mu,sigma,1000,1);
  %m_HIP = lognrnd(mu,sigma,100,1);      %lonnomal of motor neuron
- m_HIP = normrnd(ones(100,1)/200,0.0000001);        %norml distribution
  %for debag
  %debag_HIP = V_HIP*Fs;
  %edge = logspace(0, 10, 300);
@@ -191,23 +190,11 @@ else
     Ne=800;                Ni=200;                   N=Ne+Ni;
     Nout = length(outInd);
     Nmot=Nout; % Number of motor neurons that the output neurons in the reservoir connect to.
-%    Nspe=Nout; % Number of input neurons for feedback
     Ninp=Nout; % Number of input neurons
     a=[0.02*ones(Ne,1);    0.1*ones(Ni,1)];     % Sets time scales of membrane recovery variable.
     d=[   8*ones(Ne,1);    2*ones(Ni,1)];       % Membrane recovery variable after-spike shift.
     a_mot=.02*ones(Nmot,1);
     d_mot=8*ones(Nmot,1); %
-%   a_spe=.02*ones(Ninp,1);%
-%   d_spe=8*ones(Ninp,1); %
-
-    %post=ceil([N*rand(Ne,M);Ne*rand(Ni,M)]); % Assign the postsynaptic neurons for each neuron''s synapse in the reservoir.
-
-    %post_spe=repmat(1:Ninp,Nspe,1); %input to Neuron ID 1:Nspe
-    %post_mot=repmat(1:Nmot,Nout,1); % All output neurons connect to all motor neurons. repmat(A,1,4)
-
-
-    %sout=rand(Nout,Nmot); % Synaptic weights from the reservoir output neurons to the motor neurons.
-    %sinp=rand(Nspe,Ninp); % Synaptic weights from the spectrum neurons to the input neurons.
 
     % Normalizing the synaptic weights.
     %sout=sout./(mean(mean(sout)));
@@ -215,7 +202,7 @@ else
     %s(1:Ne,:)=s(1:Ne,:)./(mean(mean(s(1:Ne,:)))); %seikika
 
     sd_mot=zeros(Nout,Nmot); % The change to be made to sout. %STDP
- %   sd_spe=zeros(Ninp,Nspe);
+
 
     if strcmp(STDP,'STDP')
     sd_reservor=zeros(N,M); %inter reservor STDP
@@ -227,9 +214,7 @@ else
     for i=1:Nout
         delays_mot{i,1}=1:Nmot;
     end
-  %  for i=1:Ninp
-  %      delays_inp{i,1}=1:Nspe;
-  % end
+
     STDP_out = zeros(Nout,1001+D); % out motor STDP matrix
     STDP_mot = zeros(Nout,1001+D); % spe inp STDP matrix
 
@@ -322,15 +307,12 @@ else
     
     v = -65*ones(N,1);          % Membrane potentials.
     v_mot = -65*ones(Nmot,1);   %
- %  v_spe = -65*ones(Nspe,1);   %
     u = 0.2.*v;                 % Membrane recovery variable.
     u_mot = 0.2.*v_mot;
- %  u_spe = 0.2.*v_spe;
     firings=[-D 0];       % All reservoir neuron firings for the current second.
     outFirings=[-D 0];  % Output neuron spike timings.
     motFirings=[-D 0];  % Motor neuron spike timings.
     inpFirings=[-D 0];  % Input neuron spike timings.
- %  speFirings=[-D 0];  % Spectrum neuron spike timings.
 
     DA=0; % Level of dopamine above the baseline.
 
@@ -354,9 +336,7 @@ else
         for i = 1:Nout
             zero_mot{i} = randperm(100,sparse_degree);
         end
-        
-        
-        
+
     end
     
 
@@ -457,7 +437,6 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             fired = find(v>=30);                % Indices of fired neurons
             fired_out = find(v(Ninp+outInd)>=30);    %100~200
             fired_mot = find(v_mot>=30);        %motorneurons
-   %        fired_spe = find(v_spe>=30);
             fired_inp = find(v(inpInd)>=30);
         elseif strcmp(IP,'IP')
 
@@ -484,7 +463,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             fired_out = find((v(Ninp + outInd)-TEI(Ninp + outInd))>=threshold);
             fired_inp = find((v(inpInd) - TEI(inpInd))>=threshold);
             
-            fired_mot = find((v_mot-TE.m)>=threshold);
+            %fired_mot = find((v_mot-TE.m)>=threshold);
+            fired_mot = find((v_mot)>=mot_thre);      %not IP for motor neuron
             
             %%%%%%%%% SN
             s_i = s(801:1000,:);
@@ -500,10 +480,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
         v(fired)=-65;                       % Reset the voltages for those neurons that fired
         v_mot(fired_mot)=-65;
-   %    v_spe(fired_spe)=-65;
         u(fired)=u(fired)+d(fired);         % Individual neuronal dynamics
         u_mot(fired_mot)=u_mot(fired_mot)+d_mot(fired_mot);
-   %    u_spe(fired_spe)=u_spe(fired_spe)+d_spe(fired_spe);
 
         % Spike-timing dependent plasticity computations:
         STDP_out(fired_out,t+D)=0.1; % Keep a record of when the output neurons spiked.
@@ -532,7 +510,6 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         outFirings=[outFirings;t*ones(length(fired_out),1),fired_out];  %
         motFirings=[motFirings;t*ones(length(fired_mot),1),fired_mot];  %
         inpFirings=[inpFirings;t*ones(length(fired_inp),1),fired_inp];  %
-   %    speFirings=[speFirings;t*ones(length(fired_spe),1),fired_spe];  %
 
 
         % For any presynaptic neuron that just fired, calculate the current to add
@@ -609,11 +586,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         v=v+0.5*((0.04*v+5).*v+140-u+I);                            % stability time
         v_mot=v_mot+0.5*((0.04*v_mot+5).*v_mot+140-u_mot+I_mot);    % step is 0.5 ms I_mot...randam+from out neurons
         v_mot=v_mot+0.5*((0.04*v_mot+5).*v_mot+140-u_mot+I_mot);
-  %     v_spe=v_spe+0.5*((0.04*v_spe+5).*v_spe+140-u_spe+I_spe);    % step is 0.5 ms I_spe...randam+from feedback
-  %     v_spe=v_spe+0.5*((0.04*v_spe+5).*v_spe+140-u_spe+I_spe);
         u=u+a.*(0.2*v-u);
         u_mot=u_mot+a_mot.*(0.2*v_mot-u_mot);
-  %     u_spe=u_spe+a_spe.*(0.2*v_spe-u_spe);
 
 
 
@@ -1080,8 +1054,6 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
     ind_inp = find(inpFirings(:,1) > 1001-D);
     inpFirings=[-D 0;inpFirings(ind_inp,1)-1000,inpFirings(ind_inp,2)];
     feedbackhist=zeros(100,1);
- %   ind_spe = find(speFirings(:,1) > 1001-D);
- %   speFirings=[-D 0;speFirings(ind_spe,1)-1000,speFirings(ind_spe,2)];%
 
     if strcmp(STDP,'STDP')
        STDP_reservor(:,1:D+1)=STDP_reservor(:,1001:1001+D);%
@@ -1131,11 +1103,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
 end
 
-%if sparatephase = 1, separate IP and STDP
 end
 
-%if sparatephase = 1, separate IP and STDP
-
-%create datefiles
 
 

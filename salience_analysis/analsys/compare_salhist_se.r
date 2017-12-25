@@ -36,30 +36,31 @@ moving_average <- function(x, n){
 
 
 #title
-title <- "1701215_sparse70"
+title <- "1701215_sparse70long"
 
 #load the directory 
 dir <- "~/babbling/created_data/"
-filename <- "1701215_sparse70/"
+filename <- "1701215_sparse70long/"
 csvfile <- "csv/"
 
 #filename
 id <- title
-iterate <- "3000"
+iterate <- "4000"
 ploton <- "0"
 IP <- "IP"
 phase <-"notseparate"
 network <- "lattice"
 reward <- "negativereward"
+iteratenum <- "1"
 
-
+iterateforfig <- 4000
 
 #for GAM
 # Load the data:
-file_1 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#red No_NSTD
-file_2 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#blue No_STDP
-file_3 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#green Sc_NSTD
-file_4 <- read.csv(paste(dir, filename,csvfile,"1_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#black Sc_STDP
+file_1 <- read.csv(paste(dir, filename,csvfile,iteratenum,"_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#red No_NSTD
+file_2 <- read.csv(paste(dir, filename,csvfile,iteratenum,"_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#blue No_STDP
+file_3 <- read.csv(paste(dir, filename,csvfile,iteratenum,"_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#green Sc_NSTD
+file_4 <- read.csv(paste(dir, filename,csvfile,iteratenum,"_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#black Sc_STDP
 
 
 
@@ -194,7 +195,7 @@ g <- ggplot(gam_all,aes(x=sec,y=fit,group=group)) +
  # theme(legend.position = "top")
   guides(fill=FALSE)
 
-g=g+xlim(0,3000)+ylim(4,12)  +theme(legend.position = "right")
+g=g+xlim(0,iterateforfig)+ylim(4,9.5)  +theme(legend.position = "right")
 
 #negative reward
 g2 <- ggplot(rewa_all,aes(x=sec,y=reward,group=group,colour = group)) +
@@ -211,7 +212,7 @@ g2 <- ggplot(rewa_all,aes(x=sec,y=reward,group=group,colour = group)) +
  # theme(legend.position = "top")
   guides(fill=FALSE)
 
-g2=g2+xlim(0,3000)+ylim(0,0.4)  +theme(legend.position = "right")
+g2=g2+xlim(0,iterateforfig)+ylim(0,0.4)  +theme(legend.position = "right")
 
 
 
@@ -234,7 +235,7 @@ g3 <- ggplot(DA_all,aes(x=sec,y=DA_hist,group=group)) +
  # theme(legend.position = "top")
   guides(fill=FALSE)
 
-g3=g3+xlim(0,3000)+ylim(0,450)  +theme(legend.position = "right")
+g3=g3+xlim(0,iterateforfig)+ylim(0,550)  +theme(legend.position = "right")
 
 
 
@@ -244,13 +245,13 @@ g3=g3+xlim(0,3000)+ylim(0,450)  +theme(legend.position = "right")
 plot(g2)
 
 #Save as pdf
-quartz.save(paste(dir, filename,title,"_nrewa.pdf", sep = ""),type="pdf")
+quartz.save(paste(dir, filename,title,iteratenum,"_nrewa.pdf", sep = ""),type="pdf")
 
 #plot
 plot(g3)
 
 #Save as pdf
-quartz.save(paste(dir, filename,title,"_DA.pdf", sep = ""),type="pdf")
+quartz.save(paste(dir, filename,title,iteratenum,"_DA.pdf", sep = ""),type="pdf")
 
 
 
@@ -262,7 +263,7 @@ quartz.save(paste(dir, filename,title,"_DA.pdf", sep = ""),type="pdf")
 plot(g)
 
 #Save as pdf
-quartz.save(paste(dir, filename,title,".pdf", sep = ""),type="pdf")
+quartz.save(paste(dir, filename,title,iteratenum,".pdf", sep = ""),type="pdf")
 
 
 
@@ -292,7 +293,7 @@ writeData(wb, sheet = 'Scramble+NSTDP', x = gam.pred_4, withFilter=F)
 # "MS Pゴシック"や"ＭＳ　Ｐゴシック"を指定すると、xlsx ファイルが壊れました。
 modifyBaseFont(wb, fontSize = 11, fontColour = "#000000", fontName = "MS PGothic")
 # 上書きを許可しない場合、overwrite = F とする。
-saveWorkbook(wb,paste(dir, filename,title,".xlsx", sep = "") ,overwrite = T)
+saveWorkbook(wb,paste(dir, filename,title,iteratenum,".xlsx", sep = "") ,overwrite = T)
 
 #openXL("~/Dropbox/osakauniversity/program/analsys/salhist_GAM/Yoked_vs_NY/2000/analsys/salhist_se.xlsx")
 
