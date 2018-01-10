@@ -1,11 +1,11 @@
 %importdata
 global tag simutime 
 
-d=1;    %Iterate number
+d=5;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-tag=['1701215_sparse70'];
+tag=['1701231_p0.07'];
 IP =['IP'];        %IP or Tonic or afterIP
 separatephase = ['notseparate'];      %separatephase or notseparate
 Network = ['lattice'];      %lattice or random
@@ -33,7 +33,7 @@ for j = 1:2
         stdp = STDP(i,:);
         %Babbling&mean caliculation
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        for p=[0.03]
+        for p=[0.07]
         ID = ['_',tag,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_',num2str(ploton),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network,'_',reward];
         
 

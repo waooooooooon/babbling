@@ -50,75 +50,11 @@ warning('off','all');
 global simutime tag
 
 
-
-% Initialization.
-salthresh = 4.5;            % Initial salience value for reward (used in 'relhisal' reinforcment).
-DAinc = 1;                  % Amount of dopamine given during reward.
-sm = 4;                     % Maximum synaptic weight.
-smr=4;                     % Maximum synaptic weight for reservoir
-testint = 1;                % Number of seconds between vocalizations.
-fftsize=2048;             %fft????????????????????????????????????
-lpcsize=8;                %LPC size
-inpInd=outInd;
-tau=20;                   %decay parameter
-SAVINTV=1000;
-LST_hist=[1:1000];
-muscle_number=0;
-negativereward = 0;
-nega_rate=1/10;
-mot_thre = 0;
-
-
-%
-sparse_mot = 1;   %1 or 0 
-sparse_degree = 70; % number of synapse from out to motor Nout - sparse_degree
-
-
-%for low pass filter
-cutoff_frequency = 10; % Design a 70th order lowpass FIR filter with cutoff frequency of 75 Hz.
-Fs = 1000;                    % sample rate in Hz
-Fnorm = cutoff_frequency/(Fs/2);           % Normalized frequency
-df = designfilt('lowpassfir','FilterOrder',70,'CutoffFrequency',Fnorm);
-
-
-if strcmp(IP,'IP')
- TE.max = -15;             %for IP
- TI.max = -15.2;             %for IP
- etaIP = 0.005;          %for IP 0.01
- threshold = -55.1;          %for IP  -55.1
- sumweight =5000;          %for SN(amount of wight of output-motor)
- %HIP = 1/200  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
- %%%%%%%%%%%%%%%%%%%%
- %normal distribution
- %variance_IP = ones(1000,1)/200;
- %m_IP = ones(100,1)/200;
- %V_HIP = normrnd(variance_IP,0.001);
- %m_HIP = normrnd(m_IP,0.001);
- 
- %lognormal distribution
- m = 1/100;
- v = 0.0001;
- mu = log((m^2)/sqrt(v+m^2));
- sigma = sqrt(log(v/(m^2)+1));
- V_HIP = lognrnd(mu,sigma,1000,1);
- %m_HIP = lognrnd(mu,sigma,100,1);      %lonnomal of motor neuron
- m_HIP = normrnd(ones(100,1)/200,0.0000001);        %norml distribution
- %for debag
- %debag_HIP = V_HIP*Fs;
- %edge = logspace(0, 10, 300);
- %h=histogram(debag_HIP,edge);set(gca,'Xscale','log');xlim([0 100]);
- %%%%%%%%%%%%%%%%%%%%%%
-
-end
-
-
-
-
 % Directory names for data.
 wavdir = [id, '_Wave'];
 firingsdir = [id, '_Firings'];
 workspacedir = [id, '_Workspace'];
-setdir = ['setting'];
+setdir = ['~/babbling/simulation/setting'];
 createddata_dir = ['~/babbling/created_data/'];     %data dir
 id_dir = [tag,'/'];
 outdir = [createddata_dir,id_dir,'network_analysis'];

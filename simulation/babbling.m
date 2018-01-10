@@ -151,7 +151,8 @@ end
 
     % Creating import names.
 
-    importFilename=[setdir,'/initial.mat'];
+    %importFilename=[setdir,'/initial.mat'];
+    importFilename=[setdir,'/babble_daspnet_reservoir_randominitial.mat']; %sparse random data
 
 
 % Directory for Coath et. al. Saliency Detector.
@@ -301,6 +302,17 @@ else
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%% end of create lattice network
+    
+    
+    if strcmp(Network,'random') && strcmp(separatephase,'notseparate')
+        
+        random.a = size(find(post(1,:)~=0));
+        
+        
+        
+        
+    end
+    
     
     
     
@@ -517,7 +529,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         if strcmp(Network,'random')
             k=size(firings,1);
             while firings(k,1)>t-D
-            del=delays{firings(k,2),t-firings(k,1)+1}; %1:M synaptic data
+            %del=delays{firings(k,2),t-firings(k,1)+1}; %1:M synaptic data
+            del = 1:random.a(1,2);
             ind = post(firings(k,2),del);          % post neurons of fired neron id [23,45,13,14,53,??????]
                 I(ind)=I(ind)+s(firings(k,2), del)';%'
              if strcmp(STDP,'STDP')

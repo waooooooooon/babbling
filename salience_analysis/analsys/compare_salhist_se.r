@@ -36,31 +36,31 @@ moving_average <- function(x, n){
 
 
 #title
-title <- "1701215_sparse70long"
+title <- "180106_p0.01"
 
 #load the directory 
 dir <- "~/babbling/created_data/"
-filename <- "1701215_sparse70long/"
+filename <- "180106_p0.01/"
 csvfile <- "csv/"
 
 #filename
 id <- title
-iterate <- "4000"
+iterate <- "5000"
 ploton <- "0"
 IP <- "IP"
 phase <-"notseparate"
 network <- "lattice"
 reward <- "negativereward"
 iteratenum <- "1"
-
-iterateforfig <- 4000
+p <- "0.01"
+iterateforfig <- 5000
 
 #for GAM
 # Load the data:
-file_1 <- read.csv(paste(dir, filename,csvfile,iteratenum,"_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#red No_NSTD
-file_2 <- read.csv(paste(dir, filename,csvfile,iteratenum,"_",id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#blue No_STDP
-file_3 <- read.csv(paste(dir, filename,csvfile,iteratenum,"_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#green Sc_NSTD
-file_4 <- read.csv(paste(dir, filename,csvfile,iteratenum,"_",id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_0.03_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#black Sc_STDP
+file_1 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#red No_NSTD
+file_2 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#blue No_STDP
+file_3 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#green Sc_NSTD
+file_4 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#black Sc_STDP
 
 
 

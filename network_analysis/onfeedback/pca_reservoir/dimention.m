@@ -1,18 +1,5 @@
-function [] = dimention(id)
-global tag simutime
-
-
-createddata_dir = ['~/babbling/created_data/'];     %data dir
-id_dir = [tag,'/'];
-outdir = [createddata_dir,id_dir,'network_analysis'];
-firingdir = [outdir,'/firing_data'];
-pca_dir = [outdir,'/PCA_reservoir'];
-
-if ~exist(pca_dir, 'dir')
-    mkdir(pca_dir);
-else
-    addpath(pca_dir);
-end
+function [eighty_dime] = dimention(id)
+global tag simutime createddata_dir id_dir outdir firingdir pca_dir
 
 
 
@@ -67,6 +54,7 @@ for i=1:size(kiyo)
     
 end
 
+eighty_dime = min(find(ruiseki>0.8));
 
 
 for i=1:(size_score-1)     %caliculate transfer_score
@@ -127,6 +115,17 @@ xlabel('Frequency');
 ylabel('Power');
 xlim([0,10]);
 saveas(fig201,[pca_dir,'/fft_transferhistory_',id,'_',num2str(simutime),'.png']);
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%% average membrem potential
+membrem = sum(NeFirings)/800;
+[f,p1]= fft_script(membrem,0);
+fig205=semilogy(f,p1);
+xlabel('Frequency');
+ylabel('Power');
+xlim([0,100]);
+ylim([0.0000001,0.001]);
+saveas(fig205,[pca_dir,'/fft_ave_membrem_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 
