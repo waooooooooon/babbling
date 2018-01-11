@@ -3,7 +3,7 @@ d=5;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['randomtest'];
+id=['180110_random'];
 IP =['IP'];        %IP or Tonic or afterIP
 separatephase = ['notseparate'];      %separatephase or notseparate
 Network = ['random'];      %lattice or random
@@ -31,13 +31,7 @@ for j = 1:1
                    display([num2str(i),ID]);
 
                    babbling([num2str(i),ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward);
-
-                   copyfile([num2str(i),ID,'_Workspace/',num2str(i),ID,'.csv'],[meandir,'/p=',num2str(p),'/']);
            end
-
-        display(['Calculating mean of p=',num2str(p)]);
-        lenght=size(importdata([meandir,'/p=',num2str(p),'/',num2str(1),ID,'.csv']));
-        datahist=zeros(lenght);
 
          clearvars meanout data datahist output;
         end

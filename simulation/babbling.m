@@ -84,12 +84,16 @@ if strcmp(IP,'IP')
  sumweight =5000;          %for SN(amount of wight of output-motor)
  %HIP = 1/200  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
  %%%%%%%%%%%%%%%%%%%%
+m_IP = ones(100,1)/200;
+
+%{
  %normal distribution
- %variance_IP = ones(1000,1)/200;
-  m_IP = ones(100,1)/200;
- %V_HIP = normrnd(variance_IP,0.001);
-  m_HIP = normrnd(m_IP,0.001);
- 
+ variance_IP = ones(1000,1)/200;
+ m_IP = ones(100,1)/200;
+ V_HIP = normrnd(variance_IP,0.001);
+ m_HIP = normrnd(m_IP,0.001);
+ %}
+  
  %lognormal distribution
  m = 1/100;
  v = 0.0001;
@@ -97,6 +101,7 @@ if strcmp(IP,'IP')
  sigma = sqrt(log(v/(m^2)+1));
  V_HIP = lognrnd(mu,sigma,1000,1);
  %m_HIP = lognrnd(mu,sigma,100,1);      %lonnomal of motor neuron
+ m_HIP = normrnd(m_IP,0.001);
  %for debag
  %debag_HIP = V_HIP*Fs;
  %edge = logspace(0, 10, 300);
@@ -889,7 +894,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
         % ---- plot for gif ------
         
-        if sec == T
+        if sec == T && strcmp(Network,'lattice')
             mkdir([id, '_Firings/gif_sec=',num2str(sec)]);
             figure(23);
             for i = 1:1000
