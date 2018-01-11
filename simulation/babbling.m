@@ -1,4 +1,4 @@
-function [] = babbling(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP,separatephase,Network,reward)
+function [] = babbling(ID,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP,separatephase,Network,reward)
 % BABBLE_DASPNET_RESERVOIR Neural network model of the development of reduplicated canonical babbling in human infancy.
 %
 %   Modification of Izhikevich's (2007 Cerebral Cortex) daspnet.m and of a previous model described in Warlaumont (2012, 2013 ICDL-EpiRob).
@@ -45,6 +45,8 @@ function [] = babbling(id,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbackti
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
 rng shuffle;
 warning('off','all');
+
+global id
 
 % Initialization.
 salthresh = 4.5;            % Initial salience value for reward (used in 'relhisal' reinforcment).
@@ -111,17 +113,29 @@ m_IP = ones(100,1)/200;
 end
 
 
+%Create data file
+createddata_dir = ['../created_data/'];
+if ~exist([createddata_dir,id],'dir')
+ mkdir([createddata_dir,id]);
+end
+
+mkdir([createddata_dir,id,'/data']);
+mkdir([createddata_dir,id,'/csv']);
+
+datadir = [createddata_dir,id,'/data/'];
 
 
 % Directory names for data.
-wavdir = [id, '_Wave'];
-firingsdir = [id, '_Firings'];
-workspacedir = [id, '_Workspace'];
+wavdir = [datadir,ID, '_Wave'];
+firingsdir = [datadir,ID, '_Firings'];
+workspacedir = [datadir,ID, '_Workspace'];
 setdir = ['setting'];
 
 
+
+
 % Error Checking.
-if(any(isspace(id)))
+if(any(isspace(ID)))
     disp('Please choose an id without spaces.');
     return
 end
@@ -151,7 +165,7 @@ end
 
 % Creating workspace names.
 
-    workspaceFilename=[workspacedir,'/babble_daspnet_reservoir_',id,'.mat'];
+    workspaceFilename=[workspacedir,'/babble_daspnet_reservoir_',ID,'.mat'];
 
 
     % Creating import names.
@@ -759,7 +773,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                     
                     % Write the Praat script:
 
-                    fid = fopen([wavdir,'/ressynth_',id,num2str(sec,'%d'),'.praat'],'w');
+                    fid = fopen([wavdir,'/ressynth_',ID,num2str(sec,'%d'),'.praat'],'w');
                     fprintf(fid,'Create Speaker... speaker Female 2\n');
                     fprintf(fid,['Create Artword... babble ' num2str((1000-muscsmooth)/1000,'%.3f') '\n']);
                     fprintf(fid,'select Artword babble\n');
@@ -780,7 +794,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                     fprintf(fid,'To Sound... 22050 25 0 0 0 0 0 0 0 0 0\n');
                     fprintf(fid,'\tselect Sound babble_speaker\n');
 
-                        fprintf(fid,['\tWrite to WAV file... synth_',id,'_',num2str(sec),'.wav\n']);
+                        fprintf(fid,['\tWrite to WAV file... synth_',ID,'_',num2str(sec),'.wav\n']);
 
 
                     fclose(fid);
@@ -788,23 +802,23 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                    % Execute the Praat script -- produces a wave file:
                     % Housekeeping
                     if ismac
-                            system([praatPathmac, ' ', wavdir,'/ressynth_',id,num2str(sec,'%d'),'.praat']);
-                            delete([wavdir,'/ressynth_',id,num2str(sec,'%d'),'.praat']);  %delete praat script
+                            system([praatPathmac, ' ', wavdir,'/ressynth_',ID,num2str(sec,'%d'),'.praat']);
+                            delete([wavdir,'/ressynth_',ID,num2str(sec,'%d'),'.praat']);  %delete praat script
                     elseif ispc
-                            system([praatPathpc, ' --run ', wavdir,'\ressynth_',id,num2str(sec,'%d'),'.praat']);
-                            delete([wavdir,'\ressynth_',id,num2str(sec,'%d'),'.praat']);  %delete praat script
+                            system([praatPathpc, ' --run ', wavdir,'\ressynth_',ID,num2str(sec,'%d'),'.praat']);
+                            delete([wavdir,'\ressynth_',ID,num2str(sec,'%d'),'.praat']);  %delete praat script
                             
                     elseif isunix
                         
-                        system([praatPathlinux, ' --run ', wavdir,'/ressynth_',id,num2str(sec,'%d'),'.praat']);
-                        delete([wavdir,'/ressynth_',id,num2str(sec,'%d'),'.praat']);  %delete praat script
+                        system([praatPathlinux, ' --run ', wavdir,'/ressynth_',ID,num2str(sec,'%d'),'.praat']);
+                        delete([wavdir,'/ressynth_',ID,num2str(sec,'%d'),'.praat']);  %delete praat script
 
                     end
 
 
 
                     % Find the auditory salience of the sound:
-                        salienceResults = auditorySalience([wavdir,'/synth_',id,'_',num2str(sec),'.wav'],0);
+                        salienceResults = auditorySalience([wavdir,'/synth_',ID,'_',num2str(sec),'.wav'],0);
 
                     salience = sum(abs(salienceResults.saliency(31:180))); % Summing over salience trace to produce a single value.
                                                                            % abs(X)= return absolute value    neglect first 30  saliency=[1,180]
@@ -813,7 +827,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                     display(['salience =',num2str(salience)]);
 
                     if mod(sec,1)~=0
-                      delete([wavdir,'/synth_',id,'_',num2str(sec),'.wav']);%
+                      delete([wavdir,'/synth_',ID,'_',num2str(sec),'.wav']);%
                     end
 
                 end
@@ -883,7 +897,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
     % Writing reservoir neuron firings for this second to a text file.     %recoring firings matrix
     if mod(sec,SAVINTV*testint)==0 || sec==T
 
-            firings_fid = fopen([firingsdir,'/babble_daspnet_firings_',id,'_',num2str(sec),'.txt'],'w');
+            firings_fid = fopen([firingsdir,'/babble_daspnet_firings_',ID,'_',num2str(sec),'.txt'],'w');
 
         for firingsrow = 1:size(firings,1)
             fprintf(firings_fid,'%i\t',sec);
@@ -895,7 +909,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         % ---- plot for gif ------
         
         if sec == T && strcmp(Network,'lattice')
-            mkdir([id, '_Firings/gif_sec=',num2str(sec)]);
+            mkdir([ID, '_Firings/gif_sec=',num2str(sec)]);
             figure(23);
             for i = 1:1000
                 colormap(gray);
@@ -1112,7 +1126,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
     if sec==T
         number=[1:T].'; %' 
         salhistdate=[salhist,number,nega.',DA_history.'];
-        csvwrite([workspacedir,'/',id,'.csv'],salhistdate);     %write salhist data and negativereward to csv
+        csvwrite([workspacedir,'/',ID,'.csv'],salhistdate);     %write salhist data and negativereward to csv
         
 
         

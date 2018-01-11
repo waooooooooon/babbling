@@ -1,12 +1,14 @@
+global id
+
 %initialization
 d=5;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['180110_random'];
+id=['181011_lattice'];
 IP =['IP'];        %IP or Tonic or afterIP
 separatephase = ['notseparate'];      %separatephase or notseparate
-Network = ['random'];      %lattice or random
+Network = ['lattice'];      %lattice or random
 reward = ['negativereward'];
 feedbacktime=1;
 iterate=3000;
@@ -14,6 +16,7 @@ speinplate=0.3;
 debug=0;
 
 saliencedata_dir = ['../salience_analysis/saliency_data/'];
+
 
 
 for j = 1:1
