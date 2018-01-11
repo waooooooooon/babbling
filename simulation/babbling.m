@@ -1,4 +1,4 @@
-function [] = babbling(ID,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP,separatephase,Network,reward)
+function [] = babbling(ID,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP,separatephase,Network,reward,feedbacktype)
 % BABBLE_DASPNET_RESERVOIR Neural network model of the development of reduplicated canonical babbling in human infancy.
 %
 %   Modification of Izhikevich's (2007 Cerebral Cortex) daspnet.m and of a previous model described in Warlaumont (2012, 2013 ICDL-EpiRob).
@@ -64,7 +64,7 @@ muscle_number=0;
 negativereward = 0;
 nega_rate=1/5;
 mot_thre = 0;
-
+constant_inplate = 0.01;
 
 %
 sparse_mot = 1;   %1 or 0 
@@ -430,13 +430,36 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         if strcmp(Network,'random')
            if t-1>muscsmooth&mod(t-1,feedbacktime)==0
 
-            feedback1=speinplate*table(:,muscle_number);
-            if strcmp(yoke,'No')
+            
+            if strcmp(yoke,'No') && strcmp(feedbacktype,'fft')
+                feedback1=speinplate*table(:,muscle_number);
                 I(1:Ninp)=I(1:Ninp)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,feedback1];
-            elseif strcmp(yoke,'Sc')
+            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft')
+                feedback1=speinplate*table(:,muscle_number);
                 randid=randperm(100);
                 yokedfeedback=feedback1(randid);
+                I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
+                feedbackhist=[feedbackhist,yokedfeedback];
+                
+            elseif strcmp(yoke,'No') && strcmp(feedbacktype,'consonant')
+                
+                if muscle_number>16000
+                    feedback1 = constant_inplate*ones(100,1);
+                else
+                    feedback1 = zeros(100,1);
+                end
+                
+                I(1:Ninp)=I(1:Ninp)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
+                feedbackhist=[feedbackhist,feedback1];
+                
+            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'consonant')
+                              
+                if rand>0.9
+                    yokedfeedback = constant_inplate*ones(100,1);
+                else
+                    yokedfeedback = zeros(100,1);
+                end
                 I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,yokedfeedback];
             end
@@ -446,16 +469,38 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             
            if t-1>muscsmooth&mod(t-1,feedbacktime)==0
 
-            feedback1=speinplate*table(:,muscle_number);
-            if strcmp(yoke,'No')
+            if strcmp(yoke,'No') && strcmp(feedbacktype,'fft')
+                feedback1=speinplate*table(:,muscle_number);
                 I(InputneuronID)=I(InputneuronID)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,feedback1];
-            elseif strcmp(yoke,'Sc')
+            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft')
+                feedback1=speinplate*table(:,muscle_number);
                 randid=randperm(100);
                 yokedfeedback=feedback1(randid);
                 I(InputneuronID)=I(InputneuronID)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,yokedfeedback];
+                
+            elseif strcmp(yoke,'No') && strcmp(feedbacktype,'consonant')
+                if muscle_number>16000
+                    feedback1 = constant_inplate*ones(100,1);
+                else
+                    feedback1 = zeros(100,1);
+                end
+                I(InputneuronID)=I(InputneuronID)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
+                feedbackhist=[feedbackhist,feedback1];
+                
+            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'consonant')
+                              
+                if rand>0.9
+                    yokedfeedback = constant_inplate*ones(100,1);
+                else
+                    yokedfeedback = zeros(100,1);
+                end
+                I(InputneuronID)=I(InputneuronID)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
+                feedbackhist=[feedbackhist,yokedfeedback];
+
             end
+            
 
            end
         end
