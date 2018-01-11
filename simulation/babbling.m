@@ -273,12 +273,17 @@ else
         Post_position = zeros(1000,100);        %matrix of post neuron (data is position not neuron ID)
         Post.lattice = zeros(1000,100);      %matrix of post neuron(vertical= neuron ID , horizontal = post neuron ID)
 
+        in_nrows = 100;
+        in_ncols = 8;
         nrows = 100;
-        ncols = 10;
-        NeuronID_Position = reshape(randperm(ncols*nrows), [nrows ncols]); % matrix of random neuron Position 100*10
-        InputneuronID = NeuronID_Position(:,1);
-        OutputneuronID = NeuronID_Position(:,end);
+        ncols = 2;
+        internal_neuron = reshape(randperm(in_ncols*in_nrows), [in_nrows in_ncols])+200; % matrix of random neuron Position 100*10
+        inputoutput = reshape(randperm(ncols*nrows), [nrows ncols]);
+        InputneuronID = inputoutput(:,1);
+        OutputneuronID = inputoutput(:,end);
         
+        NeuronID_Position = [InputneuronID,internal_neuron,OutputneuronID];         % matrix of random neuron Position 100*10
+
         r = 1*sqrt(2);      % range of connection (for example r = 1, connect next to a neuron ) 
 
 
@@ -954,7 +959,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         % ---- plot for gif ------
         
         if sec == T && strcmp(Network,'lattice')
-            mkdir([ID, '_Firings/gif_sec=',num2str(sec)]);
+            mkdir([firingsdir,'/gif_sec=',num2str(sec)]);
             figure(23);
             for i = 1:1000
                 colormap(gray);
