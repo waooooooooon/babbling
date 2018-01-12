@@ -51,12 +51,18 @@ IP <- "IP"
 phase <-"notseparate"
 network <- "lattice"
 reward <- "negativereward"
+feedback <- "consonant" #consonant or fft
 iteratenum <- "1"
 p <- "0.01"
 iterateforfig <- 5000
 
 #for GAM
 # Load the data:
+#file_1 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,"_",feedback,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#red No_NSTD
+#file_2 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,"_",feedback,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#blue No_STDP
+#file_3 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,"_",feedback,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#green Sc_NSTD
+#file_4 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,"_",feedback,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#black Sc_STDP
+
 file_1 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#red No_NSTD
 file_2 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#blue No_STDP
 file_3 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#green Sc_NSTD

@@ -1,9 +1,16 @@
-id = ['1_1701212_long_6000_reinforce_100_4_No_0_1_0.03_0.3_STDP_IP_notseparate_lattice_negativereward_Firings/'];
-dir = ['data/',id];
-filename = ['babble_daspnet_firings_1_1701212_long_6000_reinforce_100_4_No_0_1_0.03_0.3_STDP_IP_notseparate_lattice_negativereward_6000.txt']
+function [] = plotfirings(ID,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP,separatephase,Network,reward,feedbacktype)
+global id
+
+createddata_dir = ['~/babbling/created_data/'];
+datadir = [createddata_dir,id,'/data/'];
+wavdir = [datadir,ID, '_Wave'];
+firingsdir = [datadir,ID, '_Firings'];
+workspacedir = [datadir,ID, '_Workspace'];
+setdir = ['setting'];
 
 
-A=dlmread([dir,filename]);
+
+A=dlmread([firingsdir,'/babble_daspnet_firings_',ID,'_',num2str(newT),'.txt']);
 
 fig1 = scatter(A(:,2),A(:,3),'.','k'); % Plot all the neurons'' spikes
 title('Reservoir Firings', 'fontweight','bold');
@@ -12,7 +19,7 @@ xlabel('Millisecond');
 ylabel('Neuron Number');
 
 
-saveas(fig1,[dir,'/',filename,'.png']);
+saveas(fig1,[firingsdir,'/Firings_',ID,'_',num2str(newT),'.png']);
 
 %histogram of firings
 
@@ -25,7 +32,7 @@ end
 edge = logspace(0, 10, 300);
 h=histogram(firingrate,edge);set(gca,'Xscale','log');xlim([0 100]);
 
-saveas(h,[dir,'/',filename,'_histogram.png']);
+saveas(h,[firingsdir,'/Hist_',ID,'_',num2str(newT),'.png']);
 
 
 

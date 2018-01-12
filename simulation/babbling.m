@@ -283,6 +283,8 @@ else
         OutputneuronID = inputoutput(:,end);
         
         NeuronID_Position = [InputneuronID,internal_neuron,OutputneuronID];         % matrix of random neuron Position 100*10
+        
+        InputneuronID2 = NeuronID_Position(:,2);
 
         r = 1*sqrt(2);      % range of connection (for example r = 1, connect next to a neuron ) 
 
@@ -439,12 +441,14 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             if strcmp(yoke,'No') && strcmp(feedbacktype,'fft')
                 feedback1=speinplate*table(:,muscle_number);
                 I(1:Ninp)=I(1:Ninp)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
+                I((Ninp+1):(Ninp+Ninp))=I((Ninp+1):(Ninp+Ninp))+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,feedback1];
             elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft')
                 feedback1=speinplate*table(:,muscle_number);
                 randid=randperm(100);
                 yokedfeedback=feedback1(randid);
                 I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
+                I((Ninp+1):(Ninp+Ninp))=I((Ninp+1):(Ninp+Ninp))+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,yokedfeedback];
                 
             elseif strcmp(yoke,'No') && strcmp(feedbacktype,'consonant')
@@ -456,6 +460,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 end
                 
                 I(1:Ninp)=I(1:Ninp)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
+                I((Ninp+1):(Ninp+Ninp))=I((Ninp+1):(Ninp+Ninp))+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,feedback1];
                 
             elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'consonant')
@@ -466,6 +471,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                     yokedfeedback = zeros(100,1);
                 end
                 I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
+                I((Ninp+1):(Ninp+Ninp))=I((Ninp+1):(Ninp+Ninp))+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,yokedfeedback];
             end
 
@@ -477,12 +483,14 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             if strcmp(yoke,'No') && strcmp(feedbacktype,'fft')
                 feedback1=speinplate*table(:,muscle_number);
                 I(InputneuronID)=I(InputneuronID)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
+                I(InputneuronID2)=I(InputneuronID2)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,feedback1];
             elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft')
                 feedback1=speinplate*table(:,muscle_number);
                 randid=randperm(100);
                 yokedfeedback=feedback1(randid);
                 I(InputneuronID)=I(InputneuronID)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
+                I(InputneuronID2)=I(InputneuronID2)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,yokedfeedback];
                 
             elseif strcmp(yoke,'No') && strcmp(feedbacktype,'consonant')
@@ -492,6 +500,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                     feedback1 = zeros(100,1);
                 end
                 I(InputneuronID)=I(InputneuronID)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
+                I(InputneuronID2)=I(InputneuronID2)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,feedback1];
                 
             elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'consonant')
@@ -502,6 +511,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                     yokedfeedback = zeros(100,1);
                 end
                 I(InputneuronID)=I(InputneuronID)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
+                I(InputneuronID2)=I(InputneuronID2)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,yokedfeedback];
 
             end
@@ -921,10 +931,13 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         % If the human listener decided to reinforce (or if the yoked control
         % schedule says to reinforce), increase the dopamine concentration.
         if strcmp(reward,'normalreward')
+            nega(sec) = 0;
             if any(rew==sec*1000+t)   % what mean?
                 DA=DA+DAinc;
             end
+            DA_history(sec) = DA;
         end
+        
         if strcmp(reward,'negativereward')
             nega(sec) = nega_rate*negativereward;
             
@@ -947,7 +960,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
     % Writing reservoir neuron firings for this second to a text file.     %recoring firings matrix
     if mod(sec,SAVINTV*testint)==0 || sec==T
 
-            firings_fid = fopen([firingsdir,'/babble_daspnet_firings_',ID,'_',num2str(sec),'.txt'],'w');
+            firings_fid = fopen([firingsdir,'/R_firings_',ID,'_',num2str(sec),'.txt'],'w');
 
         for firingsrow = 1:size(firings,1)
             fprintf(firings_fid,'%i\t',sec);
@@ -955,6 +968,15 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             fprintf(firings_fid,'\n');
         end
         fclose(firings_fid);
+        
+            motfirings_fid = fopen([firingsdir,'/Mot_firings_',ID,'_',num2str(sec),'.txt'],'w');
+
+        for motfiringsrow = 1:size(motFirings,1)
+            fprintf(motfirings_fid,'%i\t',sec);
+            fprintf(motfirings_fid,'%i\t%i',motFirings(motfiringsrow,:));
+            fprintf(motfirings_fid,'\n');
+        end
+        fclose(motfirings_fid);
 
         % ---- plot for gif ------
         
