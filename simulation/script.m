@@ -1,15 +1,15 @@
 global id
 
 %initialization
-d=5;    %Iterate number
+d=3;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['180113_LiIP'];
+id=['180113_LiIPnega'];
 IP =['LiIP'];        %threIP or Tonic or afterIP or LiIP
-separatephase = ['notseparate'];      %separatephase or notseparate
+separatephase = ['nseparate'];      %separate or nseparate
 Network = ['random'];      %lattice or random
-reward = ['normalreward'];        %negativereward or normalreward
+reward = ['nega'];        %nega or normal
 feedbacktype = ['fft'];        %consonant or fft
 feedbacktime=1;
 iterate=3000;

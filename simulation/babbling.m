@@ -149,11 +149,11 @@ addpath('auditorysaliencymodel');
 %Import initial value
 table=importdata([setdir,'/table_notnormalization_from0.5to1.5KHz.csv']);
 
-if strcmp(separatephase,'notseparate')
+if strcmp(separatephase,'nseparate')
     
     %load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
     
-elseif strcmp(separatephase,'separatephase')
+elseif strcmp(separatephase,'separate')
     
     if strcmp(yoke,'No')
         load([setdir,'/babble_daspnet_reservoir_1_171201_3000_reinforce_100_4_No_1_1_0.03_0.3_NSTD_IP_separatephase_lattice_negativereward.mat'],'s','sout','post','post_spe','post_mot','pre','aux','TE','threshold','TEI','NeuronID_Position','InputneuronID','OutputneuronID','Post_position','Post','size_neuron','sesum');
@@ -318,7 +318,7 @@ else
     end
     
     %%%%%%%%%%%%%%%%%%%%%% create lattice network
-    if strcmp(Network,'lattice') && strcmp(separatephase,'notseparate')
+    if strcmp(Network,'lattice') && strcmp(separatephase,'nseparate')
         %initialization
         Position_xy = zeros(1000,2);        %xy date of neuron position
         Post_position = zeros(1000,100);        %matrix of post neuron (data is position not neuron ID)
@@ -381,7 +381,7 @@ else
     %%%%%%%%%%%%%%%%%%%%%%%% end of create lattice network
     
     
-    if strcmp(Network,'random') && strcmp(separatephase,'notseparate')
+    if strcmp(Network,'random') && strcmp(separatephase,'nseparate')
         
         random.a = size(find(post(1,:)~=0));
         
@@ -920,7 +920,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 if ~strcmp(reinforce,'range')
                     
                     %low pass filter for negative reward
-                    if strcmp(reward,'negativereward')
+                    if strcmp(reward,'nega')
                         
                     filter_smoothmusc = filter(df,smoothmusc);      %filter smoothmusc
                   
@@ -1034,7 +1034,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
         % If the human listener decided to reinforce (or if the yoked control
         % schedule says to reinforce), increase the dopamine concentration.
-        if strcmp(reward,'normalreward')
+        if strcmp(reward,'normal')
             nega(sec) = 0;
             if any(rew==sec*1000+t)   % what mean?
                 DA=DA+DAinc;
@@ -1042,7 +1042,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             DA_history(sec) = DA;
         end
         
-        if strcmp(reward,'negativereward')
+        if strcmp(reward,'nega')
             nega(sec) = nega_rate*negativereward;
             
             if any(rew == sec*1000+t)
@@ -1137,7 +1137,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         plot(motFirings(:,1),motFirings(:,2),'.'); % Plot the motor neurons'' spikes
         title('Motor Neuron Firings', 'fontweight','bold');
         axis([0 1000 0 Nmot]);
-        if strcmp(reward,'negativereward')
+        if strcmp(reward,'nega')
             subplot(4,1,4);
             plot(filter_smoothmusc(muscsmooth:1000)); ylim([-.5,.5]); xlim([-100,900]); % Plot the smoothed sum of motor neuron spikes 1 s timeseries
             title('Sum of Agonist/Antagonist Motor Neuron Activation', 'fontweight','bold');
@@ -1207,7 +1207,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         plot(motFirings(:,1),motFirings(:,2),'.'); % Plot the motor neurons'' spikes
         title('Motor Neuron Firings', 'fontweight','bold');
         axis([0 1000 0 Nmot]);
-        if strcmp(reward,'negativereward')
+        if strcmp(reward,'nega')
             subplot(4,1,4);
             plot(filter_smoothmusc(muscsmooth:1000)); ylim([-.5,.5]); xlim([-100,900]); % Plot the smoothed sum of motor neuron spikes 1 s timeseries
             title('Sum of Agonist/Antagonist Motor Neuron Activation', 'fontweight','bold');
