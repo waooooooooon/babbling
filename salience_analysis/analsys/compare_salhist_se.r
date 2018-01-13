@@ -36,37 +36,36 @@ moving_average <- function(x, n){
 
 
 #title
-title <- "180110_random"
+title <- "180112"
 
 #load the directory 
 dir <- "~/babbling/created_data/"
-filename <- "180110_random/"
+filename <- "180112/"
 csvfile <- "csv/"
 
 #filename
 id <- title
-iterate <- "3000"
+iterate <- "2000"
 ploton <- "0"
 IP <- "IP"
 phase <-"notseparate"
 network <- "lattice"
-reward <- "negativereward"
+reward <- "normalreward"
 feedback <- "fft" #consonant or fft
 iteratenum <- "1"
 p <- "0.03"
-iterateforfig <- 3000
 
 #for GAM
 # Load the data:
-#file_1 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,"_",feedback,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#red No_NSTD
-#file_2 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,"_",feedback,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#blue No_STDP
-#file_3 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,"_",feedback,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#green Sc_NSTD
-#file_4 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,"_",feedback,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#black Sc_STDP
+file_1 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,"_",feedback,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#red No_NSTD
+file_2 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,"_",feedback,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#blue No_STDP
+file_3 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,"_",feedback,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#green Sc_NSTD
+file_4 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,"_",feedback,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#black Sc_STDP
 
-file_1 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#red No_NSTD
-file_2 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#blue No_STDP
-file_3 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#green Sc_NSTD
-file_4 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#black Sc_STDP
+#file_1 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#red No_NSTD
+#file_2 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_No_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#blue No_STDP
+#file_3 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_NSTD_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#green Sc_NSTD
+#file_4 <- read.csv(paste(dir, filename,csvfile,id,"_",iterate,"_reinforce_100_4_Sc_",ploton,"_1_",p,"_0.3_STDP_",IP,"_",phase,"_",network,"_",reward,".csv", sep = ""),header=F,col.names=c("salience","sec","n_reward","DA_hist"))#black Sc_STDP
 
 
 
@@ -201,7 +200,7 @@ g <- ggplot(gam_all,aes(x=sec,y=fit,group=group)) +
  # theme(legend.position = "top")
   guides(fill=FALSE)
 
-g=g+xlim(0,iterateforfig)+ylim(4,9.5)  +theme(legend.position = "right")
+g=g+xlim(0,iterate)+ylim(4,9.5)  +theme(legend.position = "right")
 
 #negative reward
 g2 <- ggplot(rewa_all,aes(x=sec,y=reward,group=group,colour = group)) +
@@ -218,7 +217,7 @@ g2 <- ggplot(rewa_all,aes(x=sec,y=reward,group=group,colour = group)) +
  # theme(legend.position = "top")
   guides(fill=FALSE)
 
-g2=g2+xlim(0,iterateforfig)+ylim(0,0.4)  +theme(legend.position = "right")
+g2=g2+xlim(0,iterate)+ylim(0,1)  +theme(legend.position = "right")
 
 
 
@@ -241,7 +240,7 @@ g3 <- ggplot(DA_all,aes(x=sec,y=DA_hist,group=group)) +
  # theme(legend.position = "top")
   guides(fill=FALSE)
 
-g3=g3+xlim(0,iterateforfig)+ylim(0,550)  +theme(legend.position = "right")
+g3=g3+xlim(0,iterate)+ylim(0,550)  +theme(legend.position = "right")
 
 
 

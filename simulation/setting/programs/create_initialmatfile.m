@@ -121,6 +121,7 @@ else
 
     
     
+    
     s=[rand(Ne,M);-rand(Ni,M)];         % Synaptic weights in the reservoir.
     sout=rand(Nout,Nmot); % Synaptic weights from the reservoir output neurons to the motor neurons.
 

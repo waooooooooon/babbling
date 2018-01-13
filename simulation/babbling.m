@@ -65,10 +65,13 @@ negativereward = 0;
 nega_rate=1/5;
 mot_thre = 0;
 constant_inplate = 0.01;
-
+LTD = 0.00525;      %default 1.5  Li defo ->0.00525
+LTP = 0.005;        %default 1.0  LI defo ->0.005
+LTD_m = 0.00525;        %default 1.5 Li defo ->0.00525
+LTP_m = 0.005;          %default 1.0 Li defo ->0.005
 %
 sparse_mot = 1;   %1 or 0 
-sparse_degree = 70; % number of synapse from out to motor Nout - sparse_degree
+sparse_degree = 40; % number of synapse from out to motor Nout - sparse_degree
 
 
 %for low pass filter
@@ -76,41 +79,6 @@ cutoff_frequency = 10; % Design a 70th order lowpass FIR filter with cutoff freq
 Fs = 1000;                    % sample rate in Hz
 Fnorm = cutoff_frequency/(Fs/2);           % Normalized frequency
 df = designfilt('lowpassfir','FilterOrder',70,'CutoffFrequency',Fnorm);
-
-
-if strcmp(IP,'IP')
- TE.max = -15;             %for IP
- TI.max = -15.2;             %for IP
- etaIP = 0.005;          %for IP 0.01
- threshold = -55.1;          %for IP  -55.1
- sumweight =5000;          %for SN(amount of wight of output-motor)
- %HIP = 1/200  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
- %%%%%%%%%%%%%%%%%%%%
-m_IP = ones(100,1)/200;
-
-%{
- %normal distribution
- variance_IP = ones(1000,1)/200;
- m_IP = ones(100,1)/200;
- V_HIP = normrnd(variance_IP,0.001);
- m_HIP = normrnd(m_IP,0.001);
- %}
-  
- %lognormal distribution
- m = 1/100;
- v = 0.0001;
- mu = log((m^2)/sqrt(v+m^2));
- sigma = sqrt(log(v/(m^2)+1));
- V_HIP = lognrnd(mu,sigma,1000,1);
- %m_HIP = lognrnd(mu,sigma,100,1);      %lonnomal of motor neuron
- m_HIP = normrnd(m_IP,0.001);
- %for debag
- %debag_HIP = V_HIP*Fs;
- %edge = logspace(0, 10, 300);
- %h=histogram(debag_HIP,edge);set(gca,'Xscale','log');xlim([0 100]);
- %%%%%%%%%%%%%%%%%%%%%%
-
-end
 
 
 %Create data file
@@ -183,7 +151,7 @@ table=importdata([setdir,'/table_notnormalization_from0.5to1.5KHz.csv']);
 
 if strcmp(separatephase,'notseparate')
     
-    load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
+    %load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
     
 elseif strcmp(separatephase,'separatephase')
     
@@ -215,6 +183,12 @@ else
     d=[   8*ones(Ne,1);    2*ones(Ni,1)];       % Membrane recovery variable after-spike shift.
     a_mot=.02*ones(Nmot,1);
     d_mot=8*ones(Nmot,1); %
+    smr = 10;        %default 4 Li default ->10
+    s=[6*rand(Ne,M);-5*rand(Ni,M)];         % synaptic weights (default of walaumont is s=[rand(Ne,M);-rand(Ni,M)]
+    sout=rand(Nout,Nmot); % Synaptic weights from the reservoir output neurons to the motor neurons.
+    sd=zeros(N,M);                          % their derivatives
+
+    post_mot=repmat(1:Nmot,Nout,1);         % All output neurons connect to all motor neurons.
 
     % Normalizing the synaptic weights.
     %sout=sout./(mean(mean(sout)));
@@ -222,6 +196,55 @@ else
     %s(1:Ne,:)=s(1:Ne,:)./(mean(mean(s(1:Ne,:)))); %seikika
 
     sd_mot=zeros(Nout,Nmot); % The change to be made to sout. %STDP
+    
+    if strcmp(IP,'LiIP')
+        D_noise=0.5;  %gausian noise coefficient
+        b_max=0.2;
+        b_min=0.12;
+        b=[b_min*ones(Ne,1)+(b_max-b_min)*rand(Ne,1);0.2*ones(Ni,1)];
+        Te_max=110;
+        Te_min=90;
+        Ti_max=25;%25
+        Ti_min=15;%7
+        h=[0.012*ones(Ne,1);0.012*ones(Ni,1)];      %larning rate of z
+        z=zeros(N,1);       %larning rate of fai and b
+        all_fired=[];
+        fired_time=zeros(N,1);
+        ISI=zeros(N,1);
+
+    elseif strcmp(IP,'threIP')
+        TE.max = -15;             %for IP
+        TI.max = -15.2;             %for IP
+        etaIP = 0.005;          %for IP 0.01
+        threshold = -55.1;          %for IP  -55.1
+        sumweight =5000;          %for SN(amount of wight of output-motor)
+        %HIP = 1/200  ;  %target firing rate (100 = numer of input neuron) defalt 2*input/Ne
+        %%%%%%%%%%%%%%%%%%%%
+        m_IP = ones(100,1)/200;
+
+        %{
+        %normal distribution
+        variance_IP = ones(1000,1)/200;
+        m_IP = ones(100,1)/200;
+        V_HIP = normrnd(variance_IP,0.001);
+        m_HIP = normrnd(m_IP,0.001);
+        %}
+  
+        %lognormal distribution
+        m = 1/100;
+        v = 0.0001;
+        mu = log((m^2)/sqrt(v+m^2));
+        sigma = sqrt(log(v/(m^2)+1));
+        V_HIP = lognrnd(mu,sigma,1000,1);
+        %m_HIP = lognrnd(mu,sigma,100,1);      %lonnomal of motor neuron
+        m_HIP = normrnd(m_IP,0.001);
+        %for debag
+        %debag_HIP = V_HIP*Fs;
+        %edge = logspace(0, 10, 300);
+        %h=histogram(debag_HIP,edge);set(gca,'Xscale','log');xlim([0 100]);
+        %%%%%%%%%%%%%%%%%%%%%%
+
+    end
 
 
     if strcmp(STDP,'STDP')
@@ -249,7 +272,7 @@ else
     end
 
 
-    if strcmp(IP,'IP')
+    if strcmp(IP,'threIP')
         
         TE.r = TE.max*(rand(Ne,1));
         TI = TI.max*(rand(Ni,1));
@@ -262,9 +285,37 @@ else
         %smsum = sum(sum(sout));
 %        s = s/sum(sum(s));
          %sout = sumweight*sout/sum(sum(sout));
+         
     end
     
     
+    %%%%%%%%%%%%%%%%%%%%%% create random network
+    if strcmp(Network,'random')
+        %シナプスのつなぎ方を決定する
+        post=ceil([N*rand(Ne,M);Ne*rand(Ni,M)]); 
+        for i=1:Ne
+            while length(find(post(i,1:M)==i)) >=1
+                numbering=find(post(i,1:M)==i);
+                for j=1:length(find(post(i,1:M)==i))
+                    post(i,numbering(j))=N*ceil(rand);
+                end
+            end
+        end
+        
+        
+        for i=1:N
+            if i<=Ne
+                for j=1:D
+                    delays{i,j}=M/D*(j-1)+(1:M/D);
+                end
+            else
+                delays{i,1}=1:M;
+            end
+            pre{i}=find(post==i&s>0);             % pre excitatory neurons
+            aux{i}=N*(D-1-ceil(ceil(pre{i}/N)/(M/D)))+1+mod(pre{i}-1,N);
+            
+        end
+    end
     
     %%%%%%%%%%%%%%%%%%%%%% create lattice network
     if strcmp(Network,'lattice') && strcmp(separatephase,'notseparate')
@@ -420,11 +471,14 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         if strcmp(IP,'Tonic')
             I=13*(rand(N,1)-0.5);
             I_mot=13*(rand(Nmot,1)-0.5);
-        elseif strcmp(IP,'IP')
+        elseif strcmp(IP,'threIP')
             I=zeros(N,1);
             I_mot=zeros(Nmot,1);
         elseif strcmp(IP,'afterIP')
             I=zeros(N,1);
+            I_mot=zeros(Nmot,1);
+        elseif strcmp(IP,'LiIP')
+            I=[6*ones(Ne,1);0*ones(Ni,1)];
             I_mot=zeros(Nmot,1);
         end
         
@@ -441,14 +495,14 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             if strcmp(yoke,'No') && strcmp(feedbacktype,'fft')
                 feedback1=speinplate*table(:,muscle_number);
                 I(1:Ninp)=I(1:Ninp)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
-                I((Ninp+1):(Ninp+Ninp))=I((Ninp+1):(Ninp+Ninp))+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
+                I((Ninp*2+1):(Ninp*2+Ninp))=I((Ninp*2+1):(Ninp*2+Ninp))+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,feedback1];
             elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft')
                 feedback1=speinplate*table(:,muscle_number);
                 randid=randperm(100);
                 yokedfeedback=feedback1(randid);
                 I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
-                I((Ninp+1):(Ninp+Ninp))=I((Ninp+1):(Ninp+Ninp))+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
+                I((Ninp*2+1):(Ninp*2+Ninp))=I((Ninp*2+1):(Ninp*2+Ninp))+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,yokedfeedback];
                 
             elseif strcmp(yoke,'No') && strcmp(feedbacktype,'consonant')
@@ -529,7 +583,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             fired_out = find(v(Ninp+outInd)>=30);    %100~200
             fired_mot = find(v_mot>=30);        %motorneurons
             fired_inp = find(v(inpInd)>=30);
-        elseif strcmp(IP,'IP')
+        elseif strcmp(IP,'threIP')
 
             fired = find((v-TEI)>=threshold);
             fired_out = find((v(Ninp + outInd)-TEI(Ninp + outInd))>=threshold);
@@ -564,6 +618,17 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             s = [s_e ; s_i];
             %sout = smsum*sout/sum(sum(sout));
             %sout = sumweight*sout/sum(sum(sout));%実験
+            
+        elseif strcmp(IP,'LiIP')
+            fired = find(v>=30);                % Indices of fired neurons
+            fired_out = find(v(Ninp+outInd)>=30);    %100~200
+            fired_mot = find(v_mot>=30);        %motorneurons
+            fired_inp = find(v(inpInd)>=30);
+            
+          
+            ISI(fired)=t+(sec-1)*1000-fired_time(fired);
+            fired_time(fired)=t+(sec-1)*1000;
+            
         end
         
         
@@ -582,7 +647,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
 
          for k=1:length(fired)
-                sd_reservor(pre{fired(k)})=sd_reservor(pre{fired(k)})+STDP_reservor(N*t+aux{fired(k)}); %LTP A plus 1
+                sd_reservor(pre{fired(k)})=sd_reservor(pre{fired(k)})+LTP*STDP_reservor(N*t+aux{fired(k)}); %LTP A plus 1
                 % pre{fired(1)=54}=52,78,210,277,350,372,73
                
                 
@@ -593,7 +658,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
 
         for k=1:length(fired_mot)
-                sd_mot(:,fired_mot(k))=sd_mot(:,fired_mot(k))+STDP_out(:,t); % Adjusting sd for synapses eligible for potentiation.LTP
+                sd_mot(:,fired_mot(k))=sd_mot(:,fired_mot(k))+LTP_m*STDP_out(:,t); % Adjusting sd for synapses eligible for potentiation.LTP
         end
    
 
@@ -614,7 +679,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 I(ind)=I(ind)+s(firings(k,2), del)';%'
              if strcmp(STDP,'STDP')
 
-              sd_reservor(firings(k,2),del)=sd_reservor(firings(k,2),del)-1.5*STDP_reservor(ind,t+D)';%'LTD A-1.5
+              sd_reservor(firings(k,2),del)=sd_reservor(firings(k,2),del)-LTD*STDP_reservor(ind,t+D)';%'LTD A-1.5
              end
 
                 k=k-1;
@@ -633,7 +698,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 I(ind)=I(ind)+s(firings(k,2), del)';%'
              if strcmp(STDP,'STDP')
 
-              sd_reservor(firings(k,2),del)=sd_reservor(firings(k,2),del)-1.5*STDP_reservor(ind,t+D)';
+              sd_reservor(firings(k,2),del)=sd_reservor(firings(k,2),del)-LTD*STDP_reservor(ind,t+D)';
               %'LTD A-1.5,firings(k,2) = pre firing,ind = post neuron,STDP_reservor(ind,t+D)=firing history of post neuron(pre at t) at t+Dlater 
              end
 
@@ -651,34 +716,63 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             ind_mot = post_mot(outFirings(k,2),del_mot);   %del_mot=1:Nmot ind_mot=
             I_mot(ind_mot)=I_mot(ind_mot)+2*sout(outFirings(k,2), del_mot)';%'
             
-            sd_mot(outFirings(k,2),:)=sd_mot(outFirings(k,2),:)-1.5*STDP_mot(:,t+D)'; % LTD of motor neuron 
+            sd_mot(outFirings(k,2),:)=sd_mot(outFirings(k,2),:)-LTD_m*STDP_mot(:,t+D)'; % LTD of motor neuron 
             
             k=k-1;
         end;
+        
+        
+        %caliculate Li et al 17 (7)
+        if strcmp(IP,'LiIP') && mod(t,50)==0
+           for i=1:Ne
+            if ISI(i)<Te_min
+                z(i)=-h(i)*exp((Te_min-ISI(i))/Te_min);
+            elseif ISI(i)>Te_max
+                z(i)=h(i)*exp((ISI(i)-Te_max)/Te_max);
+            elseif ISI(i)>=Te_min && ISI(i)<=Te_max
+                z(i)=0;
+            end
+           end
+           
+           for i=Ne+1:N
+                if ISI(i)<Ti_min
+                    z(i)=-h(i)*exp((Ti_min-ISI(i))/Ti_min);
+                elseif ISI(i)>Ti_max
+                    z(i)=h(i)*exp((ISI(i)-Ti_max)/Ti_max);
+                elseif ISI(i)>=Ti_min && ISI(i)<=Ti_max
+                    z(i)=0;
+               end
+           end
+           
+        b=b+b_max*z;
+        for i=1:N
+            b(i)=max(0.12,b(i));
+            b(i)=min(0.2,b(i));
+        end
+        
+        end
+        
 
-        % Calculating currents to add for input neurons.
-   %    k=size(speFirings,1);
-   %    while speFirings(k,1)>t-D
-   %        del_inp=delays_inp{speFirings(k,2),t-speFirings(k,1)+1};
-   %        ind_inp = post_spe(speFirings(k,2),del_inp);%del_inp=1:Ninp ind_inp=
-   %        I(ind_inp)=I(ind_inp)+2*sinp(speFirings(k,2), del_inp)';%'
-   %        k=k-1;
-   
-  %     end;
 
+        
 
 %%%%%%%%%%%%%%%
         %caliculate LST
         LAP=mean(mean(v));
         LAP_hist(t)=LAP;
-%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%
+
 
         % Individual neuronal dynamics computations:
         v=v+0.5*((0.04*v+5).*v+140-u+I);                            % for numerical I...randam+from spe neurons(1*100)
         v=v+0.5*((0.04*v+5).*v+140-u+I);                            % stability time
         v_mot=v_mot+0.5*((0.04*v_mot+5).*v_mot+140-u_mot+I_mot);    % step is 0.5 ms I_mot...randam+from out neurons
         v_mot=v_mot+0.5*((0.04*v_mot+5).*v_mot+140-u_mot+I_mot);
-        u=u+a.*(0.2*v-u);
+        if strcmp(IP,'LiIP')
+            u=u+a.*(b.*v-u)+D_noise*randn(N,1); % stability,gausian noise
+        else
+            u=u+a.*(0.2*v-u);
+        end
         u_mot=u_mot+a_mot.*(0.2*v_mot-u_mot);
 
 
@@ -711,9 +805,11 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         % Modify synaptic weights.
         if (mod(t,10)==0)
             if strcmp(reinforce,'reinforce')
+                %sout=0.5*sout./(mean(mean(sout)));              % Normalizing the synaptic weights. out-mot
+                if sec>50
                 sout=max(0,min(sm,sout+DA*sd_mot));
+                end
                 
-                %sout=sout./(mean(mean(sout)));              % Normalizing the synaptic weights. out-mot
             end
 
             %sinp=max(0,min(sm,sinp+sd_spe));%
@@ -735,7 +831,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         
         
         % IP lerning
-        if strcmp(IP,'IP')
+        if strcmp(IP,'threIP')
             
             fire_all = zeros(N,1);
             fire_m = zeros(Nmot,1);
@@ -752,7 +848,10 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             TE.m = TE.m + etaIP*(fire_m - m_HIP);
             %TE.m = TE.m + etaIP*(fire_m - HIP);  %IP
            
-         
+        elseif strcmp(IP,'LiIP')
+            
+            
+            
         end
         
         
@@ -766,7 +865,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
                 firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
                 
-            elseif strcmp(IP,'IP')
+            elseif strcmp(IP,'threIP')
                 %firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
                 %firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
                 
@@ -776,6 +875,11 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             elseif strcmp(IP,'afterIP')
                 firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
                 firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
+                
+            elseif strcmp(IP,'LiIP')
+                firedmusc1pos=find(v_mot(1:Nmot/2)>=mot_thre); % Find out which of the jaw/lip motor neurons fired.
+                firedmusc1neg=find(v_mot(Nmot/2+1:end)>=mot_thre);
+                
             end
             
             summusc1posspikes(t)=size(firedmusc1pos,1); % Sum the spikes at each timestep across the set of motor neurons.
@@ -1138,7 +1242,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
     %f_rate = size(firings);
     %firing_rate = (f_rate(1,1)-1)/1000;
     display(['firing rate of 500= ',num2str(firing_rate_500)]);
-    display(['neuron500 threshold = ',num2str(TEI(500,1))]);
+    %display(['neuron500 threshold = ',num2str(TEI(500,1))]);
 
     sout_hist{sec}=sout;
     
