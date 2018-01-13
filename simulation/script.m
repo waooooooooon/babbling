@@ -1,18 +1,18 @@
 global id
 
 %initialization
-d=1;    %Iterate number
+d=5;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
-ploton = 1; % 1 or 0
+ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['180113_LTDLTP0.005'];
+id=['180113_LiIP'];
 IP =['LiIP'];        %threIP or Tonic or afterIP or LiIP
 separatephase = ['notseparate'];      %separatephase or notseparate
 Network = ['random'];      %lattice or random
 reward = ['normalreward'];        %negativereward or normalreward
 feedbacktype = ['fft'];        %consonant or fft
 feedbacktime=1;
-iterate=200;
+iterate=3000;
 speinplate=0.3;
 debug=0;
 p = 0.03;
@@ -22,7 +22,7 @@ created_data = ['../created_data/'];
 %caliculate babbling
 for j = 1:1
     yoked = YOKED(j,:);
-    for i =1:2
+    for i =1:1
         stdp = STDP(i,:);
         %Babbling&mean caliculation
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
