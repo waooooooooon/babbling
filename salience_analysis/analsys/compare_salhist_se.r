@@ -36,25 +36,25 @@ moving_average <- function(x, n){
 
 
 #title
-title <- "180106_p0.01"
+title <- "180110_random"
 
 #load the directory 
 dir <- "~/babbling/created_data/"
-filename <- "180106_p0.01/"
+filename <- "180110_random/"
 csvfile <- "csv/"
 
 #filename
 id <- title
-iterate <- "5000"
+iterate <- "3000"
 ploton <- "0"
 IP <- "IP"
 phase <-"notseparate"
 network <- "lattice"
 reward <- "negativereward"
-feedback <- "consonant" #consonant or fft
+feedback <- "fft" #consonant or fft
 iteratenum <- "1"
-p <- "0.01"
-iterateforfig <- 5000
+p <- "0.03"
+iterateforfig <- 3000
 
 #for GAM
 # Load the data:
