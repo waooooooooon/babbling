@@ -8,7 +8,7 @@ d=5;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['180106_p0.01'];
+id=['180114_LiIP+nega'];
 IP =['IP'];        %IP or Tonic or afterIP
 separatephase = ['notseparate'];      %separatephase or notseparate
 Network = ['lattice'];      %lattice or random
@@ -25,7 +25,7 @@ saliencedata_dir = ['../salience_analysis/saliency_data/'];
 
 for j = 1:2
     yoked = YOKED(j,:);
-    for i =1:2
+    for i =1:1
         stdp = STDP(i,:);
         %Babbling&mean caliculation
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

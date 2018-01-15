@@ -1,18 +1,18 @@
 global id
 
 %initialization
-d=3;    %Iterate number
+d=5;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['180113_LiIP+'];
+id=['180115_LiIPnega'];
 IP =['LiIP'];        %threIP or Tonic or afterIP or LiIP
 separatephase = ['nseparate'];      %separate or nseparate
 Network = ['random'];      %lattice or random
-reward = ['normal'];        %nega or normal
+reward = ['nega'];        %nega or normal
 feedbacktype = ['fft'];        %consonant or fft
 feedbacktime=1;
-iterate=2000;
+iterate=3000;
 speinplate=0.3;
 debug=0;
 p = 0.03;
@@ -20,7 +20,7 @@ created_data = ['../created_data/'];
 
 
 %caliculate babbling
-for j = 2:2
+for j = 1:2
     yoked = YOKED(j,:);
     for i =1:1
         stdp = STDP(i,:);
@@ -31,7 +31,7 @@ for j = 2:2
 
            for i=1:d
                 %conduct babbling
-                   display([num2str(i),ID]);
+                   display([num2str(i),'_',ID]);
 
                    babbling([num2str(i),ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
            end
@@ -42,7 +42,7 @@ for j = 2:2
 end
 
 %caliculate mean
-for j = 2:2
+for j = 1:2
     yoked = YOKED(j,:);
     for i =1:1
         stdp = STDP(i,:);
@@ -52,9 +52,11 @@ for j = 2:2
 
            for k=1:d
                 %conduct babbling
-                   display([num2str(k),ID]);
+                   display([num2str(k),'_',ID]);
                    workspacedir = [num2str(k),'_',ID,'_Workspace/'];
                    salhist{k}=csvread([created_data,id,'/data/',workspacedir,num2str(k),'_',ID,'.csv']);
+                   plotfirings([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
+                   
            end
            
            for k=1:d
