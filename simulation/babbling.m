@@ -185,7 +185,7 @@ else
     d_mot=8*ones(Nmot,1); %
     smr = 10;        %default 4 Li default ->10
     s=[6*rand(Ne,M);-5*rand(Ni,M)];         % synaptic weights (default of walaumont is s=[rand(Ne,M);-rand(Ni,M)]
-    sout=rand(Nout,Nmot)/2; % Synaptic weights from the reservoir output neurons to the motor neurons.
+    sout=rand(Nout,Nmot); % Synaptic weights from the reservoir output neurons to the motor neurons.
     sd=zeros(N,M);                          % their derivatives
 
     post_mot=repmat(1:Nmot,Nout,1);         % All output neurons connect to all motor neurons.
