@@ -201,16 +201,22 @@ else
         D_noise=0.5;  %gausian noise coefficient
         b_max=0.2;
         b_min=0.12;
-        b=[b_min*ones(Ne,1)+(b_max-b_min)*rand(Ne,1);0.2*ones(Ni,1)];
-        Te_max=10000;     %default 110
-        Te_min=5;      %default 90
-        Ti_max=10000;%25
-        Ti_min=5;%7
+        b=[b_min*ones(Ne,1)+(b_max-b_min)*rand(Ne,1);b_min*ones(Ni,1)+(b_max-b_min)*rand(Ni,1)];       %default b=[b_min*ones(Ne,1)+(b_max-b_min)*rand(Ne,1);0.2*ones(Ni,1)]
+        Te_max=100000;     %default 110
+        Te_min=25;      %default 90
+        Ti_max=100000;%25
+        Ti_min=25;%7
         h=[0.012*ones(Ne,1);0.012*ones(Ni,1)];      %larning rate of z
         z=zeros(N,1);       %larning rate of fai and b
         all_fired=[];
         fired_time=zeros(N,1);
         ISI=zeros(N,1);
+        
+    elseif strcmp(IP,'NoIP')
+        D_noise=0.5;  %gausian noise coefficient
+        b_max=0.2;
+        b_min=0.12;
+        b=[b_min*ones(Ne,1)+(b_max-b_min)*rand(Ne,1);b_min*ones(Ni,1)+(b_max-b_min)*rand(Ni,1)];       %default b=[b_min*ones(Ne,1)+(b_max-b_min)*rand(Ne,1);0.2*ones(Ni,1)]
 
     elseif strcmp(IP,'threIP')
         TE.max = -15;             %for IP
@@ -478,9 +484,12 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             I=zeros(N,1);
             I_mot=zeros(Nmot,1);
         elseif strcmp(IP,'LiIP')
-            I=[6*ones(Ne,1);0*ones(Ni,1)];
+            I=[6*ones(Ne,1);6*ones(Ni,1)];
             I_mot=zeros(Nmot,1);
             %I_mot=12*(rand(Nmot,1)-0.5);
+        elseif strcmp(IP,'NoIP')
+            I=[6*ones(Ne,1);6*ones(Ni,1)];
+            I_mot=zeros(Nmot,1);
         end
         
         %for ip test
@@ -633,6 +642,12 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             ISI(fired)=t+(sec-1)*1000-fired_time(fired);
             fired_time(fired)=t+(sec-1)*1000;
             
+        elseif strcmp(IP,'NoIP')
+            fired = find(v>=30);                % Indices of fired neurons
+            fired_out = find(v(Ninp+outInd)>=30);    %100~200
+            fired_mot = find(v_mot>=30);        %motorneurons
+            fired_inp = find(v(inpInd)>=30);
+         
         end
         
         
@@ -772,7 +787,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         v=v+0.5*((0.04*v+5).*v+140-u+I);                            % stability time
         v_mot=v_mot+0.5*((0.04*v_mot+5).*v_mot+140-u_mot+I_mot);    % step is 0.5 ms I_mot...randam+from out neurons
         v_mot=v_mot+0.5*((0.04*v_mot+5).*v_mot+140-u_mot+I_mot);
-        if strcmp(IP,'LiIP')
+        if strcmp(IP,'LiIP') || strcmp(IP,'NoIP')
             u=u+a.*(b.*v-u)+D_noise*randn(N,1); % stability,gausian noise
         else
             u=u+a.*(0.2*v-u);
@@ -880,9 +895,9 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
                 firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
                 
-            elseif strcmp(IP,'LiIP')
-                firedmusc1pos=find(v_mot(1:Nmot/2)>=mot_thre); % Find out which of the jaw/lip motor neurons fired.
-                firedmusc1neg=find(v_mot(Nmot/2+1:end)>=mot_thre);
+            elseif strcmp(IP,'LiIP') || strcmp(IP,'NoIP')
+                firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
+                firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
                 
             end
             

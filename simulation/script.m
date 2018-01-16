@@ -3,16 +3,16 @@ global id
 %initialization
 d=1;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
-ploton = 1; % 1 or 0
+ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['test'];
-IP =['LiIP'];        %threIP or Tonic or afterIP or LiIP
+id=['180116_tmax100000tmin25IPSTDP'];
+IP =['LiIP'];        %threIP or Tonic or NoIP or LiIP
 separatephase = ['nseparate'];      %separate or nseparate
 Network = ['random'];      %lattice or random
 reward = ['nega'];        %nega or normal
-feedbacktype = ['fft'];        %consonant or fft or none
+feedbacktype = ['none'];        %consonant or fft or none
 feedbacktime=1;
-iterate=2000;
+iterate=200;
 speinplate=0.3;
 debug=0;
 p = 1;
