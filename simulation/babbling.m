@@ -67,8 +67,8 @@ mot_thre = 0;
 constant_inplate = 0.01;
 LTD = 0.00525;      %default 1.5  Li defo ->0.00525
 LTP = 0.005;        %default 1.0  LI defo ->0.005
-LTD_m = 0.009;        %default 1.5 Li defo ->0.00525
-LTP_m = 0.008;          %default 1.0 Li defo ->0.005
+LTD_m = 0.00525;        %default 1.5 Li defo ->0.00525
+LTP_m = 0.005;          %default 1.0 Li defo ->0.005
 %
 sparse_mot = 1;   %1 or 0 
 sparse_degree = 0; % number of synapse from out to motor Nout - sparse_degree
@@ -185,7 +185,7 @@ else
     d_mot=8*ones(Nmot,1); %
     smr = 10;        %default 4 Li default ->10
     s=[6*rand(Ne,M);-5*rand(Ni,M)];         % synaptic weights (default of walaumont is s=[rand(Ne,M);-rand(Ni,M)]
-    sout=rand(Nout,Nmot); % Synaptic weights from the reservoir output neurons to the motor neurons.
+    sout=rand(Nout,Nmot)/2; % Synaptic weights from the reservoir output neurons to the motor neurons.
     sd=zeros(N,M);                          % their derivatives
 
     post_mot=repmat(1:Nmot,Nout,1);         % All output neurons connect to all motor neurons.
@@ -202,10 +202,10 @@ else
         b_max=0.2;
         b_min=0.12;
         b=[b_min*ones(Ne,1)+(b_max-b_min)*rand(Ne,1);0.2*ones(Ni,1)];
-        Te_max=110;
-        Te_min=90;
-        Ti_max=25;%25
-        Ti_min=15;%7
+        Te_max=10000;     %default 110
+        Te_min=5;      %default 90
+        Ti_max=10000;%25
+        Ti_min=5;%7
         h=[0.012*ones(Ne,1);0.012*ones(Ni,1)];      %larning rate of z
         z=zeros(N,1);       %larning rate of fai and b
         all_fired=[];
@@ -528,6 +528,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 I((Ninp+1):(Ninp+Ninp))=I((Ninp+1):(Ninp+Ninp))+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,yokedfeedback];
+            elseif strcmp(feedbacktype,'none')
             end
 
            end
@@ -568,6 +569,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 I(InputneuronID)=I(InputneuronID)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 I(InputneuronID2)=I(InputneuronID2)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,yokedfeedback];
+            elseif strcmp(feedbacktype,'none')
+                
 
             end
             
@@ -858,7 +861,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         
         
         
-        
+        if ~strcmp(feedbacktype,'none')
         % Every testint seconds, use the motor neuron spikes to generate a sound.
         if (mod(sec,testint)==0)
 
@@ -1031,6 +1034,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
 %%%%%%%%%%%%%%%%%%%
             end
+            
         end
 
         % If the human listener decided to reinforce (or if the yoked control
@@ -1053,7 +1057,11 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             negativereward = 0;     %initialize negativereward
         end
         
+        end
     end
+    
+    
+    
 
 
 
@@ -1248,8 +1256,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
     sout_hist{sec}=sout;
     
     %for negative reward
-    display(['nega= ',num2str(nega(sec))]);
-    display(['DA= ',num2str(DA)]);
+    %display(['nega= ',num2str(nega(sec))]);
+    %display(['DA= ',num2str(DA)]);
 
     % Preparing STDP and firings for the following 1000 ms.
     STDP_out(:,1:D+1)=STDP_out(:,1001:1001+D);
@@ -1300,11 +1308,13 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
     toc;
   
-    if sec==T
-        number=[1:T].'; %' 
-        salhistdate=[salhist,number,nega.',DA_history.'];
-        csvwrite([workspacedir,'/',ID,'.csv'],salhistdate);     %write salhist data and negativereward to csv
-        
+    if ~strcmp(feedbacktype,'none')
+        if sec==T
+            number=[1:T].'; %' 
+            salhistdate=[salhist,number,nega.',DA_history.'];
+            csvwrite([workspacedir,'/',ID,'.csv'],salhistdate);     %write salhist data and negativereward to csv
+    end
+    
 
         
         

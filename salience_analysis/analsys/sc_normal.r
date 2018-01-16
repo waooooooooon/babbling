@@ -36,16 +36,16 @@ moving_average <- function(x, n){
 
 
 #title
-title <- "180114_LiIP+nega"
+title <- "180115_LiIPDA=0"
 
 #load the directory 
 dir <- "~/babbling/created_data/"
-filename <- "180114_LiIP+nega/"
+filename <- "180115_LiIPDA=0/"
 csvfile <- "csv/"
 
 #filename
 id <- title
-iterate <- "3000"
+iterate <- "2000"
 ploton <- "0"
 IP <- "LiIP"    #threIP or LiIP or Tonic or afterIP
 phase <-"nseparate"   #nseparate or separate

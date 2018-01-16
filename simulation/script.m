@@ -1,26 +1,26 @@
 global id
 
 %initialization
-d=5;    %Iterate number
+d=1;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
-ploton = 0; % 1 or 0
+ploton = 1; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['test180115_LiIPnega'];
+id=['test'];
 IP =['LiIP'];        %threIP or Tonic or afterIP or LiIP
 separatephase = ['nseparate'];      %separate or nseparate
 Network = ['random'];      %lattice or random
 reward = ['nega'];        %nega or normal
-feedbacktype = ['fft'];        %consonant or fft
+feedbacktype = ['fft'];        %consonant or fft or none
 feedbacktime=1;
 iterate=2000;
 speinplate=0.3;
 debug=0;
-p = 0.03;
+p = 1;
 created_data = ['../created_data/'];
 
 
 %caliculate babbling
-for j = 1:2
+for j = 1:1
     yoked = YOKED(j,:);
     for i =1:1
         stdp = STDP(i,:);
@@ -42,7 +42,7 @@ for j = 1:2
 end
 
 %caliculate mean
-for j = 1:2
+for j = 1:1
     yoked = YOKED(j,:);
     for i =1:1
         stdp = STDP(i,:);
@@ -54,20 +54,27 @@ for j = 1:2
                 %conduct babbling
                    display([num2str(k),'_',ID]);
                    workspacedir = [num2str(k),'_',ID,'_Workspace/'];
+                   
+                   if ~strcmp(feedbacktype,'none')
                    salhist{k}=csvread([created_data,id,'/data/',workspacedir,num2str(k),'_',ID,'.csv']);
+                   end
+                   
                    plotfirings([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
                    
            end
            
-           for k=1:d
-               if k==1
-                   mean_sal = salhist{k};
-               else
-                   mean_sal = mean_sal + salhist{k};
+           if ~strcmp(feedbacktype,'none')
+               for k=1:d
+                   if k==1
+                       mean_sal = salhist{k};
+                   else
+                       mean_sal = mean_sal + salhist{k};
+                   end
                end
+               mean_sal = mean_sal/d;
+               csvwrite([created_data,id,'/csv/',ID,'.csv'],mean_sal); 
            end
-           mean_sal = mean_sal/d;
-           csvwrite([created_data,id,'/csv/',ID,'.csv'],mean_sal); 
+           
          
 
          clearvars salhist mean_sal;
