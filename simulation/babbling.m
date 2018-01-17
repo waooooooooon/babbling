@@ -484,11 +484,11 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             I=zeros(N,1);
             I_mot=zeros(Nmot,1);
         elseif strcmp(IP,'LiIP')
-            I=[6*ones(Ne,1);6*ones(Ni,1)];
+            I=[6*ones(Ne,1);0*ones(Ni,1)];      %default I=[6*ones(Ne,1);0*ones(Ni,1)]
             I_mot=zeros(Nmot,1);
             %I_mot=12*(rand(Nmot,1)-0.5);
         elseif strcmp(IP,'NoIP')
-            I=[6*ones(Ne,1);6*ones(Ni,1)];
+            I=[6*ones(Ne,1);0*ones(Ni,1)];
             I_mot=zeros(Nmot,1);
         end
         

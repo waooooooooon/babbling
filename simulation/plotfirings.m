@@ -28,18 +28,22 @@ if newT>1000
 
         %histogram of firings
 
-        for i =1:1000
+        for i =1:800
             Br = size(find(A(:,3)==i));
             firingrate(i) = Br(1,1);
 
         end
 
         edge = logspace(0, 10, 300);
-        %h=histogram(firingrate,edge);set(gca,'Xscale','log');xlim([0 100]);
+        h=histogram(firingrate,edge);set(gca,'Xscale','log');xlim([0 200]);
+        %h=histogram(firingrate);xlim([0 200]);
+
+
+        saveas(h,[firingsdir,'/Histlog_',ID,'_',num2str(i),'.png']);
+        
         h=histogram(firingrate);xlim([0 200]);
-
-
         saveas(h,[firingsdir,'/Hist_',ID,'_',num2str(i),'.png']);
+        
         %%%%%%%%%%%%%%%%%%%%%%
 
 
