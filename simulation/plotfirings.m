@@ -28,9 +28,9 @@ if newT>1000
 
         %histogram of firings
 
-        for i =1:800
-            Br = size(find(A(:,3)==i));
-            firingrate(i) = Br(1,1);
+        for j=1:800
+            Br = size(find(A(:,3)==j));
+            firingrate(j) = Br(1,1);
 
         end
 
@@ -59,9 +59,9 @@ if newT>1000
 
         %histogram of firings
 
-        for i =1:1000
-            Bm = size(find(B(:,3)==i));
-            firingratemot(i) = Bm(1,1);
+        for j =1:1000
+            Bm = size(find(B(:,3)==j));
+            firingratemot(j) = Bm(1,1);
 
         end
 
@@ -89,9 +89,9 @@ else
 
         %histogram of firings
 
-        for i =1:800
-            Br = size(find(A(:,3)==i));
-            firingrate(i) = Br(1,1);
+        for j =1:800
+            Br = size(find(A(:,3)==j));
+            firingrate(j) = Br(1,1);
 
         end
 
@@ -120,9 +120,9 @@ else
 
         %histogram of firings
 
-        for i =1:1000
-            Bm = size(find(B(:,3)==i));
-            firingratemot(i) = Bm(1,1);
+        for j =1:1000
+            Bm = size(find(B(:,3)==j));
+            firingratemot(j) = Bm(1,1);
 
         end
 

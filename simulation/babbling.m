@@ -67,8 +67,8 @@ mot_thre = 0;
 constant_inplate = 0.01;
 LTD = 0.00525;      %default 1.5  Li defo ->0.00525
 LTP = 0.005;        %default 1.0  LI defo ->0.005
-LTD_m = 0.00525;        %default 1.5 Li defo ->0.00525
-LTP_m = 0.005;          %default 1.0 Li defo ->0.005
+LTD_m = 0.00125;        %default 1.5 Li defo ->0.00525
+LTP_m = 0.001;          %default 1.0 Li defo ->0.005
 %
 sparse_mot = 1;   %1 or 0 
 sparse_degree = 0; % number of synapse from out to motor Nout - sparse_degree

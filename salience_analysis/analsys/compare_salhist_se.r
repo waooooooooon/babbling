@@ -36,11 +36,11 @@ moving_average <- function(x, n){
 
 
 #title
-title <- "180116_tunedIP"
+title <- "180117_Ii=0"
 
 #load the directory 
 dir <- "~/babbling/created_data/"
-filename <- "180116_tunedIP/"
+filename <- "180117_Ii=0/"
 csvfile <- "csv/"
 
 #filename
