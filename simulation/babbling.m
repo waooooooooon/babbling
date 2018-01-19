@@ -46,7 +46,7 @@ function [] = babbling(ID,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbackti
 rng shuffle;
 warning('off','all');
 
-global id
+global id itenumber
 
 % Initialization.
 salthresh = 4.5;            % Initial salience value for reward (used in 'relhisal' reinforcment).
@@ -58,7 +58,7 @@ fftsize=2048;             %fft????????????????????????????????????
 lpcsize=8;                %LPC size
 inpInd=outInd;
 tau=20;                   %decay parameter
-SAVINTV=1000;
+SAVINTV=500;
 LST_hist=[1:1000];
 muscle_number=0;
 negativereward = 0;
@@ -69,9 +69,12 @@ LTD = 0.00525;      %default 1.5  Li defo ->0.00525
 LTP = 0.005;        %default 1.0  LI defo ->0.005
 LTD_m = 0.00125;        %default 1.5 Li defo ->0.00525
 LTP_m = 0.001;          %default 1.0 Li defo ->0.005
+muscle_his = zeros(1000,newT);  %muscle_history for Sc, verticle=time horizontal=sec
+yokemode = 'time';     %timespace or time 
+
 %
 sparse_mot = 1;   %1 or 0 
-sparse_degree = 0; % number of synapse from out to motor Nout - sparse_degree
+sparse_degree = 0; % number of synapse from out to motor Nout - sparse_degree default=40
 
 
 %for low pass filter
@@ -142,6 +145,7 @@ end
     importFilename=[setdir,'/babble_daspnet_reservoir_randominitial.mat']; %sparse random data
 
 
+
 % Directory for Coath et. al. Saliency Detector.
 addpath('auditorysaliencymodel');
 
@@ -153,6 +157,7 @@ if strcmp(separatephase,'nseparate')
     
     %load(importFilename,'s','sout','post','post_spe','post_mot','pre','aux');
     
+    
 elseif strcmp(separatephase,'separate')
     
     if strcmp(yoke,'No')
@@ -161,6 +166,12 @@ elseif strcmp(separatephase,'separate')
         load([setdir,'/babble_daspnet_reservoir_1_171201_3000_reinforce_100_4_Sc_1_1_0.03_0.3_NSTD_IP_separatephase_lattice_negativereward.mat'],'s','sout','post','post_spe','post_mot','pre','aux','TE','threshold','TEI','NeuronID_Position','InputneuronID','OutputneuronID','Post_position','Post','size_neuron','sesum');
     end
     
+elseif strcmp(separatephase,'randSc') && strcmp(yoke,'Sc')
+    NoID = [num2str(itenumber),'_',id,'_',num2str(newT),'_reinforce_100_4_No_',num2str(plotOn),'_',num2str(feedbacktime),'_',num2str(learningratio),'_',num2str(speinplate),'_',STDP,'_',IP,'_',separatephase,'_',Network,'_',reward,'_',feedbacktype];
+    load([datadir,NoID, '_Workspace/babble_daspnet_reservoir_',NoID,'.mat'],'muscle_his','salhist');
+    randtime=randperm(newT);
+    Nomuscle_his=muscle_his(:,randtime);
+    muscle_his = 0;
 end
 
 
@@ -202,10 +213,10 @@ else
         b_max=0.2;
         b_min=0.12;
         b=[b_min*ones(Ne,1)+(b_max-b_min)*rand(Ne,1);b_min*ones(Ni,1)+(b_max-b_min)*rand(Ni,1)];       %default b=[b_min*ones(Ne,1)+(b_max-b_min)*rand(Ne,1);0.2*ones(Ni,1)]
-        Te_max=100000;     %default 110
-        Te_min=25;      %default 90
-        Ti_max=100000;%25
-        Ti_min=25;%7
+        Te_max=100000;     %default 110 ,lognormal 100000
+        Te_min=25;      %default 90,lognormal 25
+        Ti_max=100000;%25   lognormal 100000
+        Ti_min=25;%7     lognormal 25
         h=[0.012*ones(Ne,1);0.012*ones(Ni,1)];      %larning rate of z
         z=zeros(N,1);       %larning rate of fai and b
         all_fired=[];
@@ -387,7 +398,7 @@ else
     %%%%%%%%%%%%%%%%%%%%%%%% end of create lattice network
     
     
-    if strcmp(Network,'random') && strcmp(separatephase,'nseparate')
+    if strcmp(Network,'random') && ~strcmp(separatephase,'separate')
         
         random.a = size(find(post(1,:)~=0));
         
@@ -461,7 +472,7 @@ datahistsize=((1000-muscsmooth)/feedbacktime);
 for sec=(sec+1):T % T is the duration of the simulation in seconds.
           tic;
     display('********************************************');
-    display(['yoke=',yoke,'_phase=',STDP,'_',IP,'_Second ',num2str(sec),' of ',num2str(T)]);
+    display(['iterate=',num2str(itenumber),'yoke=',yoke,'_phase=',STDP,'_',IP,'_Second ',num2str(sec),' of ',num2str(T)]);
 
     v_mot_hist{sec}=[]; % Record of all the membrane voltages of the motor neurons.
 
@@ -500,6 +511,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         %%%%%%%%%%%%%%%%%%%%%   feedback every time
         if strcmp(Network,'random')
            if t-1>muscsmooth&mod(t-1,feedbacktime)==0
+               
+               
 
             
             if strcmp(yoke,'No') && strcmp(feedbacktype,'fft')
@@ -507,13 +520,28 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
                 I(1:Ninp)=I(1:Ninp)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 I((Ninp*2+1):(Ninp*2+Ninp))=I((Ninp*2+1):(Ninp*2+Ninp))+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,feedback1];
-            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft')
+            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft') && ~strcmp(separatephase,'randSc')
                 feedback1=speinplate*table(:,muscle_number);
                 randid=randperm(100);
                 yokedfeedback=feedback1(randid);
                 I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 I((Ninp*2+1):(Ninp*2+Ninp))=I((Ninp*2+1):(Ninp*2+Ninp))+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,yokedfeedback];
+                
+                
+            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft') && strcmp(separatephase,'randSc')
+                feedback1=speinplate*table(:,Nomuscle_his(t,sec));
+                if strcmp(yokemode,'timespace')
+                    randid=randperm(100);
+                    yokedfeedback=feedback1(randid);
+                else
+                    yokedfeedback = feedback1;
+                end
+                
+                I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
+                I((Ninp*2+1):(Ninp*2+Ninp))=I((Ninp*2+1):(Ninp*2+Ninp))+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
+                feedbackhist=[feedbackhist,yokedfeedback];
+                
                 
             elseif strcmp(yoke,'No') && strcmp(feedbacktype,'consonant')
                 
@@ -923,6 +951,8 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
 
               muscle_number=round((smoothmusc(t)+1)*10000);
+              
+              muscle_his(t,sec) = muscle_number;
               
               
 

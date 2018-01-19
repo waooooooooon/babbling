@@ -1,13 +1,13 @@
-global id
+global id itenumber
 
 %initialization
-d=4;    %Iterate number
+d=1;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['180118_Li=0DA0.001'];
+id=['180119_randSctime'];
 IP =['LiIP'];        %threIP or Tonic or NoIP or LiIP
-separatephase = ['nseparate'];      %separate or nseparate
+separatephase = ['randSc'];      %separate or nseparate or randSc
 Network = ['random'];      %lattice or random
 reward = ['normal'];        %nega or normal
 feedbacktype = ['fft'];        %consonant or fft or none
@@ -20,7 +20,7 @@ created_data = ['../created_data/'];
 
 
 %caliculate babbling
-for j = 1:1
+for j = 1:2
     yoked = YOKED(j,:);
     for i =1:1
         stdp = STDP(i,:);
@@ -29,11 +29,11 @@ for j = 1:1
         ID = ['_',id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_',num2str(ploton),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network,'_',reward,'_',feedbacktype];
 
 
-           for i=1:d
+           for itenumber=1:1
                 %conduct babbling
-                   display([num2str(i),'_',ID]);
+                   display([num2str(itenumber),'_',ID]);
 
-                   babbling([num2str(i),ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
+                   babbling([num2str(itenumber),ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
            end
 
          clearvars meanout data datahist output;
@@ -44,7 +44,7 @@ end
 %caliculate mean
 for j = 1:2
     yoked = YOKED(j,:);
-    for i =2:2
+    for i =1:2
         stdp = STDP(i,:);
         %Babbling&mean caliculation
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

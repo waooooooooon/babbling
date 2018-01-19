@@ -36,11 +36,11 @@ moving_average <- function(x, n){
 
 
 #title
-title <- "180117_Ii=0"
+title <- "180118_Li=0DA0.001"
 
 #load the directory 
 dir <- "~/babbling/created_data/"
-filename <- "180117_Ii=0/"
+filename <- "180118_Li=0DA0.001/"
 csvfile <- "csv/"
 
 #filename
@@ -50,7 +50,7 @@ ploton <- "0"
 IP <- "LiIP"    #LiIP or threIP or NoIP or tonic
 phase <-"nseparate"   #nseparate or separate
 network <- "random"   #random or lattice
-reward <- "nega"    #nega or normal
+reward <- "normal"    #nega or normal
 feedback <- "fft" #consonant or fft or no
 iteratenum <- "1"
 p <- "1"
