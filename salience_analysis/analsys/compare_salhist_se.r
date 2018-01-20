@@ -36,11 +36,11 @@ moving_average <- function(x, n){
 
 
 #title
-title <- "180118_Li=0DA0.001"
+title <- "180119_randSctimespace"
 
 #load the directory 
 dir <- "~/babbling/created_data/"
-filename <- "180118_Li=0DA0.001/"
+filename <- "180119_randSctimespace/"
 csvfile <- "csv/"
 
 #filename
@@ -48,7 +48,7 @@ id <- title
 iterate <- "2000"
 ploton <- "0"
 IP <- "LiIP"    #LiIP or threIP or NoIP or tonic
-phase <-"nseparate"   #nseparate or separate
+phase <-"randSc"   #nseparate or separate or randSc
 network <- "random"   #random or lattice
 reward <- "normal"    #nega or normal
 feedback <- "fft" #consonant or fft or no

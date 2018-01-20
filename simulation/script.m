@@ -1,11 +1,11 @@
 global id itenumber
 
 %initialization
-d=1;    %Iterate number
+d=8;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['180119_randSctime'];
+id=['180120_Sctime'];
 IP =['LiIP'];        %threIP or Tonic or NoIP or LiIP
 separatephase = ['randSc'];      %separate or nseparate or randSc
 Network = ['random'];      %lattice or random
@@ -15,7 +15,7 @@ feedbacktime=1;
 iterate=2000;
 speinplate=0.3;
 debug=0;
-p = 1;
+p = 0.03;
 created_data = ['../created_data/'];
 
 
@@ -44,7 +44,7 @@ end
 %caliculate mean
 for j = 1:2
     yoked = YOKED(j,:);
-    for i =1:2
+    for i =1:1
         stdp = STDP(i,:);
         %Babbling&mean caliculation
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

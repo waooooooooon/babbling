@@ -67,14 +67,14 @@ mot_thre = 0;
 constant_inplate = 0.01;
 LTD = 0.00525;      %default 1.5  Li defo ->0.00525
 LTP = 0.005;        %default 1.0  LI defo ->0.005
-LTD_m = 0.00125;        %default 1.5 Li defo ->0.00525
-LTP_m = 0.001;          %default 1.0 Li defo ->0.005
+LTD_m = 0.00525;        %default 1.5 Li defo ->0.00525
+LTP_m = 0.005;          %default 1.0 Li defo ->0.005
 muscle_his = zeros(1000,newT);  %muscle_history for Sc, verticle=time horizontal=sec
 yokemode = 'time';     %timespace or time 
 
 %
 sparse_mot = 1;   %1 or 0 
-sparse_degree = 0; % number of synapse from out to motor Nout - sparse_degree default=40
+sparse_degree = 40; % number of synapse from out to motor Nout - sparse_degree default=40
 
 
 %for low pass filter
@@ -213,10 +213,10 @@ else
         b_max=0.2;
         b_min=0.12;
         b=[b_min*ones(Ne,1)+(b_max-b_min)*rand(Ne,1);b_min*ones(Ni,1)+(b_max-b_min)*rand(Ni,1)];       %default b=[b_min*ones(Ne,1)+(b_max-b_min)*rand(Ne,1);0.2*ones(Ni,1)]
-        Te_max=100000;     %default 110 ,lognormal 100000
-        Te_min=25;      %default 90,lognormal 25
-        Ti_max=100000;%25   lognormal 100000
-        Ti_min=25;%7     lognormal 25
+        Te_max=110;     %default 110 ,lognormal 100000
+        Te_min=90;      %default 90,lognormal 25
+        Ti_max=25;%25   lognormal 100000
+        Ti_min=15;%7     lognormal 25
         h=[0.012*ones(Ne,1);0.012*ones(Ni,1)];      %larning rate of z
         z=zeros(N,1);       %larning rate of fai and b
         all_fired=[];
