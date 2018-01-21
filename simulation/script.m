@@ -1,18 +1,18 @@
 global id itenumber
 
 %initialization
-d=8;    %Iterate number
+d=1;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['180120_Sctime'];
-IP =['LiIP'];        %threIP or Tonic or NoIP or LiIP
-separatephase = ['randSc'];      %separate or nseparate or randSc
+id=['180121_synapseplot'];
+IP =['Tonic'];        %threIP or Tonic or NoIP or LiIP
+separatephase = ['nseparate'];      %separate or nseparate or randSc
 Network = ['random'];      %lattice or random
 reward = ['normal'];        %nega or normal
-feedbacktype = ['fft'];        %consonant or fft or none
+feedbacktype = ['none'];        %consonant or fft or none
 feedbacktime=1;
-iterate=2000;
+iterate=1000;
 speinplate=0.3;
 debug=0;
 p = 0.03;
@@ -20,9 +20,9 @@ created_data = ['../created_data/'];
 
 
 %caliculate babbling
-for j = 1:2
+for j = 1:1
     yoked = YOKED(j,:);
-    for i =1:1
+    for i =2:2
         stdp = STDP(i,:);
         %Babbling&mean caliculation
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -42,9 +42,9 @@ for j = 1:2
 end
 
 %caliculate mean
-for j = 1:2
+for j = 1:1
     yoked = YOKED(j,:);
-    for i =1:1
+    for i =2:2
         stdp = STDP(i,:);
         %Babbling&mean caliculation
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,6 +60,7 @@ for j = 1:2
                    end
                    
                    plotfirings([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
+                   plot_synapse([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
                    
            end
            
