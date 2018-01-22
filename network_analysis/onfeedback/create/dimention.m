@@ -1,11 +1,11 @@
 function [eighty_dime] = dimention(id)
 global tag simutime createddata_dir id_dir outdir firingdir pca_dir onfeedbackdir
 
-datatype = 1;
+datatype = 2;
 
 if datatype ==2
     firings=importdata([firingdir,'/firing_onfeedback_',id,'_',num2str(simutime),'.txt']);
-    outputdir = [onfeedbackdir,'/outofsimulation'];
+    outputdir = [onfeedbackdir,'/through_simulation/dimention'];
     if ~exist(outputdir, 'dir')
         mkdir(outputdir);
     else
@@ -14,7 +14,7 @@ if datatype ==2
     
 else
     firings=importdata([firingdir,'/R_firings_',id,'_2000.txt']);
-    outputdir = [onfeedbackdir,'/through_simulation'];
+    outputdir = [onfeedbackdir,'/through_simulation/dimention'];
     
     if ~exist(outputdir, 'dir')
         mkdir(outputdir);

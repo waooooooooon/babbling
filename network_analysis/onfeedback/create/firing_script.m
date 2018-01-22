@@ -1,7 +1,7 @@
 %importdata
 global tag simutime itenumber createddata_dir id_dir outdir firingdir pca_dir onfeedbackdir
 
-d=8;    %Iterate number
+d=1;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
@@ -31,7 +31,7 @@ outdir = [createddata_dir,id_dir,'network_analysis'];
 firingdir = [outdir,'/onfeedback_firing_data'];
 pca_dir = [outdir,'/PCA_reservoir'];
 onfeedbackdir = [pca_dir,'/onfeedback'];
-
+outputdir = [onfeedbackdir,'/through_simulation/dimention'];
 if ~exist(onfeedbackdir, 'dir')
     mkdir(onfeedbackdir);
 else
@@ -43,19 +43,22 @@ end
 
 
 
-for j = 1:1
+for j = 2:2
     yoked = YOKED(j,:);
-    for i =1:2
+    for i =2:2
         stdp = STDP(i,:);
         %create firings
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         ID = [tag,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_',num2str(ploton),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network,'_',reward,'_',feedbacktype];
+        NoID = [tag,'_',num2str(iterate),'_reinforce_100_4_No_',num2str(ploton),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network,'_',reward,'_',feedbacktype];
+
 
 
            for k=1:d
                 %conduct create_firing
                    display([num2str(k),ID]);
-                   %create_firing([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
+                   %create_firing([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype,[num2str(k),'_',NoID]);
+                   
                    
 
            end
@@ -75,11 +78,16 @@ for j = 1:2
         %caliculate pca etc..
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         ID = [tag,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_',num2str(ploton),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network,'_',reward,'_',feedbacktype];
+        
 
            for k=1:d
                 %conduct create_firing
                    display([num2str(k),ID]);
                    eighty_dime(k) = dimention([num2str(k),'_',ID]);
+                   [historycor] = correlation([num2str(k),'_',ID]);
+                   sfa_normal([num2str(k),'_',ID]);
+                   
+                   
 
            end
          
@@ -92,13 +100,12 @@ for j = 1:2
     end
 end
 
-
 %create dimention file
 Name = {[YOKED(1,:),STDP(1,:)];[YOKED(1,:),STDP(2,:)];[YOKED(2,:),STDP(1,:)];[YOKED(2,:),STDP(2,:)];};
 ave_dime = [dime(1,1);dime(1,2);dime(1,3);dime(1,4);];
 std_dime = [dime(2,1);dime(2,2);dime(2,3);dime(2,4);];
 T = table(ave_dime,std_dime,'RowNames',Name);
-writetable(T,[onfeedbackdir,'/dimention_',tag,'.csv'],'WriteRowNames',true)
+writetable(T,[outputdir,'/dimention_',tag,'.csv'],'WriteRowNames',true)
 
 
 
