@@ -36,24 +36,24 @@ moving_average <- function(x, n){
 
 
 #title
-title <- "180119_randSctimespace"
+title <- "180120_SctimeNoIP"
 
 #load the directory 
 dir <- "~/babbling/created_data/"
-filename <- "180119_randSctimespace/"
+filename <- "180120_SctimeNoIP/"
 csvfile <- "csv/"
 
 #filename
 id <- title
 iterate <- "2000"
 ploton <- "0"
-IP <- "LiIP"    #threIP or LiIP or Tonic or afterIP
+IP <- "NoIP"    #threIP or LiIP or Tonic or afterIP
 phase <-"randSc"   #nseparate or separate or randSc
 network <- "random"
 reward <- "normal"    #normal or nega
 feedback <- "fft" #consonant or fft
 iteratenum <- "1"
-p <- "1"
+p <- "0.03"
 
 #for GAM
 # Load the data:
@@ -202,7 +202,7 @@ g <- ggplot(gam_all,aes(x=sec,y=fit,group=group)) +
 
 g=g+
 xlim(0,iterate)+
-ylim(4,9)  +theme(legend.position = "right")
+ylim(4,11)  +theme(legend.position = "right")
 
 #negative reward
 g2 <- ggplot(rewa_all,aes(x=sec,y=reward,group=group,colour = group)) +

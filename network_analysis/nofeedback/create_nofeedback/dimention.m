@@ -1,9 +1,10 @@
 function [eighty_dime] = dimention(id)
-global tag simutime createddata_dir id_dir outdir firingdir pca_dir
+global tag simutime createddata_dir id_dir outdir firingdir pca_dir nofeedbackdir
 
 
 
-firings=importdata([firingdir,'/firing_',id,'_',num2str(simutime),'.txt']);
+%firings=importdata([firingdir,'/R_firings_',id,'_',num2str(simutime),'.txt']);
+firings=importdata([firingdir,'/firing_nofeedback_',id,'_',num2str(simutime),'.txt']);
 Firings=zeros(1000,simutime);
 
 
@@ -78,7 +79,7 @@ end
 y=min(find(ruiseki>0.8));
 %PCA3d = figure(103);
 fig103=plot3(SCORE(:,1),SCORE(:,2),SCORE(:,3));
-saveas(fig103,[pca_dir,'/plot3_',id,'_',num2str(simutime),'.png']);
+saveas(fig103,[nofeedbackdir,'/plot3_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -86,13 +87,13 @@ saveas(fig103,[pca_dir,'/plot3_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%% plot transfer_history
 fig204=plot(transfer_history(1:size_score-1,1),transfer_history(1:size_score-1,2));
 ylim([0,2]);
-saveas(fig204,[pca_dir,'/transferhistory_',id,'_',num2str(simutime),'.png']);
+saveas(fig204,[nofeedbackdir,'/transferhistory_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%% plot transfer_history_A
 fig205=plot(transfer_history_A(1:simutime-1,1),transfer_history_A(1:simutime-1,2));
 ylim([0,5]);
-saveas(fig205,[pca_dir,'/transferhistoryA_',id,'_',num2str(simutime),'.png']);
+saveas(fig205,[nofeedbackdir,'/transferhistoryA_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -103,7 +104,7 @@ fig203=plot(f,p1);
 xlabel('Frequency');
 ylabel('Power');
 xlim([0,10]);
-saveas(fig203,[pca_dir,'/fft_trasferhistory_',id,'_',num2str(simutime),'.png']);
+saveas(fig203,[nofeedbackdir,'/fft_trasferhistory_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -114,7 +115,7 @@ fig201=plot(f,p1);
 xlabel('Frequency');
 ylabel('Power');
 xlim([0,10]);
-saveas(fig201,[pca_dir,'/fft_transferhistory_',id,'_',num2str(simutime),'.png']);
+saveas(fig201,[nofeedbackdir,'/fft_transferhistory_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%% average membrem potential
@@ -125,7 +126,10 @@ xlabel('Frequency');
 ylabel('Power');
 xlim([0,100]);
 ylim([0.00001,0.1]);
-saveas(fig205,[pca_dir,'/fft_ave_membrem_',id,'_',num2str(simutime),'.png']);
+saveas(fig205,[nofeedbackdir,'/fft_ave_membrem',id,'_',num2str(simutime),'.png']);
+xlim([0,10]);
+ylim([0.00001,0.1]);
+saveas(fig205,[nofeedbackdir,'/fft_ave_membrem_ver2',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 

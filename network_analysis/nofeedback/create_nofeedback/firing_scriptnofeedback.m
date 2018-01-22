@@ -1,5 +1,5 @@
 %importdata
-global tag simutime createddata_dir id_dir outdir firingdir pca_dir
+global tag simutime itenumber createddata_dir id_dir outdir firingdir pca_dir nofeedbackdir
 
 d=1;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
@@ -24,24 +24,55 @@ created_data = ['../created_data/'];
 simutime=10000;        %simutime of plotfiringslong
 
 
+
 createddata_dir = ['~/babbling/created_data/'];     %data dir
 id_dir = [tag,'/'];
 outdir = [createddata_dir,id_dir,'network_analysis'];
-firingdir = [outdir,'/firing_data'];
+firingdir = [outdir,'/nofeedback_firing_data'];
 pca_dir = [outdir,'/PCA_reservoir'];
+nofeedbackdir = [pca_dir,'/nofeedback'];
 
-if ~exist(pca_dir, 'dir')
-    mkdir(pca_dir);
+if ~exist(nofeedbackdir, 'dir')
+    mkdir(nofeedbackdir);
 else
-    addpath(pca_dir);
+    addpath(nofeedbackdir);
 end
 
-dime = zeros(2,4);
-for j = 1:1
+
+
+
+
+
+for j = 1:2
     yoked = YOKED(j,:);
     for i =1:2
         stdp = STDP(i,:);
-        %Babbling&mean caliculation
+        %create firings
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        ID = [tag,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_',num2str(ploton),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network,'_',reward,'_',feedbacktype];
+
+
+           for k=1:d
+                %conduct create_firing
+                   display([num2str(k),ID]);
+                   %create_firingnofeedback([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
+                   
+
+           end
+
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    end
+end
+
+
+
+dime = zeros(2,4);
+for j = 1:2
+    yoked = YOKED(j,:);
+    for i =1:2
+        stdp = STDP(i,:);
+        %caliculate pca etc..
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         ID = [tag,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_',num2str(ploton),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network,'_',reward,'_',feedbacktype];
 
@@ -67,7 +98,7 @@ Name = {[YOKED(1,:),STDP(1,:)];[YOKED(1,:),STDP(2,:)];[YOKED(2,:),STDP(1,:)];[YO
 ave_dime = [dime(1,1);dime(1,2);dime(1,3);dime(1,4);];
 std_dime = [dime(2,1);dime(2,2);dime(2,3);dime(2,4);];
 T = table(ave_dime,std_dime,'RowNames',Name);
-writetable(T,[pca_dir,'/dimention_',tag,'.csv'],'WriteRowNames',true)
+writetable(T,[nofeedbackdir,'/dimention_',tag,'.csv'],'WriteRowNames',true)
 
 
 

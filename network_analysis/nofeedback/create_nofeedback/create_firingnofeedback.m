@@ -58,7 +58,7 @@ setdir = ['~/babbling/simulation/setting'];
 createddata_dir = ['~/babbling/created_data/'];     %data dir
 id_dir = [tag,'/'];
 outdir = [createddata_dir,id_dir,'network_analysis'];
-firingdir = [outdir,'/onfeedback_firing_data'];
+firingdir = [outdir,'/nofeedback_firing_data'];
 
 
 % Error Checking.
@@ -155,116 +155,6 @@ for sec=1:2 % T is the duration of the simulation in seconds.
         %I(1:Ninp)=13*(rand(Nmot,1)-0.5);
         
         
-        
-        %%%%%%%%%%%%%%%%%%%%%   feedback every time
- 
-        if strcmp(Network,'random')
-           if t-1>muscsmooth&mod(t-1,feedbacktime)==0
-               
-               
-
-            
-            if strcmp(yoke,'No') && strcmp(feedbacktype,'fft')
-                feedback1=speinplate*table(:,muscle_number);
-                I(1:Ninp)=I(1:Ninp)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
-                I((Ninp*2+1):(Ninp*2+Ninp))=I((Ninp*2+1):(Ninp*2+Ninp))+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
-                feedbackhist=[feedbackhist,feedback1];
-            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft') && ~strcmp(separatephase,'randSc')
-                feedback1=speinplate*table(:,muscle_number);
-                randid=randperm(100);
-                yokedfeedback=feedback1(randid);
-                I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
-                I((Ninp*2+1):(Ninp*2+Ninp))=I((Ninp*2+1):(Ninp*2+Ninp))+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
-                feedbackhist=[feedbackhist,yokedfeedback];
-                
-                
-            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft') && strcmp(separatephase,'randSc')
-                feedback1=speinplate*table(:,Nomuscle_his(t,sec));
-                if strcmp(yokemode,'timespace')
-                    randid=randperm(100);
-                    yokedfeedback=feedback1(randid);
-                else
-                    yokedfeedback = feedback1;
-                end
-                
-                I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
-                I((Ninp*2+1):(Ninp*2+Ninp))=I((Ninp*2+1):(Ninp*2+Ninp))+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
-                feedbackhist=[feedbackhist,yokedfeedback];
-                
-                
-            elseif strcmp(yoke,'No') && strcmp(feedbacktype,'consonant')
-                
-                if muscle_number>16000
-                    feedback1 = constant_inplate*ones(100,1);
-                else
-                    feedback1 = zeros(100,1);
-                end
-                
-                I(1:Ninp)=I(1:Ninp)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
-                I((Ninp+1):(Ninp+Ninp))=I((Ninp+1):(Ninp+Ninp))+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
-                feedbackhist=[feedbackhist,feedback1];
-                
-            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'consonant')
-                              
-                if rand>0.9
-                    yokedfeedback = constant_inplate*ones(100,1);
-                else
-                    yokedfeedback = zeros(100,1);
-                end
-                I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
-                I((Ninp+1):(Ninp+Ninp))=I((Ninp+1):(Ninp+Ninp))+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
-                feedbackhist=[feedbackhist,yokedfeedback];
-            elseif strcmp(feedbacktype,'none')
-            end
-
-           end
-        elseif strcmp(Network,'lattice')
-            
-           if t-1>muscsmooth&mod(t-1,feedbacktime)==0
-
-            if strcmp(yoke,'No') && strcmp(feedbacktype,'fft')
-                feedback1=speinplate*table(:,muscle_number);
-                I(InputneuronID)=I(InputneuronID)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
-                I(InputneuronID2)=I(InputneuronID2)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
-                feedbackhist=[feedbackhist,feedback1];
-            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft')
-                feedback1=speinplate*table(:,muscle_number);
-                randid=randperm(100);
-                yokedfeedback=feedback1(randid);
-                I(InputneuronID)=I(InputneuronID)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
-                I(InputneuronID2)=I(InputneuronID2)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
-                feedbackhist=[feedbackhist,yokedfeedback];
-                
-            elseif strcmp(yoke,'No') && strcmp(feedbacktype,'consonant')
-                if muscle_number>16000
-                    feedback1 = constant_inplate*ones(100,1);
-                else
-                    feedback1 = zeros(100,1);
-                end
-                I(InputneuronID)=I(InputneuronID)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
-                I(InputneuronID2)=I(InputneuronID2)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
-                feedbackhist=[feedbackhist,feedback1];
-                
-            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'consonant')
-                              
-                if rand>0.9
-                    yokedfeedback = constant_inplate*ones(100,1);
-                else
-                    yokedfeedback = zeros(100,1);
-                end
-                I(InputneuronID)=I(InputneuronID)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
-                I(InputneuronID2)=I(InputneuronID2)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
-                feedbackhist=[feedbackhist,yokedfeedback];
-            elseif strcmp(feedbacktype,'none')
-                
-
-            end
-            
-
-           end
-        end
-            
-
         
         
         %%%%%%%%%%%%%%%%%%%%%
@@ -421,35 +311,6 @@ for sec=1:2 % T is the duration of the simulation in seconds.
         end;
         
         
-        %caliculate Li et al 17 (7)
-        if strcmp(IP,'LiIP') && mod(t,50)==0
-           for i=1:Ne
-            if ISI(i)<Te_min
-                z(i)=-h(i)*exp((Te_min-ISI(i))/Te_min);
-            elseif ISI(i)>Te_max
-                z(i)=h(i)*exp((ISI(i)-Te_max)/Te_max);
-            elseif ISI(i)>=Te_min && ISI(i)<=Te_max
-                z(i)=0;
-            end
-           end
-           
-           for i=Ne+1:N
-                if ISI(i)<Ti_min
-                    z(i)=-h(i)*exp((Ti_min-ISI(i))/Ti_min);
-                elseif ISI(i)>Ti_max
-                    z(i)=h(i)*exp((ISI(i)-Ti_max)/Ti_max);
-                elseif ISI(i)>=Ti_min && ISI(i)<=Ti_max
-                    z(i)=0;
-               end
-           end
-           
-        b=b+b_max*z;
-        for i=1:N
-            b(i)=max(0.12,b(i));
-            b(i)=min(0.2,b(i));
-        end
-        
-        end
         
 
 
@@ -504,63 +365,6 @@ for sec=1:2 % T is the duration of the simulation in seconds.
         
         % Every testint seconds, use the motor neuron spikes to generate a sound.
 
-        if ~strcmp(feedbacktype,'none')
-        % Every testint seconds, use the motor neuron spikes to generate a sound.
-        if (mod(sec,testint)==0)
-
-            if strcmp(IP,'Tonic')
-                firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
-                firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
-                
-            elseif strcmp(IP,'threIP')
-                %firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
-                %firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
-                
-                firedmusc1pos=find(v_mot(1:Nmot/2)>=mot_thre); % Find out which of the jaw/lip motor neurons fired.
-                firedmusc1neg=find(v_mot(Nmot/2+1:end)>=mot_thre);
-                
-            elseif strcmp(IP,'afterIP')
-                firedmusc1pos=find(v_mot(1:Nmot/2)-TE.m(1:Nmot/2)>=threshold); % Find out which of the jaw/lip motor neurons fired.
-                firedmusc1neg=find(v_mot(Nmot/2+1:end)-TE.m(Nmot/2+1:end)>=threshold);
-                
-            elseif strcmp(IP,'LiIP') || strcmp(IP,'NoIP')
-                firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
-                firedmusc1neg=find(v_mot(Nmot/2+1:end)>=30);
-                
-            end
-            
-            summusc1posspikes(t)=size(firedmusc1pos,1); % Sum the spikes at each timestep across the set of motor neurons.
-            summusc1negspikes(t)=size(firedmusc1neg,1);
-
-            %create decaysmoothmusc
-            %muscsmooth is 100
-            if(t>muscsmooth)
-                for i=1:muscsmooth
-                    decaysmoothneg(t)=decaysmoothneg(t)+summusc1negspikes(t-muscsmooth+i)*(1-exp(-i/tau));
-                    decaysmoothpos(t)=decaysmoothpos(t)+summusc1posspikes(t-muscsmooth+i)*(1-exp(-i/tau));
-                end
-                decaysmoothneg(t)=decaysmoothneg(t)/(muscsmooth*(1-tau/100));
-                decaysmoothpos(t)=decaysmoothpos(t)/(muscsmooth*(1-tau/100));
-
-              smoothmusc(t)=muscscale*(decaysmoothpos(t)-decaysmoothneg(t));  %positive-negative
-              if smoothmusc(t)>1
-                  smoothmusc(t)=1;
-              elseif smoothmusc(t)<-0.9999
-                  smoothmusc(t)=-0.9999;
-              end
-
-
-              muscle_number=round((smoothmusc(t)+1)*10000);
-              
-              muscle_his(t,sec) = muscle_number;
-              
-              
-
-            end
-            
-            
-        end         %end fo firings
-        end
     end
     
         
@@ -573,57 +377,14 @@ for sec=1:2 % T is the duration of the simulation in seconds.
     
     
 
-    
-    if debug
-        hNeural = figure(103);
-        set(hNeural, 'name', ['Neural Spiking for Second: ', num2str(sec)], 'numbertitle','off');
-        subplot(4,1,1)
-        plot(firings(:,1),firings(:,2),'.'); % Plot all the neurons'' spikes
-        title('Reservoir Firings', 'fontweight','bold');
-        axis([0 1000 0 N]);
-        subplot(4,1,2)
-        plot(outFirings(:,1),outFirings(:,2),'.'); % Plot the output neurons'' spikes
-        title('Output Neuron Firings', 'fontweight','bold');
-        axis([0 1000 0 Nout]);
-     %   subplot(5,1,3)
-     %   plot(speFirings(:,1),speFirings(:,2),'.'); % Plot the output neurons'' spikes
-     %   title('Input Neuron Firings', 'fontweight','bold');
-     %   axis([0 1000 0 Ninp]);
-        subplot(4,1,3)
-        plot(motFirings(:,1),motFirings(:,2),'.'); % Plot the motor neurons'' spikes
-        title('Motor Neuron Firings', 'fontweight','bold');
-        axis([0 1000 0 Nmot]);
-        if strcmp(reward,'negativereward')
-            subplot(4,1,4);
-            plot(filter_smoothmusc(muscsmooth:1000)); ylim([-.5,.5]); xlim([-100,900]); % Plot the smoothed sum of motor neuron spikes 1 s timeseries
-            title('Sum of Agonist/Antagonist Motor Neuron Activation', 'fontweight','bold');
-        else
-            subplot(4,1,4);
-            plot(smoothmusc(muscsmooth:1000)); ylim([-.5,.5]); xlim([-100,900]); % Plot the smoothed sum of motor neuron spikes 1 s timeseries
-            title('Sum of Agonist/Antagonist Motor Neuron Activation', 'fontweight','bold');
-        end
-        
-
-        saveas(figure(103),[firingsdir,'/Neural_Spiking_',num2str(sec),'.png']);
-
-      %  subplot(3,1,3);
-      %  imagesc(sinp)
-      % set(gca,'YDir','normal')
-      %  colorbar;
-      %  title('Synapse Strength between spectrum and input', 'fontweight','bold');
-      %  xlabel('postSynaptic input neuron index', 'fontweight','bold');
-      %  ylabel('presynaptic spectrum neurons index', 'fontweight','bold');
-
-    end
-    
-
+   
     
 
      
     if sec==2
         % Writing reservoir neuron firings for this second to a text file.     %recoring firings matrix
 
-            firings_fid = fopen([firingdir,'/firing_onfeedback_',ID,'_',num2str(simutime),'.txt'],'w');
+            firings_fid = fopen([firingdir,'/firing_nofeedback_',ID,'_',num2str(simutime),'.txt'],'w');
 
         for firingsrow = 1:size(firings,1)
             fprintf(firings_fid,'%i\t',sec);
@@ -633,7 +394,7 @@ for sec=1:2 % T is the duration of the simulation in seconds.
         fclose(firings_fid);
         
         
-        motorcommand = fopen([firingdir,'/motorcommand_onfeedback_',ID,'_',num2str(simutime),'.txt'],'w');
+        motorcommand = fopen([firingdir,'/motorcommand_nofeedback',ID,'_',num2str(simutime),'.txt'],'w');
 
         size_musc = size(smoothmusc);
         for i = 1:size_musc(1,2)

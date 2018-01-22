@@ -36,11 +36,11 @@ moving_average <- function(x, n){
 
 
 #title
-title <- "180119_randSctimespace"
+title <- "180120_Sctime"
 
 #load the directory 
 dir <- "~/babbling/created_data/"
-filename <- "180119_randSctimespace/"
+filename <- "180120_Sctime/"
 csvfile <- "csv/"
 
 #filename
@@ -53,7 +53,7 @@ network <- "random"   #random or lattice
 reward <- "normal"    #nega or normal
 feedback <- "fft" #consonant or fft or no
 iteratenum <- "1"
-p <- "1"
+p <- "0.03"
 
 #for GAM
 # Load the data:
@@ -193,14 +193,16 @@ g <- ggplot(gam_all,aes(x=sec,y=fit,group=group)) +
 
 
 #setting of graf
-  theme_bw(base_size=30)+
-  labs(x = "sec", y = "salience", size=2) +
-  theme(axis.title.x = element_text(size=5),axis.title.y = element_text(size=5))+
+  theme_bw(base_size=10)+
+  labs(x = "sec", y = "salience", size=10) +
+  theme(axis.title.x = element_text(size=10),axis.title.y = element_text(size=10))+
   scale_color_manual(name="",values=c("Auditory feedback with STDP"="blue","Auditory feedback without STDP"="green","Scramble feedback with STDP"="red","Scramble feedback without STDP"="yellow"))+
  # theme(legend.position = "top")
   guides(fill=FALSE)
 
-g=g+xlim(0,iterate)+ylim(4,9.5)  +theme(legend.position = "right")
+g=g+
+#xlim(0,iterate)+
+ylim(4,12)  +theme(legend.position = "right")
 
 #negative reward
 g2 <- ggplot(rewa_all,aes(x=sec,y=reward,group=group,colour = group)) +

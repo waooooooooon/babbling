@@ -105,10 +105,10 @@ saveas(fig1,[workspacedir,'/imageofsynapse_',ID,'.png']);
 %%%%%%%%%%%%% plot histogram of synaptic weights with NSTDP
 fig2 = histogram(s(1:800,:));
 fig2.NumBins = 30;
-fig2.BinEdges = [0:0.1:3];
+fig2.BinEdges = [0:0.1:10];
 fig2.FaceColor = 'k';
 fig2.EdgeColor = 'k';
-axis([0 10 0 5000]);
+axis([0 10 0 10000]);
 set(gca,'FontSize',16);
 saveas(fig2,[workspacedir,'/hist_synapse_',ID,'.png']);
 close all;

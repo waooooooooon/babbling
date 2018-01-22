@@ -52,7 +52,7 @@ global id itenumber
 salthresh = 4.5;            % Initial salience value for reward (used in 'relhisal' reinforcment).
 DAinc = 1;                  % Amount of dopamine given during reward.
 sm = 4;                     % Maximum synaptic weight.
-smr=4;                     % Maximum synaptic weight for reservoir
+smr=10;                     % Maximum synaptic weight for reservoir
 testint = 1;                % Number of seconds between vocalizations.
 fftsize=2048;             %fft????????????????????????????????????
 lpcsize=8;                %LPC size
@@ -194,7 +194,6 @@ else
     d=[   8*ones(Ne,1);    2*ones(Ni,1)];       % Membrane recovery variable after-spike shift.
     a_mot=.02*ones(Nmot,1);
     d_mot=8*ones(Nmot,1); %
-    smr = 10;        %default 4 Li default ->10
     s=[6*rand(Ne,M);-5*rand(Ni,M)];         % synaptic weights (default of walaumont is s=[rand(Ne,M);-rand(Ni,M)]
     sout=rand(Nout,Nmot); % Synaptic weights from the reservoir output neurons to the motor neurons.
     sd=zeros(N,M);                          % their derivatives
