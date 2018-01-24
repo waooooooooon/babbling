@@ -1,23 +1,40 @@
-function [historycor] = correlation(id)
-global tag simutime createddata_dir id_dir outdir firingdir pca_dir onfeedbackdir
+function [all_sum,input_sum,output_sum,inh_sum,other_sum]=separate_firingrate(id,Noid)
+global tag simutime createddata_dir id_dir outdir firingdir pca_dir onfeedbackdir motortype
 
-    firingsdata=importdata([firingdir,'/firing_onfeedback_',id,'_',num2str(simutime),'.txt']);
-    outputdir = [onfeedbackdir,'/through_simulation/correlation'];
+display('importing data');
+
+    firingsdata=importdata([firingdir,'/firing_onfeedback_',motortype,'_',id,'_',num2str(simutime),'.txt']);
+    %firingsdata=importdata([firingdir,'/firing_onfeedback_',id,'_',num2str(simutime),'.txt']);
+    outputdir = [onfeedbackdir,'/through_simulation/significant_difference'];
     if ~exist(outputdir, 'dir')
         mkdir(outputdir);
     else
         addpath(outputdir);
     end
+    
   
-    setdir = ['~/babbling/simulation/setting'];
-    table=importdata([setdir,'/table_notnormalization_from0.5to1.5KHz.csv']);
-%%%%%%%% create feedback
-muscle_his = 10000*sin(linspace(pi,-pi,1000))*0.8+10000;
-muscle_his = repmat(muscle_his,1,10);
-muscle_his = round(muscle_his);
+    
+    %%%%%%% import No feedback
+    if strcmp(motortype,'feedback')
+        motcommanddata=importdata([firingdir,'/motorcommand_onfeedback_',Noid,'_',num2str(simutime),'.txt']);
+    %consonant = find(motcommanddata(:,2)>0.5);
+    %vowel = find(motcommanddata(:,2)<=0.5);
+    elseif strcmp(motortype,'sin')
+        muscle_sin = sin(linspace(pi,-pi,1000))*0.9;
+        muscle_sin = repmat(muscle_sin,1,simutime/1000);
+        motcommanddata =[[1:simutime]',muscle_sin'];
+        
+    end
+    
+    
+    
+    
 
 
 
+    
+    
+display('caliculating the Firings');
 %%%%%%%%%%%%%%caliculate the Firings
 firings=zeros(1000,simutime);
 for i=1:simutime
@@ -28,54 +45,63 @@ for i=1:simutime
     firings(I(j,1),i)=1;
     end
     
+    
 end
 %%%%%%%%%%%%%
 
+sizefiring = size(firings);
+firings = [firings;motcommanddata(:,2)'];
 
+%%%% 100ŒÂ‚Ìƒf[ƒ^‚É•ªŠ„
+Firings = zeros(1001,sizefiring(1,2)/100,100);
+consofiringrate = zeros(1000,100);
+vowelfiringrate = zeros(1000,100);
 
+display('caliculating consonants and vowels');
 
-
-%%%%%%%%%%%%%% initialization
-NeFirings=firings(1:800,:);  %Exitatory neuron activity
-threshold = 17990;             %threshold of consonant.
-
-
-%%%%%%%%%%%%%% deta decision
-Firings = firings;           %decide the data to be used
-lengthdata = size(Firings);   %length of data
-%%%%%%%%%%%%%%
-
-%%%%
-avemot=zeros(simutime,1);
-history=zeros(lengthdata(1,1),1);
-historycor=zeros(lengthdata(1,1),1);
-
-%%%consonant vector initializaton
-historyvec=zeros(1000,201);
-consonant = find(muscle_his > threshold);
-sizeconsonant = size(consonant);
-consonantvec = consonant;
-size(find(Firings>0.1))
-
-
-
-muscle_conso = muscle_his;
-muscle_conso = muscle_conso > threshold;
-
-%%%%%%%%%%%%% caliculate correration
-for i=1:lengthdata(1,1)
-    historycor(i,1) = abs(corr2(Firings(i,:),muscle_conso));
+for i =1:100
+    Firings(:,:,i) = firings(:,1+(i-1)*sizefiring(1,2)/100:(i)*sizefiring(1,2)/100);
 end
-%highcor = find(historycor(:,1)>0.02 || historycor(:,1)<-0.02 )
-%%%%%%%%%%%%%
 
-%%%%%%%% plot hist for pwp(normal)
-fig455=histogram(historycor);
-fig455.NumBins = 30;
-fig455.BinEdges = [-0.06:0.001:0.06];
-axis([-0.03 0.06 0 150]);
-saveas(fig455,[outputdir,'/correlation_',id,'_',num2str(simutime),'.png']);
+for i =1:100
+    
+    sepaconsonant=find(Firings(1001,:,i)>0.5);
+    sepavowel=find(Firings(1001,:,i)<0.5);
+    consofiringrate(:,i) = mean((Firings(1:1000,sepaconsonant,i)),2);
+    vowelfiringrate(:,i) = mean((Firings(1:1000,sepavowel,i)),2); 
+end
 
+% firing rate of each state
+%consofiringrate = mean((firings(:,consonant)),2);
+%vowelfiringrate = mean((firings(:,vowel)),2);
+
+
+
+%T
+%h = ttest(x,y)
+display('caliculating ttest');
+
+
+for i = 1:1000
+     [significant_difference(i,1),significant_difference(i,2)] = ttest2(consofiringrate(i,:),vowelfiringrate(i,:));
+end
+
+
+    
+        
+%%%%%%%%% 0~200:input neuron 200~300:output neuron 800~1000:inhibitory
+%%%%%%%%% neuron
+all_sum = sum(significant_difference(:,1));
+input_sum = sum(significant_difference(1:200,1));
+output_sum = sum(significant_difference(201:300,1));
+inh_sum = sum(significant_difference(801:1000,1));
+other_sum = sum(significant_difference(301:800,1));
+
+
+data = [all_sum;input_sum;output_sum;inh_sum;other_sum];
+
+csvwrite([outputdir,'/',motortype,'_significant_difference_',id,'_',num2str(simutime),'.txt'],data);
+    
 
 end
 

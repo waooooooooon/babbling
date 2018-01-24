@@ -47,7 +47,11 @@ rng shuffle;
 warning('off','all');
 
 
-global simutime tag firingdir
+global simutime tag firingdir motortype
+
+smoothmusc = zeros(1,simutime);
+summusc1posspikes = zeros(1,simutime);
+summusc1negspikes = zeros(1,simutime);
 
 
 % Directory names for data.
@@ -120,13 +124,16 @@ datahistsize=((1000-muscsmooth)/feedbacktime);
 
 
 %%%%%%%% create feedback
-muscle_sin = 10000*sin(linspace(pi,-pi,1000))*0.8+10000;
-muscle_sin = repmat(muscle_his,1,10);
-muscle_sin = round(muscle_his);
+if strcmp(motortype,'sin')
+muscle_sin = sin(linspace(pi,-pi,1000))*0.9;
+muscle_sin = repmat(muscle_sin,1,simutime/1000);
+end
 
 
 %%%%%%% import No feedback
+if strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft') && strcmp(separatephase,'randSc')
 motcommanddata=importdata([firingdir,'/motorcommand_onfeedback_',NoID,'_',num2str(simutime),'.txt']);
+end
 
 
 %RUNNING THE SIMULATION%
@@ -180,14 +187,21 @@ for sec=1:2 % T is the duration of the simulation in seconds.
 
             
             if strcmp(yoke,'No') && strcmp(feedbacktype,'fft')
-                %feedback1=speinplate*table(:,muscle_his(t));
-                feedback1=speinplate*table(:,muscle_number);
+                if strcmp(motortype,'sin')
+                    feedback1=speinplate*table(:,round((muscle_sin(t)+1)*10000));
+                elseif strcmp(motortype,'feedback')
+                    feedback1=speinplate*table(:,muscle_number);
+                end
+                
                 I(1:Ninp)=I(1:Ninp)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 I((Ninp*2+1):(Ninp*2+Ninp))=I((Ninp*2+1):(Ninp*2+Ninp))+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
                 feedbackhist=[feedbackhist,feedback1];
             elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft') && ~strcmp(separatephase,'randSc')
-                %feedback1=speinplate*table(:,muscle_his(t));
-                feedback1=speinplate*table(:,muscle_number);
+                if strcmp(motortype,'sin')
+                    feedback1=speinplate*table(:,muscle_sin(t));
+                elseif strcmp(motortype,'feedback')
+                    feedback1=speinplate*table(:,muscle_number);
+                end
                 randid=randperm(100);
                 yokedfeedback=feedback1(randid);
                 I(1:Ninp)=I(1:Ninp)+yokedfeedback; %refrect feedback to spectrum neurons 0~2000hz/20
@@ -195,8 +209,13 @@ for sec=1:2 % T is the duration of the simulation in seconds.
                 feedbackhist=[feedbackhist,yokedfeedback];
                 
                 
-            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft') && strcmp(separatephase,'randSc')
-                feedback1=speinplate*table(:,round((motcommanddata(t,2)+1)*10000));   %Ç«Ç§Ç∑ÇÈÇ©ÅH
+            elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft') && strcmp(separatephase,'randSc')    
+                if strcmp(motortype,'sin')
+                    feedback1=speinplate*table(:,muscle_sin(t));
+                elseif strcmp(motortype,'feedback')
+                    feedback1=speinplate*table(:,round((motcommanddata(t,2)+1)*10000));   %Ç«Ç§Ç∑ÇÈÇ©ÅH
+                end
+                
                 if strcmp(yokemode,'timespace')
                     randid=randperm(100);
                     yokedfeedback=feedback1(randid);
@@ -541,7 +560,7 @@ for sec=1:2 % T is the duration of the simulation in seconds.
 
               muscle_number=round((smoothmusc(t)+1)*10000);
               
-              muscle_his(t,sec) = muscle_number;
+              %muscle_his(t,sec) = muscle_number;
               
               
 
@@ -550,6 +569,7 @@ for sec=1:2 % T is the duration of the simulation in seconds.
             
         end         %end fo firings
         end
+        
     end
     
         
@@ -612,7 +632,7 @@ for sec=1:2 % T is the duration of the simulation in seconds.
     if sec==2
         % Writing reservoir neuron firings for this second to a text file.     %recoring firings matrix
 
-            firings_fid = fopen([outfiringdir,'/firing_onfeedback_',ID,'_',num2str(simutime),'.txt'],'w');
+            firings_fid = fopen([outfiringdir,'/firing_onfeedback_',motortype,'_',ID,'_',num2str(simutime),'.txt'],'w');
 
         for firingsrow = 1:size(firings,1)
             fprintf(firings_fid,'%i\t',sec);
@@ -622,7 +642,7 @@ for sec=1:2 % T is the duration of the simulation in seconds.
         fclose(firings_fid);
         
         
-        motorcommand = fopen([outfiringdir,'/motorcommand_onfeedback_',ID,'_',num2str(simutime),'.txt'],'w');
+        motorcommand = fopen([outfiringdir,'/motorcommand_onfeedback_',motortype,'_',ID,'_',num2str(simutime),'.txt'],'w');
 
         size_musc = size(smoothmusc);
         for i = 1:size_musc(1,2)
@@ -666,13 +686,14 @@ for sec=1:2 % T is the duration of the simulation in seconds.
     if strcmp(STDP,'STDP')
        STDP_reservor(:,1:D+1)=STDP_reservor(:,simutime+1:simutime+1+D);%
     end
-
-
-
+    
+    
+    
+    toc;
     end
 
 
-    toc;
+    
   
 end
 
