@@ -903,7 +903,6 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         
         
         
-        if ~strcmp(feedbacktype,'none')
         % Every testint seconds, use the motor neuron spikes to generate a sound.
         if (mod(sec,testint)==0)
 
@@ -1101,7 +1100,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
             negativereward = 0;     %initialize negativereward
         end
         
-        end
+       
     end
     
     
@@ -1351,13 +1350,14 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
 
     toc;
-  
-    if ~strcmp(feedbacktype,'none')
+
         if sec==T
             number=[1:T].'; %' 
             salhistdate=[salhist,number,nega.',DA_history.'];
             csvwrite([workspacedir,'/',ID,'.csv'],salhistdate);     %write salhist data and negativereward to csv
-    end
+        end
+        
+
     
 
         
@@ -1366,7 +1366,6 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
 
 end
 
-end
 
 
 

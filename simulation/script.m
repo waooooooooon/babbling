@@ -7,7 +7,7 @@ ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
 id=['180120_Sctime'];
 IP =['LiIP'];        %threIP or Tonic or NoIP or LiIP
-separatephase = ['nseparate'];      %separate or nseparate or randSc
+separatephase = ['randSc'];      %separate or nseparate or randSc
 Network = ['random'];      %lattice or random
 reward = ['normal'];        %nega or normal
 feedbacktype = ['fft'];        %consonant or fft or none
@@ -33,7 +33,7 @@ for j = 1:1
                 %conduct babbling
                    display([num2str(itenumber),'_',ID]);
 
-                   babbling([num2str(itenumber),ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
+                   %babbling([num2str(itenumber),ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
            end
 
          clearvars meanout data datahist output;
@@ -56,11 +56,11 @@ for j = 1:1
                    workspacedir = [num2str(k),'_',ID,'_Workspace/'];
                    
                    if ~strcmp(feedbacktype,'none')
-                   salhist{k}=csvread([created_data,id,'/data/',workspacedir,num2str(k),'_',ID,'.csv']);
+                   %salhist{k}=csvread([created_data,id,'/data/',workspacedir,num2str(k),'_',ID,'.csv']);
                    end
                    
                    plotfirings([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
-                   plot_synapse([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
+                   %plot_synapse([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
                    
            end
            

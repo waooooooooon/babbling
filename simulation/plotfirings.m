@@ -17,14 +17,27 @@ if newT>1000
 
 
         %%%%%%%%%%%%%%% plot Resevoir
-        fig1 = scatter(A(:,2),A(:,3),'.','k'); % Plot all the neurons'' spikes
+        nega=find(A(:,3)>800);
+        input = find(A(:,3)<201);
+        output = find(A(:,3)>200 & A(:,3)<301);
+        exi = find(A(:,3)>300 & A(:,3)<801);
+        
+        hold on;
+        fig1 = scatter(A(nega,2),A(nega,3),'.','b'); % Plot all the neurons'' spikes
+        fig1 = scatter(A(input,2),A(input,3),'.','k'); % Plot all the neurons'' spikes
+        fig1 = scatter(A(output,2),A(output,3),'.','g'); % Plot all the neurons'' spikes
+        fig1 = scatter(A(exi,2),A(exi,3),'.','r'); % Plot all the neurons'' spikes
+        hold off;
         title('Reservoir Firings', 'fontweight','bold');
         axis([0 1000 0 1000]);
         xlabel('Millisecond');
         ylabel('Neuron Number');
+        hold off;
+        %legend('inhibitory','input','output','exitatory');
 
 
         saveas(fig1,[firingsdir,'/Firings_',ID,'_',num2str(i),'.png']);
+        close all;
 
         %histogram of firings
 
@@ -35,27 +48,41 @@ if newT>1000
         end
 
         edge = logspace(0, 10, 300);
+        hold on;
         h=histogram(firingrate,edge);set(gca,'Xscale','log');xlim([0 200]);
         %h=histogram(firingrate);xlim([0 200]);
+        hold off;
+        
 
 
         saveas(h,[firingsdir,'/Histlog_',ID,'_',num2str(i),'.png']);
-        
+        close all;
         h=histogram(firingrate);xlim([0 200]);
         saveas(h,[firingsdir,'/Hist_',ID,'_',num2str(i),'.png']);
-        
+        close all;
         %%%%%%%%%%%%%%%%%%%%%%
 
 
         %%%%%%%%%%%%%%% plot Motor
-        fig1 = scatter(B(:,2),B(:,3),'.','k'); % Plot all the neurons'' spikes
+        negamot=find(B(:,3)>50);
+        eximot = find(B(:,3)<51);
+        
+
+        hold on;
+        fig2 = scatter(B(negamot,2),B(negamot,3),'.','b'); % Plot all the neurons'' spikes
+        fig2 = scatter(B(eximot,2),B(eximot,3),'.','r'); % Plot all the neurons'' spikes
+
+        hold off;
+        %legend('exitatory','inhibitory');
+        %fig1 = scatter(B(:,2),B(:,3),'.','k'); % Plot all the neurons'' spikes
         title('Motor Firings', 'fontweight','bold');
         axis([0 1000 0 100]);
         xlabel('Millisecond');
         ylabel('Neuron Number');
 
 
-        saveas(fig1,[firingsdir,'/MotFirings_',ID,'_',num2str(i),'.png']);
+        saveas(fig2,[firingsdir,'/MotFirings_',ID,'_',num2str(i),'.png']);
+        close all;
 
         %histogram of firings
 

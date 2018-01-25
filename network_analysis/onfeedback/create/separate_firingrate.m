@@ -3,8 +3,8 @@ global tag simutime createddata_dir id_dir outdir firingdir pca_dir onfeedbackdi
 
 display('importing data');
 
-    %firingsdata=importdata([firingdir,'/firing_onfeedback_',motortype,'_',id,'_',num2str(simutime),'.txt']);
-    firingsdata=importdata([firingdir,'/firing_onfeedback_',id,'_',num2str(simutime),'.txt']);
+    firingsdata=importdata([firingdir,'/firing_onfeedback_',motortype,'_',id,'_',num2str(simutime),'.txt']);
+    %firingsdata=importdata([firingdir,'/firing_onfeedback_',id,'_',num2str(simutime),'.txt']);
     outputdir = [onfeedbackdir,'/through_simulation/significant_difference'];
     datadir = [outputdir,'/matdata'];
     workspacefilename = [datadir,'/',id,'.mat'];
@@ -23,7 +23,7 @@ display('importing data');
     
     %%%%%%% import No feedback
     if strcmp(motortype,'feedback')
-        motcommanddata=importdata([firingdir,'/motorcommand_onfeedback_',Noid,'_',num2str(simutime),'.txt']);
+        motcommanddata=importdata([firingdir,'/motorcommand_onfeedback_',motortype,'_',Noid,'_',num2str(simutime),'.txt']);
     %consonant = find(motcommanddata(:,2)>0.5);
     %vowel = find(motcommanddata(:,2)<=0.5);
     elseif strcmp(motortype,'sin')

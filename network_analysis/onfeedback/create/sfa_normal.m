@@ -3,10 +3,12 @@ function sfa_normal(id)
 % Unsupervised Learning of Invariances", Neural Computation, 14(4):715-770,
 % Figure 2
 
-global tag simutime createddata_dir id_dir outdir firingdir pca_dir onfeedbackdir
+global tag simutime createddata_dir id_dir outdir firingdir pca_dir onfeedbackdir motortype
 
-    firingsdata=importdata([firingdir,'/firing_onfeedback_',id,'_',num2str(simutime),'.txt']);
-    motcommanddata=importdata([firingdir,'/motorcommand_onfeedback_',id,'_',num2str(simutime),'.txt']);
+
+    %firingsdata=importdata([firingdir,'/firing_onfeedback_',id,'_',num2str(simutime),'.txt']);
+    firingsdata=importdata([firingdir,'/firing_onfeedback_',motortype,'_',id,'_',num2str(simutime),'.txt']);
+    motcommanddata=importdata([firingdir,'/motorcommand_onfeedback_',motortype,'_',id,'_',num2str(simutime),'.txt']);
     outputdir = [onfeedbackdir,'/through_simulation/sfa'];
     if ~exist(outputdir, 'dir')
         mkdir(outputdir);
