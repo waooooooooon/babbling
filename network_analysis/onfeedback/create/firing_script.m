@@ -22,7 +22,7 @@ created_data = ['../created_data/'];
 
 %for firing
 simutime=100000;        %simutime of plotfiringslong defo=10000
-motortype = ['sin'];        %sin or feedback
+motortype = ['feedback'];        %sin or feedback
 
 
 
@@ -46,7 +46,7 @@ end
 
 for j = 1:2
     yoked = YOKED(j,:);
-    for i =1:2
+    for i =1:1
         stdp = STDP(i,:);
         %create firings
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -55,7 +55,7 @@ for j = 1:2
 
 
 
-           for k=1:d
+           for k=3:3
                 %conduct create_firing
                    display([num2str(k),ID]);
                    create_firing([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype,[num2str(k),'_',NoID]);
@@ -88,7 +88,7 @@ for j = 1:2
                    %eighty_dime(k) = dimention([num2str(k),'_',ID]);
                    %[historycor] = correlation([num2str(k),'_',ID],[num2str(k),'_',NoID]);
                    %sfa_normal([num2str(k),'_',ID]);
-                   [all_sum,input_sum,output_sum,inh_sum,other_sum] = separate_firingrate([num2str(k),'_',ID],[num2str(k),'_',NoID]);
+                   %separate_firingrate([num2str(k),'_',ID],[num2str(k),'_',NoID]);
                    
                    
 

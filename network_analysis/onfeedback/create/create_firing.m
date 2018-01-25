@@ -211,7 +211,7 @@ for sec=1:2 % T is the duration of the simulation in seconds.
                 
             elseif strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft') && strcmp(separatephase,'randSc')    
                 if strcmp(motortype,'sin')
-                    feedback1=speinplate*table(:,muscle_sin(t));
+                    feedback1=speinplate*table(:,round((muscle_sin(t)+1)*10000));
                 elseif strcmp(motortype,'feedback')
                     feedback1=speinplate*table(:,round((motcommanddata(t,2)+1)*10000));   %Ç«Ç§Ç∑ÇÈÇ©ÅH
                 end
@@ -640,6 +640,16 @@ for sec=1:2 % T is the duration of the simulation in seconds.
             fprintf(firings_fid,'\n');
         end
         fclose(firings_fid);
+        
+         
+        firings_mot = fopen([outfiringdir,'/motfiring_onfeedback_',motortype,'_',ID,'_',num2str(simutime),'.txt'],'w');
+
+        for firingsrow = 1:size(motFirings,1)
+            fprintf(firings_mot,'%i\t',sec);
+            fprintf(firings_mot,'%i\t%i',motFirings(firingsrow,:));
+            fprintf(firings_mot,'\n');
+        end
+        fclose(firings_mot);
         
         
         motorcommand = fopen([outfiringdir,'/motorcommand_onfeedback_',motortype,'_',ID,'_',num2str(simutime),'.txt'],'w');

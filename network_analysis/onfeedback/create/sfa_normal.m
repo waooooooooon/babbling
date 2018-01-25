@@ -76,9 +76,18 @@ y = sfa_execute(hdl, Firings);
 % it would have been quicker (but less instructive) to write:
 % [y, hdl] = sfa2(x);
 
+%%%caliculate correlation
+cor_y1=corr2(y(:,1),motcommanddata(:,2));
+cor_y2=corr2(y(:,2),motcommanddata(:,2));
+cor_y3=corr2(y(:,3),motcommanddata(:,2));
+cor_y4=corr2(y(:,4),motcommanddata(:,2));
+
+
 subplot(4,1,1);
 % plot the output of the slowest varying function
 fig121 = plot(y(:,1));
+str = {'correlation =',num2str(cor_y1)};
+text(2,7,str)
 xlim([0 simutime])
 ylim([-5 5])
 %set(gca, 'Xlim', [0,2*pi], 'PlotBoxAspectRatio', [1,1,1])
@@ -87,6 +96,8 @@ xlabel('t'); ylabel('y_1(t)');
 %saveas(fig101,[outputdir,'/sfa_',id,'_',num2str(simutime),'.png']);
 subplot(4,1,2);
 fig131 = plot(y(:,2));
+str = {'correlation =',num2str(cor_y2)};
+text(2,7,str)
 xlim([0 simutime])
 ylim([-5 5])
 %set(gca, 'Xlim', [0,2*pi], 'PlotBoxAspectRatio', [1,1,1])
@@ -94,13 +105,20 @@ title('output of the 2nd slowest varying function');
 xlabel('t'); ylabel('y_2(t)');
 subplot(4,1,3);
 fig141 = plot(y(:,3));
+str = {'correlation =',num2str(cor_y3)};
+text(2,7,str)
 xlim([0 simutime])
 ylim([-10 10])
 %set(gca, 'Xlim', [0,2*pi], 'PlotBoxAspectRatio', [1,1,1])
 title('output of the 3nd slowest varying function');
 xlabel('t'); ylabel('y_2(t)');
 subplot(4,1,4);
-fig237 = plot(motcommanddata(:,1),motcommanddata(:,2));
+%fig237 = plot(motcommanddata(:,1),motcommanddata(:,2));
+fig237 = plot(y(:,3));
+str = {'correlation =',num2str(cor_y4)};
+text(2,7,str)
+xlim([0 simutime])
+ylim([-10 10])
 saveas(fig121,[outputdir,'/sfa_',id,'_',num2str(simutime),'.png']);
 close all;
 
