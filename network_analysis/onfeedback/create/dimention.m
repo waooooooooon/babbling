@@ -1,10 +1,11 @@
 function [eighty_dime] = dimention(id)
-global tag simutime createddata_dir id_dir outdir firingdir pca_dir onfeedbackdir
+global tag simutime createddata_dir id_dir outdir firingdir pca_dir onfeedbackdir motortype
 
 datatype = 2;
 
 if datatype ==2
-    firings=importdata([firingdir,'/firing_onfeedback_',id,'_',num2str(simutime),'.txt']);
+    firings=importdata([firingdir,'/firing_onfeedback_',motortype,'_',id,'_',num2str(simutime),'.txt']);
+    %firings=importdata([firingdir,'/firing_onfeedback_',id,'_',num2str(simutime),'.txt']);
     outputdir = [onfeedbackdir,'/through_simulation/dimention'];
     if ~exist(outputdir, 'dir')
         mkdir(outputdir);
@@ -98,7 +99,7 @@ end
 y=min(find(ruiseki>0.8));
 %PCA3d = figure(103);
 fig103=plot3(SCORE(:,1),SCORE(:,2),SCORE(:,3));
-saveas(fig103,[outputdir,'/plot3_',id,'_',num2str(simutime),'.png']);
+saveas(fig103,[outputdir,'/plot3_',motortype,'_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -106,13 +107,13 @@ saveas(fig103,[outputdir,'/plot3_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%% plot transfer_history
 fig204=plot(transfer_history(1:size_score-1,1),transfer_history(1:size_score-1,2));
 ylim([0,2]);
-saveas(fig204,[outputdir,'/transferhistory_',id,'_',num2str(simutime),'.png']);
+saveas(fig204,[outputdir,'/transferhistory_',motortype,'_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%% plot transfer_history_A
 fig205=plot(transfer_history_A(1:simutime-1,1),transfer_history_A(1:simutime-1,2));
 ylim([0,5]);
-saveas(fig205,[outputdir,'/transferhistoryA_',id,'_',num2str(simutime),'.png']);
+saveas(fig205,[outputdir,'/transferhistoryA_',motortype,'_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -123,7 +124,7 @@ fig203=plot(f,p1);
 xlabel('Frequency');
 ylabel('Power');
 xlim([0,10]);
-saveas(fig203,[outputdir,'/fft_trasferhistory_',id,'_',num2str(simutime),'.png']);
+saveas(fig203,[outputdir,'/fft_trasferhistory_',motortype,'_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -134,7 +135,7 @@ fig201=plot(f,p1);
 xlabel('Frequency');
 ylabel('Power');
 xlim([0,10]);
-saveas(fig201,[outputdir,'/fft_transferhistory_',id,'_',num2str(simutime),'.png']);
+saveas(fig201,[outputdir,'/fft_transferhistory_',motortype,'_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%% average membrem potential
@@ -145,10 +146,10 @@ xlabel('Frequency');
 ylabel('Power');
 xlim([0,100]);
 ylim([0.00001,0.1]);
-saveas(fig205,[outputdir,'/fft_ave_membrem_',id,'_',num2str(simutime),'.png']);
+saveas(fig205,[outputdir,'/fft_ave_membrem_',motortype,'_',id,'_',num2str(simutime),'.png']);
 xlim([0,10]);
 ylim([0.00001,0.1]);
-saveas(fig205,[outputdir,'/fft_ave_membremver2_',id,'_',num2str(simutime),'.png']);
+saveas(fig205,[outputdir,'/fft_ave_membremver2_',motortype,'_',id,'_',num2str(simutime),'.png']);
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 

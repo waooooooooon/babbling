@@ -1,7 +1,7 @@
 global id itenumber
 
 %initialization
-d=1;    %Iterate number
+d=8;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
@@ -20,9 +20,9 @@ created_data = ['../created_data/'];
 
 
 %caliculate babbling
-for j = 1:1
+for j = 1:2
     yoked = YOKED(j,:);
-    for i =1:1
+    for i =1:2
         stdp = STDP(i,:);
         %Babbling&mean caliculation
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -42,9 +42,9 @@ for j = 1:1
 end
 
 %caliculate mean
-for j = 1:1
+for j = 1:2
     yoked = YOKED(j,:);
-    for i =1:1
+    for i =1:2
         stdp = STDP(i,:);
         %Babbling&mean caliculation
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,11 +56,11 @@ for j = 1:1
                    workspacedir = [num2str(k),'_',ID,'_Workspace/'];
                    
                    if ~strcmp(feedbacktype,'none')
-                   %salhist{k}=csvread([created_data,id,'/data/',workspacedir,num2str(k),'_',ID,'.csv']);
+                   salhist{k}=csvread([created_data,id,'/data/',workspacedir,num2str(k),'_',ID,'.csv']);
                    end
                    
-                   plotfirings([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
-                   %plot_synapse([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
+                   %plotfirings([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
+                   plot_synapse([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
                    
            end
            

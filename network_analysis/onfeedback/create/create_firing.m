@@ -60,7 +60,8 @@ firingsdir = [ID, '_Firings'];
 workspacedir = [ID, '_Workspace'];
 setdir = ['~/babbling/simulation/setting'];
 createddata_dir = ['~/babbling/created_data/'];     %data dir
-id_dir = [tag,'/'];
+%id_dir = [tag,'/'];
+id_dir = ['180120_SctimeNone/'];
 outdir = [createddata_dir,id_dir,'network_analysis'];
 outfiringdir = [outdir,'/onfeedback_firing_data'];
 
@@ -138,7 +139,6 @@ end
 
 %RUNNING THE SIMULATION%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 for sec=1:2 % T is the duration of the simulation in seconds.
           tic;
     display('********************************************');

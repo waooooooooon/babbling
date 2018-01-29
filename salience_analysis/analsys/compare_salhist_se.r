@@ -179,8 +179,8 @@ rewa_all$reward <- moving_average(rewa_all$reward,50)
 #予測結果の図示(白黒)
 
 #GAM
-g <- ggplot(gam_all,aes(x=sec,y=fit,group=group)) +
-
+g <- ggplot(gam_all,aes(x=sec,y=fit,group=group,colour = group)) +
+#ggplot(gam_all,aes(x=sec,y=fit,group=group)) +
   geom_point(aes(shape = group), size=4)+
   geom_line(aes(linetype = group))+
   geom_errorbar(aes(ymax = conf.upr_1, ymin = conf.lwr_1), width = 30)+
@@ -193,11 +193,11 @@ g <- ggplot(gam_all,aes(x=sec,y=fit,group=group)) +
 
 
 #setting of graf
-  theme_bw(base_size=10)+
-  labs(x = "sec", y = "salience", size=10) +
-  theme(axis.title.x = element_text(size=10),axis.title.y = element_text(size=10))+
-  scale_color_manual(name="",values=c("Auditory feedback with STDP"="blue","Auditory feedback without STDP"="green","Scramble feedback with STDP"="red","Scramble feedback without STDP"="yellow"))+
- # theme(legend.position = "top")
+  theme_bw(base_size=20)+
+  labs(x = "sec", y = "salience", size=20) +
+  theme(axis.title.x = element_text(size=20),axis.title.y = element_text(size=20))+
+  scale_color_manual(name="",values=c("Auditory feedback with STDP"="red","Auditory feedback without STDP"="green","Scramble feedback with STDP"="blue","Scramble feedback without STDP"="yellow"))+
+  theme(legend.position = "top")
   guides(fill=FALSE)
 
 g=g+
@@ -215,7 +215,7 @@ g2 <- ggplot(rewa_all,aes(x=sec,y=reward,group=group,colour = group)) +
   theme_bw(base_size=30)+
   labs(x = "sec", y = "negative reward", size=2) +
   theme(axis.title.x = element_text(size=5),axis.title.y = element_text(size=5))+
-  #scale_color_manual(name="",values=c("Auditory feedback with STDP"="blue","Auditory feedback without STDP"="green","Scramble feedback with STDP"="red","Scramble feedback without STDP"="yellow"))+
+  scale_color_manual(name="",values=c("Auditory feedback with STDP"="blue","Auditory feedback without STDP"="green","Scramble feedback with STDP"="red","Scramble feedback without STDP"="yellow"))+
  # theme(legend.position = "top")
   guides(fill=FALSE)
 

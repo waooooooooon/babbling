@@ -24,6 +24,8 @@ display('importing data');
     %%%%%%% import No feedback
     if strcmp(motortype,'feedback')
         motcommanddata=importdata([firingdir,'/motorcommand_onfeedback_',motortype,'_',Noid,'_',num2str(simutime),'.txt']);
+        %motcommanddata=importdata([firingdir,'/motorcommand_onfeedback_',motortype,'_',id,'_',num2str(simutime),'.txt']);%inportminemotorcommand
+        
     %consonant = find(motcommanddata(:,2)>0.5);
     %vowel = find(motcommanddata(:,2)<=0.5);
     elseif strcmp(motortype,'sin')
