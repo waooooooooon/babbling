@@ -60,8 +60,8 @@ firingsdir = [ID, '_Firings'];
 workspacedir = [ID, '_Workspace'];
 setdir = ['~/babbling/simulation/setting'];
 createddata_dir = ['~/babbling/created_data/'];     %data dir
-%id_dir = [tag,'/'];
-id_dir = ['180120_SctimeNone/'];
+id_dir = [tag,'/'];
+%id_dir = ['180120_SctimeNone/'];
 outdir = [createddata_dir,id_dir,'network_analysis'];
 outfiringdir = [outdir,'/onfeedback_firing_data'];
 
@@ -126,8 +126,8 @@ datahistsize=((1000-muscsmooth)/feedbacktime);
 
 %%%%%%%% create feedback
 if strcmp(motortype,'sin')
-muscle_sin = sin(linspace(pi,-pi,1000))*0.9;
-muscle_sin = repmat(muscle_sin,1,simutime/1000);
+muscle_sin = sin(linspace(pi,-pi,500))*0.9;
+muscle_sin = repmat(muscle_sin,1,simutime/500);
 end
 
 

@@ -22,7 +22,7 @@ created_data = ['../created_data/'];
 %caliculate babbling
 for j = 1:1
     yoked = YOKED(j,:);
-    for i =1:1
+    for i =2:2
         stdp = STDP(i,:);
         %Babbling&mean caliculation
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

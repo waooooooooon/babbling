@@ -29,8 +29,8 @@ display('importing data');
     %consonant = find(motcommanddata(:,2)>0.5);
     %vowel = find(motcommanddata(:,2)<=0.5);
     elseif strcmp(motortype,'sin')
-        muscle_sin = sin(linspace(pi,-pi,1000))*0.9;
-        muscle_sin = repmat(muscle_sin,1,simutime/1000);
+        muscle_sin = sin(linspace(pi,-pi,500))*0.9;
+        muscle_sin = repmat(muscle_sin,1,simutime/500);
         motcommanddata =[[1:simutime]',muscle_sin'];
         
     end
