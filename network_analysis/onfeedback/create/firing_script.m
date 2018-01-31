@@ -95,8 +95,8 @@ for j = 1:1
 
            end
          
-           dime(1,(j-1)*2+i)=mean(eighty_dime);
-           dime(2,(j-1)*2+i)=std(eighty_dime);
+           %dime(1,(j-1)*2+i)=mean(eighty_dime);
+           %dime(2,(j-1)*2+i)=std(eighty_dime);
            
            
 

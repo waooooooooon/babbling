@@ -58,7 +58,7 @@ fftsize=2048;             %fft????????????????????????????????????
 lpcsize=8;                %LPC size
 inpInd=outInd;
 tau=20;                   %decay parameter
-SAVINTV=500;
+SAVINTV=200;
 LST_hist=[1:1000];
 muscle_number=0;
 negativereward = 0;
@@ -1324,7 +1324,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
     % Every so often, save the workspace in case the simulation is interupted all data is not lost.
     if mod(sec,SAVINTV*testint)==0 || sec==T || sec==1
         display('Data Saving..... Do not exit program.');
-        save(workspaceFilename, '-regexp', '^(?!(v_mot_hist)$).');
+        save([workspacedir,'/',num2str(sec),'_babble_daspnet_reservoir_',ID,'.mat'], '-regexp', '^(?!(v_mot_hist)$).');
 
         if plotOn==1
         %wright LAP
