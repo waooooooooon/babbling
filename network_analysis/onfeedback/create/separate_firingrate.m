@@ -3,7 +3,8 @@ global tag simutime createddata_dir id_dir outdir firingdir pca_dir onfeedbackdi
 
 display('importing data');
 
-    firingsdata=importdata([firingdir,'/firing_onfeedback_',motortype,'_',id,'_',num2str(simutime),'.txt']);
+    %firingsdata=importdata([firingdir,'/firing_onfeedback_',motortype,'_',id,'_',num2str(simutime),'.txt']);
+    firingsdata=importdata([firingdir,'/firing_onfeedback_feedback_',id,'_',num2str(simutime),'.txt']);
     %firingsdata=importdata([firingdir,'/firing_onfeedback_',id,'_',num2str(simutime),'.txt']);
     outputdir = [onfeedbackdir,'/through_simulation/significant_difference'];
     datadir = [outputdir,'/matdata'];
@@ -32,10 +33,14 @@ display('importing data');
         muscle_sin = sin(linspace(pi,-pi,500))*0.9;
         muscle_sin = repmat(muscle_sin,1,simutime/500);
         motcommanddata =[[1:simutime]',muscle_sin'];
+    elseif strcmp(motortype,'output')
+        %motcommanddata=importdata([firingdir,'/motorcommand_onfeedback_',motortype,'_',id,'_',num2str(simutime),'.txt']);
+        motcommanddata=importdata([firingdir,'/motorcommand_onfeedback_feedback_',id,'_',num2str(simutime),'.txt']);
         
     end
     
     
+  
     
     
 

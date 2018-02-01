@@ -22,7 +22,7 @@ created_data = ['../created_data/'];
 
 %for firing
 simutime=100000;        %simutime of plotfiringslong defo=100000
-motortype = ['sin'];        %sin or feedback
+motortype = ['output'];        %sin or feedback or output
 
 
 

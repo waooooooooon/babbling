@@ -132,7 +132,7 @@ end
 
 
 %%%%%%% import No feedback
-if strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft') && strcmp(separatephase,'randSc')
+if strcmp(yoke,'Sc') && strcmp(feedbacktype,'fft') && strcmp(separatephase,'randSc') && ~strcmp(motortype,'sin')
 motcommanddata=importdata([firingdir,'/motorcommand_onfeedback_',motortype,'_',NoID,'_',num2str(simutime),'.txt']);
 end
 
