@@ -92,15 +92,15 @@ end
 
 
 for i =1:100
-    zerothre=find(Firings(1001,:,i)<0.001);
+    zerothre=find(Firings(1001,:,i)<0.0001);
     openmouth=find(diff(Firings(1001,:,i))>0);
     closemouth=find(diff(Firings(1001,:,i))<0);
     
-    openfiringrate(:,i) = mean((Firings(1:1000,openmouth,i)),2);
+    openfiringrate(:,i) = mean((Firings(1:1000,openmouth,i)),2,'omitnan');
     openfiringrate(zerothre,i)=nan;
-    openfiringrate(find(openfiringrate(:,i)==0),i)=nan;
-    closefiringrate(:,i) = mean((Firings(1:1000,closemouth,i)),2); 
-    closefiringrate(find(closefiringrate(:,i)==0),i)=nan;
+    %openfiringrate(find(openfiringrate(:,i)==0),i)=nan;
+    closefiringrate(:,i) = mean((Firings(1:1000,closemouth,i)),2,'omitnan'); 
+    %closefiringrate(find(closefiringrate(:,i)==0),i)=nan;
     closefiringrate(zerothre,i)=nan;
 end
 
@@ -177,7 +177,7 @@ csvwrite([outputdir,'/',motortype,'_A_conso_',id,'_',num2str(simutime),'.txt'],A
 
 
 %%%%%%%%%%%%  move
-B =[mean(closefiringrate,2)-mean(openfiringrate,2),significant_difference_move];
+B =[mean(closefiringrate,2,'omitnan')-mean(openfiringrate,2,'omitnan'),significant_difference_move];
 B_sub = size(find(B(find(B(:,2)==1),1)>0));
 
 all_sum2 = sum(significant_difference_move(:,1));
