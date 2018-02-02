@@ -92,11 +92,16 @@ end
 
 
 for i =1:100
-    
+    zerothre=find(Firings(1001,:,i)<0.001);
     openmouth=find(diff(Firings(1001,:,i))>0);
     closemouth=find(diff(Firings(1001,:,i))<0);
+    
     openfiringrate(:,i) = mean((Firings(1:1000,openmouth,i)),2);
+    openfiringrate(zerothre,i)=nan;
+    openfiringrate(find(openfiringrate(:,i)==0),i)=nan;
     closefiringrate(:,i) = mean((Firings(1:1000,closemouth,i)),2); 
+    closefiringrate(find(closefiringrate(:,i)==0),i)=nan;
+    closefiringrate(zerothre,i)=nan;
 end
 
 for i =1:100

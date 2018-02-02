@@ -1,6 +1,5 @@
 %importdata
-global tag simutime itenumber createddata_dir id_dir outdir firingdir pca_dir onfeedbackdir motortype
-
+global tag simutime itenumber createddata_dir id_dir outdir firingdir pca_dir onfeedbackdir motortype yoked stdp ploton feedbacktime p speinplate IP separatephase Network reward feedbacktype d
 d=10;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
@@ -85,7 +84,7 @@ for j = 1:1
 
            for k=1:d
                 %conduct create_firing
-                   display([num2str(k),ID]);
+                   %display([num2str(k),ID]);
                    %eighty_dime(k) = dimention([num2str(k),'_',ID]);
                    %[historycor] = correlation([num2str(k),'_',ID],[num2str(k),'_',NoID]);
                    %sfa_normal([num2str(k),'_',ID]);
@@ -97,7 +96,8 @@ for j = 1:1
          
            %dime(1,(j-1)*2+i)=mean(eighty_dime);
            %dime(2,(j-1)*2+i)=std(eighty_dime);
-           
+            %ago_antago
+            %pulsseparate_firingrate;
            
 
 
@@ -111,7 +111,7 @@ Name = {[YOKED(1,:),STDP(1,:)];[YOKED(1,:),STDP(2,:)];[YOKED(2,:),STDP(1,:)];[YO
 ave_dime = [dime(1,1);dime(1,2);dime(1,3);dime(1,4);];
 std_dime = [dime(2,1);dime(2,2);dime(2,3);dime(2,4);];
 T = table(ave_dime,std_dime,'RowNames',Name);
-writetable(T,[outputdir,'/dimention_',tag,'.csv'],'WriteRowNames',true)
+writetable(T,[onfeedbackdir,'/through_simulation/dimention/dimention_',tag,'.csv'],'WriteRowNames',true)
 
 
 
