@@ -178,8 +178,8 @@ other_sum1 = sum(significant_difference_conso(301:800,1));
 data1 = [all_sum1;input_sum1;output_sum1;inh_sum1;other_sum1;A_sub(1,1)];
 
 
-csvwrite([outputdir,'/',motortype,'_difference_conso_',id,'_',num2str(simutime),'.txt'],data1);
-csvwrite([outputdir,'/',motortype,'_A_conso_',id,'_',num2str(simutime),'.txt'],A);
+csvwrite([outputdir,'/delay',num2str(delay),'_',motortype,'_difference_conso_',id,'_',num2str(simutime),'.txt'],data1);
+csvwrite([outputdir,'/delay',num2str(delay),'_',motortype,'_A_conso_',id,'_',num2str(simutime),'.txt'],A);
 
 
 %%%%%%%%%%%%  move
@@ -193,8 +193,8 @@ inh_sum2 = sum(significant_difference_move(801:1000,1));
 other_sum2 = sum(significant_difference_move(301:800,1));
 data2 = [all_sum2;input_sum2;output_sum2;inh_sum2;other_sum2;B_sub(1,1)];
 
-csvwrite([outputdir,'/',motortype,'_difference_move_',id,'_',num2str(simutime),'.txt'],data2);
-csvwrite([outputdir,'/',motortype,'_B_move_',id,'_',num2str(simutime),'.txt'],B);
+csvwrite([outputdir,'/delay',num2str(delay),'_',motortype,'_difference_move_',id,'_',num2str(simutime),'.txt'],data2);
+csvwrite([outputdir,'/delay',num2str(delay),'_',motortype,'_B_move_',id,'_',num2str(simutime),'.txt'],B);
 
 
 %%%%%%%%%%%% low motor
@@ -209,8 +209,8 @@ inh_sum3 = sum(significant_difference_low(801:1000,1));
 other_sum3 = sum(significant_difference_low(301:800,1));
 data3 = [all_sum3;input_sum3;output_sum3;inh_sum3;other_sum3;D_sub(1,1)];
 
-csvwrite([outputdir,'/',motortype,'_difference_lowmotor_',id,'_',num2str(simutime),'.txt'],data3);
-csvwrite([outputdir,'/',motortype,'_D_low_',id,'_',num2str(simutime),'.txt'],D);
+csvwrite([outputdir,'/delay',num2str(delay),'_',motortype,'_difference_lowmotor_',id,'_',num2str(simutime),'.txt'],data3);
+csvwrite([outputdir,'/delay',num2str(delay),'_',motortype,'_D_low_',id,'_',num2str(simutime),'.txt'],D);
 
 
 
@@ -225,8 +225,8 @@ inh_sum4 = sum(significant_difference_middle(801:1000,1));
 other_sum4 = sum(significant_difference_middle(301:800,1));
 data4 = [all_sum4;input_sum4;output_sum4;inh_sum4;other_sum4;E_sub(1,1)];
 
-csvwrite([outputdir,'/',motortype,'_difference_middle_',id,'_',num2str(simutime),'.txt'],data4);
-csvwrite([outputdir,'/',motortype,'_E_middle_',id,'_',num2str(simutime),'.txt'],E);
+csvwrite([outputdir,'/delay',num2str(delay),'_',motortype,'_difference_middle_',id,'_',num2str(simutime),'.txt'],data4);
+csvwrite([outputdir,'/delay',num2str(delay),'_',motortype,'_E_middle_',id,'_',num2str(simutime),'.txt'],E);
 
 
 moveandconso=sum(A(find(B(:,2)==1),2));
@@ -241,7 +241,7 @@ inhibitory = [inh_sum1;inh_sum2;inh_sum3;inh_sum4;];
 others = [other_sum1;other_sum2;other_sum3;other_sum4;];
 which_mode = [A_sub(1,1);B_sub(1,1);E_sub(1,1);D_sub(1,1);];
 T = table(all_neuron,input,output,inhibitory,others,which_mode,'RowNames',Name);
-writetable(T,[outputdir,'/',motortype,'_Difference_',id,'_',num2str(simutime),'.csv'],'WriteRowNames',true);
+writetable(T,[outputdir,'/delay',num2str(delay),'_',motortype,'_Difference_',id,'_',num2str(simutime),'.csv'],'WriteRowNames',true);
 
 
 
