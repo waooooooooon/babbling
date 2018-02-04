@@ -65,10 +65,18 @@ end
 sizefiring = size(firings);
 
 %%%%%%%%%%%% delay of firings
-delay = 1;
-firing_A = [firings,zeros(1000,delay)];
-firings = firing_A(:,delay+1:simutime+delay);
+delay = -5;
 
+if delay >0
+    firing_A = [firings,zeros(1000,delay)];
+    firings = firing_A(:,delay+1:end);
+end
+
+if delay <0
+    delay = abs(delay);
+    firing_A = [zeros(1000,delay),firings];
+    firings = firing_A(:,1:end-delay);
+end
 
 firings = [firings;motcommanddata(:,2)'];
 
