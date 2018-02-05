@@ -79,8 +79,8 @@ map=[
     0.2116,    0.1898,    0.5777
     0.2081,    0.1663,    0.5292];
 
-
-%%%%%%%%%%%%% plot synapse strength of NSTDP
+%{
+%%%%%%%%%%%%%% plot synapse strength of NSTDP
 fig1 = imagesc(s(1:100,:));
 
 %%%%%   flip gray scale
@@ -100,17 +100,18 @@ caxis([0,10]);
 %ylabel('Neurons index', 'fontweight','bold');
 saveas(fig1,[workspacedir,'/imageofsynapse_',ID,'.png']);
 %%%%%%%%%%%%%
-
+%}
 
 %%%%%%%%%%%%% plot histogram of synaptic weights with NSTDP
 fig2 = histogram(s(1:800,:));
 fig2.NumBins = 30;
-fig2.BinEdges = [0:0.1:10];
-fig2.FaceColor = 'k';
+fig2.BinEdges = [0:0.2:10];
+fig2.FaceColor = 'r';
 fig2.EdgeColor = 'k';
 axis([0 10 0 20000]);
 set(gca,'FontSize',16);
+hold on;
 saveas(fig2,[workspacedir,'/hist_synapse_',ID,'.png']);
-close all;
+%close all;
 %%%%%%%%%%%%% end
 

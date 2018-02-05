@@ -5,7 +5,7 @@ d=2;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-id=['180131_Sctime'];
+id=['180120_Sctime'];
 IP =['LiIP'];        %threIP or Tonic or NoIP or LiIP
 separatephase = ['randSc'];      %separate or nseparate or randSc
 Network = ['random'];      %lattice or random
@@ -33,7 +33,7 @@ for j = 1:1
                 %conduct babbling
                    display([num2str(itenumber),'_',ID]);
 
-                   babbling([num2str(itenumber),ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
+                   %babbling([num2str(itenumber),ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
            end
 
          clearvars meanout data datahist output;
@@ -42,7 +42,7 @@ for j = 1:1
 end
 
 %caliculate mean
-for j = 1:2
+for j = 1:1
     yoked = YOKED(j,:);
     for i =1:2
         stdp = STDP(i,:);
@@ -50,20 +50,20 @@ for j = 1:2
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         ID = [id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_',num2str(ploton),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network,'_',reward,'_',feedbacktype];
 
-           for k=1:d
+           for k=1:1
                 %conduct babbling
                    display([num2str(k),'_',ID]);
                    workspacedir = [num2str(k),'_',ID,'_Workspace/'];
                    
                    if ~strcmp(feedbacktype,'none')
-                   salhist{k}=csvread([created_data,id,'/data/',workspacedir,num2str(k),'_',ID,'.csv']);
+                   %salhist{k}=csvread([created_data,id,'/data/',workspacedir,num2str(k),'_',ID,'.csv']);
                    end
                    
-                   plotfirings([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
+                   %plotfirings([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
                    plot_synapse([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
                    
            end
-           
+           %{
            if ~strcmp(feedbacktype,'none')
                for k=1:d
                    if k==1
@@ -75,10 +75,10 @@ for j = 1:2
                mean_sal = mean_sal/d;
                csvwrite([created_data,id,'/csv/',ID,'.csv'],mean_sal); 
            end
-           
+           %}
          
 
-         clearvars salhist mean_sal;
+         %clearvars salhist mean_sal;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
 end

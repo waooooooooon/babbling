@@ -275,6 +275,8 @@ for sec=1:2 % T is the duration of the simulation in seconds.
                 if muscle_number>16000
                     feedback1 = constant_inplate*ones(100,1);
                 else
+                    
+                   
                     feedback1 = zeros(100,1);
                 end
                 I(InputneuronID)=I(InputneuronID)+feedback1; %refrect feedback to spectrum neurons 0~2000hz/20
@@ -511,8 +513,7 @@ for sec=1:2 % T is the duration of the simulation in seconds.
         
         % Every testint seconds, use the motor neuron spikes to generate a sound.
 
-   
-        if ~strcmp(feedbacktype,'none')
+
         % Every testint seconds, use the motor neuron spikes to generate a sound.
         if (mod(sec,testint)==0)
 
@@ -568,7 +569,7 @@ for sec=1:2 % T is the duration of the simulation in seconds.
             
             
         end         %end fo firings
-        end
+
         
     end
     

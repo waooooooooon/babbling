@@ -4,12 +4,12 @@ d=10;    %Iterate number
 YOKED=['No';'Sc'];   %Sc or No
 ploton = 0; % 1 or 0
 STDP=['STDP';'NSTD'];
-tag=['180120_Sctime'];
+tag=['180120_SctimeNone'];
 IP =['LiIP'];        %threIP or Tonic or NoIP or LiIP
 separatephase = ['randSc'];      %separate or nseparate or randSc
 Network = ['random'];      %lattice or random
 reward = ['normal'];        %nega or normal
-feedbacktype = ['fft'];        %consonant or fft or none
+feedbacktype = ['none'];        %consonant or fft or none
 feedbacktime=1;
 iterate=2000;
 speinplate=0.3;
@@ -55,10 +55,10 @@ for j = 1:1
 
 
 
-           for k=1:1
+           for k=1:d
                 %conduct create_firing
                    display([num2str(k),ID]);
-                   %create_firing([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype,[num2str(k),'_',NoID]);
+                   create_firing([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype,[num2str(k),'_',NoID]);
                    
                    
 
@@ -88,7 +88,7 @@ for j = 1:1
                    %eighty_dime(k) = dimention([num2str(k),'_',ID]);
                    %[historycor] = correlation([num2str(k),'_',ID],[num2str(k),'_',NoID]);
                    %sfa_normal([num2str(k),'_',ID]);
-                   separate_firingrate([num2str(k),'_',ID],[num2str(k),'_',NoID]);
+                   %separate_firingrate([num2str(k),'_',ID],[num2str(k),'_',NoID]);
                    
                    
 
