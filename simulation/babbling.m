@@ -904,7 +904,7 @@ for sec=(sec+1):T % T is the duration of the simulation in seconds.
         
         
         % Every testint seconds, use the motor neuron spikes to generate a sound.
-        if (mod(sec,testint)==0)
+        if (mod(sec,testint)==0) && ~strcmp(feedbacktype,'none')
 
             if strcmp(IP,'Tonic')
                 firedmusc1pos=find(v_mot(1:Nmot/2)>=30); % Find out which of the jaw/lip motor neurons fired.
