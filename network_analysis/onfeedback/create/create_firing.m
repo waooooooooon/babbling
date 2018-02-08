@@ -103,8 +103,11 @@ addpath('auditorysaliencymodel');
 %Import initial value
 table=importdata([setdir,'/table_notnormalization_from0.5to1.5KHz.csv']);
 
+
+ID_backup = ID;
 %Import matfile
 load([createddata_dir,id_dir,'data/',workspaceFilename]);
+ID = ID_backup;
 
 %initialization
 sec = 0;
