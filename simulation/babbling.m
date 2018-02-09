@@ -46,7 +46,7 @@ function [] = babbling(ID,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbackti
 rng shuffle;
 warning('off','all');
 
-global id itenumber
+global id itenumber iterate
 
 % Initialization.
 salthresh = 4.5;            % Initial salience value for reward (used in 'relhisal' reinforcment).
@@ -168,7 +168,7 @@ elseif strcmp(separatephase,'separate')
     
 elseif strcmp(separatephase,'randSc') && strcmp(yoke,'Sc')
     NoID = [num2str(itenumber),'_',id,'_',num2str(newT),'_reinforce_100_4_No_',num2str(plotOn),'_',num2str(feedbacktime),'_',num2str(learningratio),'_',num2str(speinplate),'_',STDP,'_',IP,'_',separatephase,'_',Network,'_',reward,'_',feedbacktype];
-    load([datadir,NoID, '_Workspace/babble_daspnet_reservoir_',NoID,'.mat'],'muscle_his','salhist');
+    load([datadir,NoID, '_Workspace/',num2str(iterate),'_babble_daspnet_reservoir_',NoID,'.mat'],'muscle_his','salhist');
     randtime=randperm(newT);
     Nomuscle_his=muscle_his(:,randtime);
     muscle_his = 0;

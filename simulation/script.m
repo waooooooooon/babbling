@@ -1,4 +1,4 @@
-global id itenumber
+global id itenumber iterate
 
 %initialization
 d=10;    %Iterate number

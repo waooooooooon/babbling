@@ -8,7 +8,7 @@ firingsdir = [datadir,ID, '_Firings'];
 workspacedir = [datadir,ID, '_Workspace'];
 setdir = ['setting'];
 
-workspaceFilename=[workspacedir,'/babble_daspnet_reservoir_',ID,'.mat'];
+workspaceFilename=[workspacedir,'/',num2str(iterate),'_babble_daspnet_reservoir_',ID,'.mat'];
 load(workspaceFilename);
 
 %initialization
