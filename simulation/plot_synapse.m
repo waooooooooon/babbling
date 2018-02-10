@@ -1,5 +1,5 @@
 function [] = plot_synapse(ID,newT,reinforce,outInd,muscscale,yoke,plotOn,feedbacktime,learningratio,speinplate,STDP,debug,IP,separatephase,Network,reward,feedbacktype)
-global id
+global id iterate
 
 createddata_dir = ['~/babbling/created_data/'];
 datadir = [createddata_dir,id,'/data/'];

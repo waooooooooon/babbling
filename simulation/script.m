@@ -63,7 +63,7 @@ for j = 1:1
                    plot_synapse([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
                    
            end
-           %{
+           
            if ~strcmp(feedbacktype,'none')
                for k=1:d
                    if k==1
@@ -75,10 +75,10 @@ for j = 1:1
                mean_sal = mean_sal/d;
                csvwrite([created_data,id,'/csv/',ID,'.csv'],mean_sal); 
            end
-           %}
+           
          
 
-         %clearvars salhist mean_sal;
+         clearvars salhist mean_sal;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
 end

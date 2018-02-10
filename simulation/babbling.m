@@ -136,7 +136,7 @@ end
 
 % Creating workspace names.
 
-    workspaceFilename=[workspacedir,'/babble_daspnet_reservoir_',ID,'.mat'];
+    workspaceFilename=[workspacedir,'/',num2str(iterate),'_babble_daspnet_reservoir_',ID,'.mat'];
 
 
     % Creating import names.
