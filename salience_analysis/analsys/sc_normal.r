@@ -36,22 +36,22 @@ moving_average <- function(x, n){
 
 
 #title
-title <- "180120_Sctime"
+title <- "180120_Sctimelong"
 
 #load the directory 
 dir <- "~/babbling/created_data/"
-filename <- "180120_SctimeNone/"
+filename <- "180120_Sctimelong/"
 csvfile <- "csv/"
 
 #filename
 id <- title
-iterate <- "2000"
+iterate <- "5000"
 ploton <- "0"
 IP <- "LiIP"    #threIP or LiIP or Tonic or afterIP
 phase <-"randSc"   #nseparate or separate or randSc
 network <- "random"
 reward <- "normal"    #normal or nega
-feedback <- "none" #consonant or fft or none
+feedback <- "fft" #consonant or fft or none
 iteratenum <- "1"
 p <- "0.03"
 

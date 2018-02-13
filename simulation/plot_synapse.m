@@ -108,7 +108,7 @@ fig2.NumBins = 30;
 fig2.BinEdges = [0:0.2:10];
 fig2.FaceColor = 'r';
 fig2.EdgeColor = 'k';
-axis([0 10 0 20000]);
+axis([0 10 0 40000]);
 set(gca,'FontSize',16);
 hold on;
 saveas(fig2,[workspacedir,'/hist_synapse_',ID,'.png']);

@@ -10,7 +10,7 @@ IP =['LiIP'];        %threIP or Tonic or NoIP or LiIP
 separatephase = ['randSc'];      %separate or nseparate or randSc
 Network = ['random'];      %lattice or random
 reward = ['normal'];       %nega or normal
-feedbacktype = ['none'];        %consonant or fft or none
+feedbacktype = ['fft'];        %consonant or fft or none
 feedbacktime=1;
 iterate=5000;
 speinplate=0.3;
@@ -33,7 +33,7 @@ for j = 1:1
                 %conduct babbling
                    display([num2str(itenumber),'_',ID]);
 
-                   babbling([num2str(itenumber),ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
+                   %babbling([num2str(itenumber),ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
            end
 
          clearvars meanout data datahist output;
@@ -50,7 +50,7 @@ for j = 1:1
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         ID = [id,'_',num2str(iterate),'_reinforce_100_4_',yoked,'_',num2str(ploton),'_',num2str(feedbacktime),'_',num2str(p),'_',num2str(speinplate),'_',stdp,'_',IP,'_',separatephase,'_',Network,'_',reward,'_',feedbacktype];
 
-           for k=1:d
+           for k=1:1
                 %conduct babbling
                    display([num2str(k),'_',ID]);
                    workspacedir = [num2str(k),'_',ID,'_Workspace/'];
@@ -63,7 +63,7 @@ for j = 1:1
                    plot_synapse([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype);
                    
            end
-           
+           %{
            if ~strcmp(feedbacktype,'none')
                for k=1:d
                    if k==1
@@ -79,6 +79,7 @@ for j = 1:1
          
 
          clearvars salhist mean_sal;
+           %}
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
 end
