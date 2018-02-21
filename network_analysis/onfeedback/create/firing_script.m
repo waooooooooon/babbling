@@ -58,7 +58,7 @@ for j = 1:1
            for k=1:d
                 %conduct create_firing
                    display([num2str(k),ID]);
-                   create_firing([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype,[num2str(k),'_',NoID]);
+                   %create_firing([num2str(k),'_',ID],iterate,'reinforce',1:100,4,yoked,ploton,feedbacktime,p,speinplate,stdp,debug,IP,separatephase,Network,reward,feedbacktype,[num2str(k),'_',NoID]);
                    
                    
 
@@ -74,7 +74,7 @@ end
 dime = zeros(2,4);
 for j = 1:1
     yoked = YOKED(j,:);
-    for i =1:1
+    for i =1:2
         stdp = STDP(i,:);
         %caliculate pca etc..
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,17 +85,17 @@ for j = 1:1
            for k=1:d
                 %conduct create_firing
                    display([num2str(k),ID]);
-                   %eighty_dime(k) = dimention([num2str(k),'_',ID]);
+                   eighty_dime(k) = dimention([num2str(k),'_',ID]);
                    %[historycor] = correlation([num2str(k),'_',ID],[num2str(k),'_',NoID]);
                    %sfa_normal([num2str(k),'_',ID]);
-                   separate_firingrate([num2str(k),'_',ID],[num2str(k),'_',NoID]);
+                   %separate_firingrate([num2str(k),'_',ID],[num2str(k),'_',NoID]);
                    
                    
 
            end
          
-           %dime(1,(j-1)*2+i)=mean(eighty_dime);
-           %dime(2,(j-1)*2+i)=std(eighty_dime);
+           dime(1,(j-1)*2+i)=mean(eighty_dime);
+           dime(2,(j-1)*2+i)=std(eighty_dime);
             %ago_antago
             %pulsseparate_firingrate;
            
